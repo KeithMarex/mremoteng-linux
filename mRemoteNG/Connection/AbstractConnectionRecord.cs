@@ -147,7 +147,7 @@ namespace mRemoteNG.Connection
         }
 
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Display)),
-         TypeConverter(typeof(ConnectionIcon)),
+         TypeConverter(WinFormsPropertyGridTypes.ConnectionIconConverter),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Icon)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionIcon))]
         public virtual string Icon
@@ -168,7 +168,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Display)),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Color)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionColor)),
-         Editor(typeof(UI.Controls.ConnectionInfoPropertyGrid.ColorStringEditor), typeof(System.Drawing.Design.UITypeEditor)),
+         Editor(WinFormsPropertyGridTypes.ColorStringEditor, WinFormsPropertyGridTypes.UITypeEditor),
          TypeConverter(typeof(TabColorConverter))]
         public virtual string Color
         {
@@ -179,7 +179,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Display)),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.TabColor)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionTabColor)),
-         Editor(typeof(UI.Controls.ConnectionInfoPropertyGrid.ColorStringEditor), typeof(System.Drawing.Design.UITypeEditor)),
+         Editor(WinFormsPropertyGridTypes.ColorStringEditor, WinFormsPropertyGridTypes.UITypeEditor),
          TypeConverter(typeof(TabColorConverter))]
         public virtual string TabColor
         {
@@ -352,7 +352,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.SshTunnel)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionSshTunnel)),
-         TypeConverter(typeof(SshTunnelTypeConverter)),
+         TypeConverter(WinFormsPropertyGridTypes.SshTunnelConverter),
          AttributeUsedInAllProtocolsExcept()]
         public string SSHTunnelConnectionName
         {
@@ -397,7 +397,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.ExternalTool)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionExternalTool)),
-         TypeConverter(typeof(ExternalToolsTypeConverter)),
+         TypeConverter(WinFormsPropertyGridTypes.ExternalToolsConverter),
          AttributeUsedInProtocol(ProtocolType.IntApp)]
         public string ExtApp
         {
@@ -408,7 +408,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.PuttySession)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionPuttySession)),
-         TypeConverter(typeof(Config.Putty.PuttySessionsManager.SessionList)),
+         TypeConverter(WinFormsPropertyGridTypes.PuttySessionListConverter),
          AttributeUsedInProtocol(ProtocolType.SSH1, ProtocolType.SSH2, ProtocolType.Telnet,
             ProtocolType.RAW, ProtocolType.Rlogin)]
         public virtual string PuttySession
@@ -930,7 +930,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Miscellaneous), 7),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.ExternalToolBefore)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionExternalToolBefore)),
-         TypeConverter(typeof(ExternalToolsTypeConverter))]
+         TypeConverter(WinFormsPropertyGridTypes.ExternalToolsConverter)]
         public virtual string PreExtApp
         {
             get => GetPropertyValue("PreExtApp", _preExtApp);
@@ -940,7 +940,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Miscellaneous), 7),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.ExternalToolAfter)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionExternalToolAfter)),
-         TypeConverter(typeof(ExternalToolsTypeConverter))]
+         TypeConverter(WinFormsPropertyGridTypes.ExternalToolsConverter)]
         public virtual string PostExtApp
         {
             get => GetPropertyValue("PostExtApp", _postExtApp);

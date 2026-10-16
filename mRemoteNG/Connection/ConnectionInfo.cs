@@ -18,6 +18,7 @@ using mRemoteNG.Connection.Protocol.Telnet;
 using mRemoteNG.Connection.Protocol.VNC;
 using mRemoteNG.Container;
 using mRemoteNG.Properties;
+using mRemoteNG.Tools;
 using mRemoteNG.Tree;
 using mRemoteNG.Resources.Language;
 using mRemoteNG.Tree.Root;
@@ -27,7 +28,7 @@ namespace mRemoteNG.Connection
 {
     [SupportedOSPlatform("windows")]
     [DefaultProperty("Name")]
-    [TypeDescriptionProvider(typeof(ConnectionInfoTypeDescriptionProvider))]
+    [TypeDescriptionProvider(WinFormsPropertyGridTypes.ConnectionInfoTypeDescriptionProvider)]
     public class ConnectionInfo : AbstractConnectionRecord, IHasParent, IInheritable
     {
         private ConnectionInfoInheritance _inheritance;
