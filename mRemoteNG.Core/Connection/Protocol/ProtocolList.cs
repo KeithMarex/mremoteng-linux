@@ -1,39 +1,37 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Specialized;
-using System.Runtime.Versioning;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 
 namespace mRemoteNG.Connection.Protocol
 {
-    [SupportedOSPlatform("windows")]
     public class ProtocolList : CollectionBase, INotifyCollectionChanged
     {
-        public ProtocolBase this[object index]
+        public IProtocolSession this[object index]
         {
             get
             {
-                ProtocolBase @base = index as ProtocolBase;
+                IProtocolSession @base = index as IProtocolSession;
                 if (@base != null)
                     return @base;
                 if (index is int)
-                    return (ProtocolBase)List[Convert.ToInt32(index)];
+                    return (IProtocolSession)List[Convert.ToInt32(index)];
                 return null;
             }
         }
 
         public new int Count => List.Count;
 
-        public void Add(ProtocolBase cProt)
+        public void Add(IProtocolSession cProt)
         {
             List.Add(cProt);
             RaiseCollectionChangedEvent(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, cProt));
         }
 
-        public void AddRange(ProtocolBase[] cProt)
+        public void AddRange(IProtocolSession[] cProt)
         {
-            foreach (ProtocolBase cP in cProt)
+            foreach (IProtocolSession cP in cProt)
             {
                 List.Add(cP);
             }
@@ -41,7 +39,7 @@ namespace mRemoteNG.Connection.Protocol
             RaiseCollectionChangedEvent(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, cProt));
         }
 
-        public void Remove(ProtocolBase cProt)
+        public void Remove(IProtocolSession cProt)
         {
             try
             {

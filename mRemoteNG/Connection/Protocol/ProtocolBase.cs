@@ -11,7 +11,7 @@ using System.Runtime.Versioning;
 namespace mRemoteNG.Connection.Protocol
 {
     [SupportedOSPlatform("windows")]
-    public abstract class ProtocolBase : IDisposable
+    public abstract class ProtocolBase : IDisposable, IProtocolSession
     {
         #region Private Variables
 

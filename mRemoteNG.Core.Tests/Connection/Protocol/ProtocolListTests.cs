@@ -1,9 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Specialized;
 using mRemoteNG.Connection.Protocol;
-using mRemoteNG.Connection.Protocol.SSH;
-using mRemoteNG.Connection.Protocol.Telnet;
-using mRemoteNG.Connection.Protocol.VNC;
+using NSubstitute;
 using NUnit.Framework;
 
 
@@ -12,18 +10,18 @@ namespace mRemoteNGTests.Connection.Protocol;
 public class ProtocolListTests
 {
     private ProtocolList _protocolList;
-    private ProtocolBase _protocol1;
-    private ProtocolBase _protocol2;
-    private ProtocolBase _protocol3;
+    private IProtocolSession _protocol1;
+    private IProtocolSession _protocol2;
+    private IProtocolSession _protocol3;
 
 
     [SetUp]
     public void Setup()
     {
         _protocolList = new ProtocolList();
-        _protocol1 = new ProtocolTelnet();
-        _protocol2 = new ProtocolSSH2();
-        _protocol3 = new ProtocolVNC();
+        _protocol1 = Substitute.For<IProtocolSession>();
+        _protocol2 = Substitute.For<IProtocolSession>();
+        _protocol3 = Substitute.For<IProtocolSession>();
     }
 
     [TearDown]
