@@ -23,5 +23,11 @@
     <Compile Include="..\mRemoteNGTests\TestHelpers\ConnectionInheritanceAllPropertiesEqualityComparer.cs" Link="TestHelpers\ConnectionInheritanceAllPropertiesEqualityComparer.cs" />
     <Compile Include="..\mRemoteNGTests\TestHelpers\Randomizer.cs" Link="TestHelpers\Randomizer.cs" />
     <Compile Include="..\mRemoteNGTests\TestHelpers\SerializableConnectionInfoAllPropertiesOfType.cs" Link="TestHelpers\SerializableConnectionInfoAllPropertiesOfType.cs" />
+    <Compile Include="..\mRemoteNGTests\TestHelpers\FileTestHelpers.cs" Link="TestHelpers\FileTestHelpers.cs" />
+    <Compile Include="..\mRemoteNGTests\TestHelpers\ConnectionTreeModelBuilder.cs" Link="TestHelpers\ConnectionTreeModelBuilder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The confCons.xml fixtures of mRemoteNGTests, embedded as plain files (see TestHelpers/ConfConsFixtures.cs). -->
+    <EmbeddedResource Include="..\mRemoteNGTests\Resources\confCons_*.xml" Link="Resources\%(Filename)%(Extension)" LogicalName="ConfConsFixtures.%(Filename)%(Extension)" />
   </ItemGroup>
 </Project>

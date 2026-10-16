@@ -25,7 +25,7 @@ namespace mRemoteNGTests.IntegrationTests
         {
             _originalModel = SetupConnectionTreeModel();
             var cryptoProvider = _cryptoFactory.Build();
-            var nodeSerializer = new XmlConnectionNodeSerializer28(
+            var nodeSerializer = new XmlConnectionNodeSerializer29(
                 cryptoProvider, 
                 _originalModel.RootNodes.OfType<RootNodeInfo>().First().PasswordString.ConvertToSecureString(),
                 new SaveFilter());
@@ -75,7 +75,7 @@ namespace mRemoteNGTests.IntegrationTests
         {
             var cryptoProvider = _cryptoFactory.Build();
             cryptoProvider.KeyDerivationIterations = 5000;
-            var nodeSerializer = new XmlConnectionNodeSerializer28(
+            var nodeSerializer = new XmlConnectionNodeSerializer29(
                 cryptoProvider, 
                 _originalModel.RootNodes.OfType<RootNodeInfo>().First().PasswordString.ConvertToSecureString(),
                 new SaveFilter());

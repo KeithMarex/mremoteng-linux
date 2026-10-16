@@ -69,7 +69,7 @@ public class ValidateXmlSchemas
     public string GetTargetPath(string fileName, [CallerFilePath] string sourceFilePath = "")
     {
         var path = Path.GetDirectoryName(sourceFilePath);
-        var filePath = $@"{path}\..\..\..\..\..\mRemoteNG\Schemas\{fileName}";
+        var filePath = Path.Combine(path, "..", "..", "..", "..", "..", "mRemoteNG", "Schemas", fileName);
 
         return filePath;
     }
