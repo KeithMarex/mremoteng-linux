@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security;
 using mRemoteNG.Config.Serializers;
+using mRemoteNG.Tools;
 
 namespace mRemoteNG.Config.Import
 {
@@ -18,13 +21,15 @@ namespace mRemoteNG.Config.Import
             [".crt"] = "SecureCRT sessions"
         };
 
+        /// <param name="fileName">The file to import.</param>
+        /// <param name="passwordRequestor">Asks for the password when the file is a protected mRemoteNG connection file.</param>
         // TODO: Use the file contents to determine the file type instead of trusting the extension
-        public static IConnectionImporter<string> ForFile(string fileName)
+        public static IConnectionImporter<string> ForFile(string fileName, Func<Optional<SecureString>>? passwordRequestor = null)
         {
             string extension = Path.GetExtension(fileName) ?? "";
             return extension.ToLowerInvariant() switch
             {
-                ".xml" => new MRemoteNGXmlImporter(),
+                ".xml" => new MRemoteNGXmlImporter(passwordRequestor),
                 ".csv" => new MRemoteNGCsvImporter(),
                 ".rdp" => new RemoteDesktopConnectionImporter(),
                 ".rdg" => new RemoteDesktopConnectionManagerImporter(),

@@ -1,16 +1,22 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
+using System.Security;
 using mRemoteNG.App;
 using mRemoteNG.Config.DataProviders;
 using mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
 using mRemoteNG.Container;
 using mRemoteNG.Messages;
+using mRemoteNG.Tools;
 
 
 namespace mRemoteNG.Config.Import
 {
     // ReSharper disable once InconsistentNaming
-    public class MRemoteNGXmlImporter : IConnectionImporter<string>
+    /// <param name="authenticationRequestor">
+    /// Asks for the password of a protected file. Without one, a protected file fails to import.
+    /// </param>
+    public class MRemoteNGXmlImporter(Func<Optional<SecureString>>? authenticationRequestor = null) : IConnectionImporter<string>
     {
         public void Import(string fileName, ContainerInfo destinationContainer)
         {
@@ -26,8 +32,9 @@ namespace mRemoteNG.Config.Import
 
             FileDataProvider dataProvider = new(fileName);
             string xmlString = dataProvider.Load();
-            XmlConnectionsDeserializer xmlConnectionsDeserializer = new();
-            Tree.ConnectionTreeModel connectionTreeModel = xmlConnectionsDeserializer.Deserialize(xmlString, true);
+            XmlConnectionsDeserializer xmlConnectionsDeserializer = new(authenticationRequestor ?? (() => Optional<SecureString>.Empty));
+            Tree.ConnectionTreeModel connectionTreeModel = xmlConnectionsDeserializer.Deserialize(xmlString, true)
+                ?? throw new InvalidDataException($"{fileName} could not be imported: it is empty or the password was not given.");
 
             ContainerInfo rootImportContainer = new() { Name = Path.GetFileNameWithoutExtension(fileName)};
             rootImportContainer.AddChildRange(connectionTreeModel.RootNodes.First().Children.ToArray());
