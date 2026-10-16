@@ -21,6 +21,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mRemoteNG.Core", "mRemoteNG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mRemoteNG.Core.Tests", "mRemoteNG.Core.Tests\mRemoteNG.Core.Tests.csproj", "{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mRemoteNG.Avalonia", "mRemoteNG.Avalonia\mRemoteNG.Avalonia.csproj", "{FB454D77-9681-47FA-AE51-B7C7796340D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mRemoteNG.Avalonia.Tests", "mRemoteNG.Avalonia.Tests\mRemoteNG.Avalonia.Tests.csproj", "{928ADAE1-AA47-4A00-A289-F2FC46226B83}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|arm64 = Debug|arm64
@@ -133,6 +137,30 @@ Global
 		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Release|arm64.Build.0 = Release|Any CPU
 		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Release|x64.ActiveCfg = Release|Any CPU
 		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Release|x64.Build.0 = Release|Any CPU
+		{FB454D77-9681-47FA-AE51-B7C7796340D9}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{FB454D77-9681-47FA-AE51-B7C7796340D9}.Debug|arm64.Build.0 = Debug|Any CPU
+		{FB454D77-9681-47FA-AE51-B7C7796340D9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FB454D77-9681-47FA-AE51-B7C7796340D9}.Debug|x64.Build.0 = Debug|Any CPU
+		{FB454D77-9681-47FA-AE51-B7C7796340D9}.Release Self-Contained|arm64.ActiveCfg = Release Self-Contained|Any CPU
+		{FB454D77-9681-47FA-AE51-B7C7796340D9}.Release Self-Contained|arm64.Build.0 = Release Self-Contained|Any CPU
+		{FB454D77-9681-47FA-AE51-B7C7796340D9}.Release Self-Contained|x64.ActiveCfg = Release Self-Contained|Any CPU
+		{FB454D77-9681-47FA-AE51-B7C7796340D9}.Release Self-Contained|x64.Build.0 = Release Self-Contained|Any CPU
+		{FB454D77-9681-47FA-AE51-B7C7796340D9}.Release|arm64.ActiveCfg = Release|Any CPU
+		{FB454D77-9681-47FA-AE51-B7C7796340D9}.Release|arm64.Build.0 = Release|Any CPU
+		{FB454D77-9681-47FA-AE51-B7C7796340D9}.Release|x64.ActiveCfg = Release|Any CPU
+		{FB454D77-9681-47FA-AE51-B7C7796340D9}.Release|x64.Build.0 = Release|Any CPU
+		{928ADAE1-AA47-4A00-A289-F2FC46226B83}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{928ADAE1-AA47-4A00-A289-F2FC46226B83}.Debug|arm64.Build.0 = Debug|Any CPU
+		{928ADAE1-AA47-4A00-A289-F2FC46226B83}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{928ADAE1-AA47-4A00-A289-F2FC46226B83}.Debug|x64.Build.0 = Debug|Any CPU
+		{928ADAE1-AA47-4A00-A289-F2FC46226B83}.Release Self-Contained|arm64.ActiveCfg = Release Self-Contained|Any CPU
+		{928ADAE1-AA47-4A00-A289-F2FC46226B83}.Release Self-Contained|arm64.Build.0 = Release Self-Contained|Any CPU
+		{928ADAE1-AA47-4A00-A289-F2FC46226B83}.Release Self-Contained|x64.ActiveCfg = Release Self-Contained|Any CPU
+		{928ADAE1-AA47-4A00-A289-F2FC46226B83}.Release Self-Contained|x64.Build.0 = Release Self-Contained|Any CPU
+		{928ADAE1-AA47-4A00-A289-F2FC46226B83}.Release|arm64.ActiveCfg = Release|Any CPU
+		{928ADAE1-AA47-4A00-A289-F2FC46226B83}.Release|arm64.Build.0 = Release|Any CPU
+		{928ADAE1-AA47-4A00-A289-F2FC46226B83}.Release|x64.ActiveCfg = Release|Any CPU
+		{928ADAE1-AA47-4A00-A289-F2FC46226B83}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

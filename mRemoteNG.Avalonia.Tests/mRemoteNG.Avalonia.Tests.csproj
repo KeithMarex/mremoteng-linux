@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>mRemoteNG.Avalonia.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <Configurations>Debug;Release;Release Self-Contained;Deploy to github</Configurations>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\mRemoteNG.Avalonia\mRemoteNG.Avalonia.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- A real connection file written by Windows mRemoteNG (from mRemoteNGTests). -->
+    <None Include="..\mRemoteNGTests\Resources\confCons_v2_6.xml" Link="Fixtures\confCons_v2_6.xml" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
