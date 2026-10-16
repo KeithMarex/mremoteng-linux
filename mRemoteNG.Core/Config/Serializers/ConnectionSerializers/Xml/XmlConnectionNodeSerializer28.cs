@@ -150,7 +150,8 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             element.Add(new XAttribute("ExternalCredentialProvider", connectionInfo.ExternalCredentialProvider));
             element.Add(new XAttribute("ExternalAddressProvider", connectionInfo.ExternalAddressProvider));
 
-            string serializedPluginData = PluginConnectionDataSerializer.Serialize(connectionInfo.PluginProperties);
+            // Not for folders: every released version reads a folder's PluginData element as one more connection.
+            string serializedPluginData = nodeAsContainer == null ? PluginConnectionDataSerializer.Serialize(connectionInfo.PluginProperties) : string.Empty;
             if (!string.IsNullOrEmpty(serializedPluginData))
                 element.Add(new XElement("PluginData", serializedPluginData));
 
