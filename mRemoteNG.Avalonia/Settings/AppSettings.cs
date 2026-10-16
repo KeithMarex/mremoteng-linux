@@ -20,6 +20,12 @@ public sealed class AppSettings
 
     public AppTheme Theme { get; set; } = AppTheme.System;
 
+    /// <summary>Whether the Notifications panel shows (View menu); hidden until the user shows it.</summary>
+    public bool ShowNotifications { get; set; }
+
+    /// <summary>Whether the selected property's description shows under the Config panel (View menu); hidden until the user shows it.</summary>
+    public bool ShowPropertyDescription { get; set; }
+
     // Same defaults as the WinForms app's security options.
     public BlockCipherEngines EncryptionEngine { get; set; } = BlockCipherEngines.AES;
     public BlockCipherModes EncryptionBlockCipherMode { get; set; } = BlockCipherModes.GCM;

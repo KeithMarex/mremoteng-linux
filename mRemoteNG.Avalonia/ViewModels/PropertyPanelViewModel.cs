@@ -62,6 +62,10 @@ public sealed partial class PropertyPanelViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(DescriptionTitle), nameof(DescriptionText))]
     private PropertyItemViewModel? _selectedItem;
 
+    /// <summary>Whether the description box shows under the grid (View menu).</summary>
+    [ObservableProperty]
+    private bool _isDescriptionVisible;
+
     public ObservableCollection<PropertyGroupViewModel> Groups { get; } = [];
 
     public bool IsCategorized => !IsAlphabetical;

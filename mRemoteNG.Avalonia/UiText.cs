@@ -30,6 +30,7 @@ public static class UiText
     public static string Search => Language.SearchPrompt;
     public static string MoveUp => Language.MoveUp;
     public static string MoveDown => Language.MoveDown;
+    public static string View => Menu(Language._View);
     public static string Tools => Menu(Language._Tools);
     public static string ImportFromFile => Menu(Language.ImportFromFile);
     public static string ImportFileTitle => Language.ImportFromFile.Replace("&", string.Empty).TrimEnd('.');
@@ -83,6 +84,7 @@ public static class UiText
     public const string ClearFinished = "Clear finished";
     public const string Upload = "Upload";
     public const string Move = "Move";
+    public const string PropertyDescription = "Property Description";
     public const string Refresh = "Refresh";
     public const string Up = "Up";
     public const string NewFolderPrompt = "Name of the new folder:";

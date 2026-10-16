@@ -78,6 +78,12 @@
                     <MenuItem.Icon><Image Source="avares://mRemoteNG.Avalonia/Assets/Images/GlyphDown_16x.png" /></MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
+            <MenuItem Header="{x:Static app:UiText.View}">
+                <MenuItem Header="{x:Static app:UiText.Notifications}" ToggleType="CheckBox"
+                          IsChecked="{Binding IsNotificationsVisible, Mode=TwoWay}" />
+                <MenuItem Header="{x:Static app:UiText.PropertyDescription}" ToggleType="CheckBox"
+                          IsChecked="{Binding IsPropertyDescriptionVisible, Mode=TwoWay}" />
+            </MenuItem>
             <MenuItem Header="{x:Static app:UiText.Tools}">
                 <MenuItem Header="{x:Static app:UiText.Options}" Command="{Binding OpenOptionsCommand}">
                     <MenuItem.Icon><Image Source="avares://mRemoteNG.Avalonia/Assets/Images/Settings_16x.png" /></MenuItem.Icon>
@@ -85,7 +91,8 @@
             </MenuItem>
         </Menu>
 
-        <Grid RowDefinitions="*,3,150" Margin="3,0,3,3">
+        <!-- The last row is the Notifications panel; the code-behind folds it away while the panel is hidden. -->
+        <Grid x:Name="LayoutGrid" RowDefinitions="*,3,150" Margin="3,0,3,3">
             <Grid ColumnDefinitions="340,3,*">
                 <Grid RowDefinitions="*,3,*">
                     <!-- Connections -->
@@ -250,10 +257,10 @@
                 </DockPanel>
             </Grid>
 
-            <GridSplitter Grid.Row="1" ResizeDirection="Rows" Background="Transparent" />
+            <GridSplitter Grid.Row="1" ResizeDirection="Rows" Background="Transparent" IsVisible="{Binding IsNotificationsVisible}" />
 
             <!-- Notifications -->
-            <Border Grid.Row="2" Classes="toolPanel">
+            <Border Grid.Row="2" Classes="toolPanel" IsVisible="{Binding IsNotificationsVisible}">
                 <DockPanel>
                     <Border DockPanel.Dock="Top" Classes="caption">
                         <DockPanel>

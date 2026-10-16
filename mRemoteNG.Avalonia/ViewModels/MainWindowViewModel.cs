@@ -48,6 +48,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
         Messages = new MessagesViewModel(CoreRuntime.MessageCollector, dispatch);
         Sessions = CreateSessions(launcher ?? new SessionLauncher(new SessionPrograms(), paths.RuntimeDirectory));
         PropertyPanel.PropertyEdited += OnPropertyEdited;
+        PropertyPanel.IsDescriptionVisible = settings.ShowPropertyDescription;
     }
 
     public ObservableCollection<ConnectionNodeViewModel> RootNodes { get; } = [];

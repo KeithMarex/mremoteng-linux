@@ -180,6 +180,21 @@ public class MainWindowViewModelTests
         Assert.That(_viewModel.Messages.Selected?.Text, Is.EqualTo("second"));
     }
 
+    [Test]
+    public async Task TheViewMenusPanelsAreHiddenAtFirstAndTheChoiceIsRemembered()
+    {
+        await _viewModel.InitializeAsync();
+        Assert.That((_viewModel.IsNotificationsVisible, _viewModel.IsPropertyDescriptionVisible, _viewModel.PropertyPanel.IsDescriptionVisible),
+                    Is.EqualTo((false, false, false)));
+
+        _viewModel.IsNotificationsVisible = true;
+        _viewModel.IsPropertyDescriptionVisible = true;
+
+        AppSettingsStore store = new(_paths.SettingsFile);
+        MainWindowViewModel reopened = new(store.Load(), store, _paths, _dialogs, action => action());
+        Assert.That((reopened.IsNotificationsVisible, reopened.PropertyPanel.IsDescriptionVisible), Is.EqualTo((true, true)));
+    }
+
     private PropertyItemViewModel RootPasswordItem()
     {
         _viewModel.SelectedNode = _viewModel.RootNodes.Single();

@@ -117,7 +117,7 @@
         </Border>
 
         <!-- The selected property's help, as under Windows' grid -->
-        <Border DockPanel.Dock="Bottom" Height="62" Margin="0,3,0,0" Padding="5,3"
+        <Border DockPanel.Dock="Bottom" Height="62" Margin="0,3,0,0" Padding="5,3" IsVisible="{Binding IsDescriptionVisible}"
                 Background="{DynamicResource MrTextBoxBackground}" BorderBrush="{DynamicResource MrPanelBorder}" BorderThickness="1">
             <StackPanel Spacing="2">
                 <TextBlock Text="{Binding DescriptionTitle}" FontWeight="Bold" TextTrimming="CharacterEllipsis" />
