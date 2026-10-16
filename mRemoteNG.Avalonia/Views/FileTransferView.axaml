@@ -1,0 +1,148 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:app="using:mRemoteNG.Avalonia"
+             xmlns:vm="using:mRemoteNG.Avalonia.ViewModels"
+             x:Class="mRemoteNG.Avalonia.Views.FileTransferView"
+             x:DataType="vm:FileTransferViewModel">
+    <UserControl.Resources>
+        <StreamGeometry x:Key="FolderIcon">M1,3 L6,3 L8,5 L15,5 L15,14 L1,14 Z</StreamGeometry>
+        <StreamGeometry x:Key="FileIcon">M3,1 L10,1 L13,4 L13,15 L3,15 Z</StreamGeometry>
+        <DataTemplate x:Key="EntryTemplate" x:DataType="vm:FileEntryViewModel">
+            <Grid ColumnDefinitions="20,*,70,120,90">
+                <Path Width="14" Height="14" Stretch="Uniform" Fill="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                      Data="{StaticResource FileIcon}" IsVisible="{Binding !IsDirectory}" />
+                <Path Width="14" Height="14" Stretch="Uniform" Fill="Goldenrod"
+                      Data="{StaticResource FolderIcon}" IsVisible="{Binding IsDirectory}" />
+                <TextBlock Grid.Column="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="2" Text="{Binding SizeText}" HorizontalAlignment="Right" Margin="0,0,8,0" Opacity="0.7" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="3" Text="{Binding ModifiedText}" Opacity="0.7" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="4" Text="{Binding Permissions}" FontFamily="monospace" Opacity="0.7" VerticalAlignment="Center" />
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <Style Selector="ListBox.files ListBoxItem">
+            <Setter Property="Padding" Value="6,2" />
+            <Setter Property="MinHeight" Value="0" />
+        </Style>
+        <Style Selector="TextBlock.paneTitle">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="4,4" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+    </UserControl.Styles>
+
+    <DockPanel>
+        <!-- Status -->
+        <DockPanel DockPanel.Dock="Bottom" Margin="8,2">
+            <Button DockPanel.Dock="Right" Content="{x:Static app:UiText.Reconnect}" Command="{Binding ReconnectCommand}"
+                    IsVisible="{Binding HasEnded}" Margin="8,2,0,2" />
+            <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                       Opacity="0.7" Classes.warning="{Binding IsUnencrypted}">
+                <TextBlock.Styles>
+                    <Style Selector="TextBlock.warning">
+                        <Setter Property="Foreground" Value="#C0392B" />
+                        <Setter Property="Opacity" Value="1" />
+                    </Style>
+                </TextBlock.Styles>
+            </TextBlock>
+        </DockPanel>
+
+        <!-- Transfers -->
+        <Border DockPanel.Dock="Bottom" Height="150" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
+                    <Button DockPanel.Dock="Right" Content="{x:Static app:UiText.ClearFinished}" Command="{Binding ClearFinishedCommand}" Margin="4" />
+                    <TextBlock Classes="paneTitle" Text="{x:Static app:UiText.Transfers}" VerticalAlignment="Center" />
+                </DockPanel>
+                <ListBox Classes="files" ItemsSource="{Binding Transfers}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:TransferItemViewModel">
+                            <Grid ColumnDefinitions="20,*,160,2*,Auto" ToolTip.Tip="{Binding Route}">
+                                <TextBlock Text="{Binding DirectionText}" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                <ProgressBar Grid.Column="2" Value="{Binding Percent}" Minimum="0" Maximum="100" Margin="8,0" VerticalAlignment="Center"
+                                             MinWidth="0" Width="144" />
+                                <TextBlock Grid.Column="3" Text="{Binding StateText}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                                           Opacity="0.8" />
+                                <Button Grid.Column="4" Content="{x:Static app:UiText.Cancel}" Command="{Binding CancelCommand}"
+                                        IsVisible="{Binding !IsFinished}" Padding="6,0" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <Grid ColumnDefinitions="*,Auto,*">
+            <!-- This computer -->
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Classes="paneTitle" Text="{x:Static app:UiText.ThisComputer}" />
+                <DockPanel DockPanel.Dock="Top" Margin="4,0,4,4">
+                    <Button DockPanel.Dock="Right" Content="⟳" ToolTip.Tip="{x:Static app:UiText.Refresh}" Command="{Binding Local.ReloadCommand}" />
+                    <Button DockPanel.Dock="Right" Content="↑" ToolTip.Tip="{x:Static app:UiText.Up}" Command="{Binding Local.UpCommand}" Margin="4,0" />
+                    <TextBox Text="{Binding Local.PathText}">
+                        <TextBox.KeyBindings>
+                            <KeyBinding Gesture="Enter" Command="{Binding Local.GoToPathCommand}" />
+                        </TextBox.KeyBindings>
+                    </TextBox>
+                </DockPanel>
+                <ListBox x:Name="LocalList" Classes="files" ItemsSource="{Binding Local.Entries}" SelectionMode="Multiple"
+                         SelectedItems="{Binding Local.SelectedEntries}" ItemTemplate="{StaticResource EntryTemplate}"
+                         DragDrop.AllowDrop="True">
+                    <ListBox.KeyBindings>
+                        <KeyBinding Gesture="Enter" Command="{Binding Local.OpenCommand}" CommandParameter="{Binding #LocalList.SelectedItem}" />
+                        <KeyBinding Gesture="Back" Command="{Binding Local.UpCommand}" />
+                    </ListBox.KeyBindings>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{x:Static app:UiText.Upload}" Command="{Binding UploadCommand}" />
+                            <Separator />
+                            <MenuItem Header="{x:Static app:UiText.Refresh}" Command="{Binding Local.ReloadCommand}" />
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
+            </DockPanel>
+
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="8" Margin="6,0">
+                <Button Content="→" ToolTip.Tip="{x:Static app:UiText.Upload}" Command="{Binding UploadCommand}" />
+                <Button Content="←" ToolTip.Tip="{x:Static app:UiText.Download}" Command="{Binding DownloadCommand}" />
+            </StackPanel>
+
+            <!-- The server -->
+            <DockPanel Grid.Column="2">
+                <TextBlock DockPanel.Dock="Top" Classes="paneTitle" Text="{Binding ServerDescription}" />
+                <DockPanel DockPanel.Dock="Top" Margin="4,0,4,4">
+                    <Button DockPanel.Dock="Right" Content="⟳" ToolTip.Tip="{x:Static app:UiText.Refresh}" Command="{Binding Remote.ReloadCommand}" />
+                    <Button DockPanel.Dock="Right" Content="↑" ToolTip.Tip="{x:Static app:UiText.Up}" Command="{Binding Remote.UpCommand}" Margin="4,0" />
+                    <TextBox Text="{Binding Remote.PathText}">
+                        <TextBox.KeyBindings>
+                            <KeyBinding Gesture="Enter" Command="{Binding Remote.GoToPathCommand}" />
+                        </TextBox.KeyBindings>
+                    </TextBox>
+                </DockPanel>
+                <ListBox x:Name="RemoteList" Classes="files" ItemsSource="{Binding Remote.Entries}" SelectionMode="Multiple"
+                         SelectedItems="{Binding Remote.SelectedEntries}" ItemTemplate="{StaticResource EntryTemplate}"
+                         DragDrop.AllowDrop="True">
+                    <ListBox.KeyBindings>
+                        <KeyBinding Gesture="Enter" Command="{Binding Remote.OpenCommand}" CommandParameter="{Binding #RemoteList.SelectedItem}" />
+                        <KeyBinding Gesture="Back" Command="{Binding Remote.UpCommand}" />
+                        <KeyBinding Gesture="Delete" Command="{Binding DeleteCommand}" />
+                        <KeyBinding Gesture="F2" Command="{Binding RenameCommand}" />
+                    </ListBox.KeyBindings>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{x:Static app:UiText.Download}" Command="{Binding DownloadCommand}" />
+                            <Separator />
+                            <MenuItem Header="{x:Static app:UiText.NewFolder}" Command="{Binding NewFolderCommand}" />
+                            <MenuItem Header="{x:Static app:UiText.Rename}" Command="{Binding RenameCommand}" InputGesture="F2" />
+                            <MenuItem Header="{x:Static app:UiText.Delete}" Command="{Binding DeleteCommand}" InputGesture="Delete" />
+                            <Separator />
+                            <MenuItem Header="{x:Static app:UiText.Refresh}" Command="{Binding Remote.ReloadCommand}" />
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+</UserControl>

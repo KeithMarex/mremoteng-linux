@@ -1,4 +1,5 @@
 using System.Security;
+using mRemoteNG.FileTransfer;
 
 namespace mRemoteNG.Avalonia.Services;
 
@@ -18,7 +19,16 @@ public interface IDialogService
     /// <summary>Asks for a new password (entered twice); null when cancelled.</summary>
     Task<SecureString?> AskNewPasswordAsync(string fileName);
 
+    /// <summary>Asks for a secret, such as a server password or a key passphrase; null when cancelled. Callable from any thread.</summary>
+    Task<SecureString?> AskSecretAsync(string prompt);
+
     Task<bool> ConfirmAsync(string title, string message);
+
+    /// <summary>Asks whether to trust a server's host key or certificate. Callable from any thread.</summary>
+    Task<TrustDecision> AskTrustAsync(string title, string message);
+
+    /// <summary>Asks for one line of text, such as a new name; null when cancelled.</summary>
+    Task<string?> AskTextAsync(string title, string prompt, string initialText);
 
     /// <summary>Shows the options; true when the user confirmed them.</summary>
     Task<bool> ShowOptionsAsync(ViewModels.OptionsViewModel options);

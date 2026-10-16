@@ -96,6 +96,7 @@
                     <TreeView.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{x:Static app:UiText.Connect}" Command="{Binding ConnectCommand}" InputGesture="Enter" />
+                            <MenuItem Header="{x:Static app:UiText.OpenFileTransfer}" Command="{Binding OpenFileTransferCommand}" />
                             <Separator />
                             <MenuItem Header="{x:Static app:UiText.NewConnection}" Command="{Binding AddConnectionCommand}" />
                             <MenuItem Header="{x:Static app:UiText.NewFolder}" Command="{Binding AddFolderCommand}" />
@@ -160,7 +161,7 @@
                 <TabStrip DockPanel.Dock="Top" ItemsSource="{Binding Sessions.Items}" SelectedItem="{Binding Sessions.Selected}"
                           IsVisible="{Binding Sessions.HasSessions}">
                     <TabStrip.ItemTemplate>
-                        <DataTemplate x:DataType="vm:SessionViewModel">
+                        <DataTemplate x:DataType="vm:SessionTabViewModel">
                             <StackPanel Orientation="Horizontal" Spacing="6">
                                 <Border Width="4" CornerRadius="2" Background="{Binding TabBrush}"
                                         IsVisible="{Binding TabBrush, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -182,11 +183,14 @@
                                 <Panel />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="vm:SessionViewModel">
+                        <ItemsControl.DataTemplates>
+                            <DataTemplate DataType="vm:SessionViewModel">
                                 <views:SessionView IsVisible="{Binding IsSelected}" />
                             </DataTemplate>
-                        </ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="vm:FileTransferViewModel">
+                                <views:FileTransferView IsVisible="{Binding IsSelected}" />
+                            </DataTemplate>
+                        </ItemsControl.DataTemplates>
                     </ItemsControl>
                 </Panel>
             </DockPanel>

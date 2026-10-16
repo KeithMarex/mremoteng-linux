@@ -1,0 +1,15 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="using:mRemoteNG.Avalonia"
+        x:Class="mRemoteNG.Avalonia.Views.TrustDialog"
+        Width="560" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <StackPanel Margin="16" Spacing="14">
+        <SelectableTextBlock x:Name="MessageText" TextWrapping="Wrap" FontFamily="{DynamicResource ContentControlThemeFontFamily}" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button Content="{x:Static app:UiText.TrustAndRemember}" Click="OnRememberClick" />
+            <Button Content="{x:Static app:UiText.TrustOnce}" Click="OnOnceClick" />
+            <Button Content="{x:Static app:UiText.Cancel}" IsCancel="True" IsDefault="True" Click="OnCancelClick" MinWidth="80" />
+        </StackPanel>
+    </StackPanel>
+</Window>

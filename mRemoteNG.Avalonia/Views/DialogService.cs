@@ -4,6 +4,7 @@ using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using mRemoteNG.Avalonia.Services;
 using mRemoteNG.Config.Import;
+using mRemoteNG.FileTransfer;
 using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.Avalonia.Views;
@@ -61,6 +62,15 @@ public sealed class DialogService(Window owner) : IDialogService
 
     public Task<SecureString?> AskNewPasswordAsync(string fileName) =>
         OnUiThread(() => new PasswordDialog(UiText.NewPasswordPrompt(fileName), confirm: true).ShowDialog<SecureString?>(owner));
+
+    public Task<SecureString?> AskSecretAsync(string prompt) =>
+        OnUiThread(() => new PasswordDialog(prompt, confirm: false).ShowDialog<SecureString?>(owner));
+
+    public Task<TrustDecision> AskTrustAsync(string title, string message) =>
+        OnUiThread(() => new TrustDialog(title, message).ShowDialog<TrustDecision>(owner));
+
+    public Task<string?> AskTextAsync(string title, string prompt, string initialText) =>
+        OnUiThread(() => new TextInputDialog(title, prompt, initialText).ShowDialog<string?>(owner));
 
     public Task<bool> ConfirmAsync(string title, string message) =>
         OnUiThread(() => new MessageDialog(title, message, isQuestion: true).ShowDialog<bool>(owner));

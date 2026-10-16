@@ -23,7 +23,7 @@ public class SessionsViewModelTests
         _directory = new TempDirectory();
         SessionPrograms programs = new() { App = "/usr/lib/mremoteng/mRemoteNG.Avalonia", Find = program => "/usr/bin/" + program };
         _launcher = new SessionLauncher(programs, _directory.File("run"));
-        _sessions = new SessionsViewModel(_launcher);
+        _sessions = new SessionsViewModel(_launcher, _ => throw new AssertionException("no file transfer expected"));
     }
 
     [TearDown]
@@ -226,7 +226,7 @@ public class MainWindowSessionTests
         connection.Hostname = "db1";
         await _viewModel.ConnectCommand.ExecuteAsync(null);
         FakeTerminalHost terminal = new();
-        await _viewModel.Sessions.Items.Single().AttachAsync(terminal);
+        await ((SessionViewModel)_viewModel.Sessions.Items.Single()).AttachAsync(terminal);
 
         _dialogs.ConfirmAnswer = false;
         Assert.That(await _viewModel.CanCloseAsync(), Is.False);

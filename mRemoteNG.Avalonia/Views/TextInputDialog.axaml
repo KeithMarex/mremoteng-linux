@@ -1,0 +1,15 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="using:mRemoteNG.Avalonia"
+        x:Class="mRemoteNG.Avalonia.Views.TextInputDialog"
+        Width="400" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <StackPanel Margin="16" Spacing="10">
+        <TextBlock x:Name="PromptText" TextWrapping="Wrap" />
+        <TextBox x:Name="InputBox" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button Content="{x:Static app:UiText.Ok}" IsDefault="True" Click="OnOkClick" MinWidth="80" />
+            <Button Content="{x:Static app:UiText.Cancel}" IsCancel="True" Click="OnCancelClick" MinWidth="80" />
+        </StackPanel>
+    </StackPanel>
+</Window>
