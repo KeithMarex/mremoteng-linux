@@ -3,6 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using mRemoteNG.Avalonia.Services;
+using mRemoteNG.Config.Import;
+using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.Avalonia.Views;
 
@@ -33,6 +35,25 @@ public sealed class DialogService(Window owner) : IDialogService
             ShowOverwritePrompt = true
         });
         return file?.TryGetLocalPath();
+    });
+
+    public Task<string?> PickFileToImportAsync() => OnUiThread(async () =>
+    {
+        FilePickerFileType importable = new(Language.FilterAllImportable)
+        {
+            Patterns = FileImporters.SupportedExtensions.Keys.Select(extension => "*" + extension).ToArray()
+        };
+        List<FilePickerFileType> filters = [importable];
+        filters.AddRange(FileImporters.SupportedExtensions.Select(format =>
+            new FilePickerFileType($"{format.Value} (*{format.Key})") { Patterns = ["*" + format.Key] }));
+
+        IReadOnlyList<IStorageFile> files = await owner.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = UiText.ImportFileTitle,
+            AllowMultiple = false,
+            FileTypeFilter = filters
+        });
+        return files.Count > 0 ? files[0].TryGetLocalPath() : null;
     });
 
     public Task<SecureString?> AskPasswordAsync(string fileName) =>

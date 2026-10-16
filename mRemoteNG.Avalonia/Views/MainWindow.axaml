@@ -21,6 +21,8 @@
                 <MenuItem Header="{x:Static app:UiText.SaveConnectionFile}" Command="{Binding SaveCommand}" InputGesture="Ctrl+S" HotKey="Ctrl+S" />
                 <MenuItem Header="{x:Static app:UiText.SaveConnectionFileAs}" Command="{Binding SaveAsCommand}" InputGesture="Ctrl+Shift+S" HotKey="Ctrl+Shift+S" />
                 <Separator />
+                <MenuItem Header="{x:Static app:UiText.ImportFromFile}" Command="{Binding ImportCommand}" InputGesture="Ctrl+I" HotKey="Ctrl+I" />
+                <Separator />
                 <MenuItem Header="{x:Static app:UiText.Exit}" Click="OnExitClick" InputGesture="Ctrl+Q" HotKey="Ctrl+Q" />
             </MenuItem>
             <MenuItem Header="{x:Static app:UiText.Tools}">

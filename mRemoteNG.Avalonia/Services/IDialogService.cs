@@ -9,6 +9,9 @@ public interface IDialogService
 
     Task<string?> PickConnectionFileToSaveAsync(string suggestedFileName);
 
+    /// <summary>Asks for a file to import (any format Core's FileImporters understands).</summary>
+    Task<string?> PickFileToImportAsync();
+
     /// <summary>Asks for the password of a protected connection file; null when cancelled. Callable from any thread.</summary>
     Task<SecureString?> AskPasswordAsync(string fileName);
 

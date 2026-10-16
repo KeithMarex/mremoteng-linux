@@ -30,6 +30,8 @@ public static class UiText
     public static string MoveUp => Language.MoveUp;
     public static string MoveDown => Language.MoveDown;
     public static string Tools => Menu(Language._Tools);
+    public static string ImportFromFile => Menu(Language.ImportFromFile);
+    public static string ImportFileTitle => Language.ImportFromFile.Replace("&", string.Empty).TrimEnd('.');
     public static string Options => Language.Options;
     public static string Theme => Language.Theme;
     public static string Appearance => Language.Appearance;
@@ -62,4 +64,5 @@ public static class UiText
     public static string ConfirmDelete(string name) => $"Delete \"{name}\"?";
     public static string CouldNotOpen(string path) => $"Could not open {path}";
     public static string CouldNotSave(string path) => $"Could not save {path}";
+    public static string CouldNotImport(string path) => $"Could not import {path}";
 }

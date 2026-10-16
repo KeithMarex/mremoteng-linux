@@ -8,6 +8,7 @@ using mRemoteNG.App;
 using mRemoteNG.Avalonia.Platform;
 using mRemoteNG.Avalonia.Services;
 using mRemoteNG.Avalonia.Settings;
+using mRemoteNG.Config.Import;
 using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Messages;
@@ -187,6 +188,48 @@ public sealed partial class MainWindowViewModel : ObservableObject
         SaveSettings();
     }
 
+    /// <summary>Imports a file (mRemoteNG XML/CSV, .rdp, RDCMan, PuTTY CM, SecureCRT) into the selected folder.</summary>
+    [RelayCommand(CanExecute = nameof(HasFile))]
+    private async Task ImportAsync()
+    {
+        string? path = await _dialogs.PickFileToImportAsync();
+        if (path is null)
+            return;
+
+        ConnectionNodeViewModel target = (SelectedNode ?? RootNodes.First()).TargetFolder;
+        ContainerInfo folder = (ContainerInfo)target.Connection;
+        ContainerInfo imported = new();
+        bool passwordCancelled = false;
+        try
+        {
+            if (!File.Exists(path))
+                throw new FileNotFoundException("The file to import does not exist.", path);
+
+            // Importing a protected file asks for its password synchronously, so it runs off the UI thread;
+            // the result is moved into the tree here, on the UI thread.
+            await Task.Run(() => FileImporters.ForFile(path, () =>
+            {
+                Optional<SecureString> password = AskPassword(Path.GetFileName(path));
+                passwordCancelled = !password.Any();
+                return password;
+            }).Import(path, imported));
+        }
+        catch (Exception ex)
+        {
+            if (!passwordCancelled)
+                await ReportErrorAsync(UiText.CouldNotImport(path), ex);
+            return;
+        }
+
+        ConnectionInfo[] nodes = imported.Children.ToArray();
+        foreach (ConnectionInfo node in nodes)
+            folder.AddChild(node);
+        target.IsExpanded = true;
+        SearchText = string.Empty;
+        if (nodes.Length > 0)
+            SelectedNode = FindNode(nodes[^1]);
+    }
+
     [RelayCommand(CanExecute = nameof(HasFile))]
     private void AddConnection() => AddItem(new ConnectionInfo());
 
@@ -300,6 +343,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(Title));
         SaveCommand.NotifyCanExecuteChanged();
         SaveAsCommand.NotifyCanExecuteChanged();
+        ImportCommand.NotifyCanExecuteChanged();
         AddConnectionCommand.NotifyCanExecuteChanged();
         AddFolderCommand.NotifyCanExecuteChanged();
     }
