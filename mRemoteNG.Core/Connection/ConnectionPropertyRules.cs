@@ -38,15 +38,16 @@ namespace mRemoteNG.Connection
         }
 
         /// <summary>
-        /// Properties of <paramref name="connection"/> to hide while editing it: the inherited ones, and the
-        /// ones its current settings make irrelevant.
+        /// Properties of <paramref name="connection"/> to hide while editing it: the ones its current settings
+        /// make irrelevant and, unless <paramref name="hideInherited"/> is false, the inherited ones.
         /// </summary>
-        public static List<string> HiddenConnectionProperties(ConnectionInfo connection)
+        public static List<string> HiddenConnectionProperties(ConnectionInfo connection, bool hideInherited = true)
         {
             List<string> strHide = new();
 
             // hide any inherited properties
-            strHide.AddRange(connection.Inheritance.GetEnabledInheritanceProperties());
+            if (hideInherited)
+                strHide.AddRange(connection.Inheritance.GetEnabledInheritanceProperties());
 
             // hide external provider fields
             strHide.AddRange(ExternalAddressProviderExclusions());

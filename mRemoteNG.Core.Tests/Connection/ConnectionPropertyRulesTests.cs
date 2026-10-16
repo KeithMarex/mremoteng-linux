@@ -54,6 +54,16 @@ namespace mRemoteNG.Core.Tests.Connection
         }
 
         [Test]
+        public void InheritedPropertiesCanStayVisible()
+        {
+            ConnectionInfo connection = new() { Protocol = ProtocolType.SSH2 };
+            connection.Inheritance.Username = true;
+
+            Assert.That(ConnectionPropertyRules.HiddenConnectionProperties(connection, hideInherited: false),
+                        Does.Not.Contain(nameof(ConnectionInfo.Username)));
+        }
+
+        [Test]
         public void GatewaySettingsAreHiddenWhenTheGatewayIsNeverUsed()
         {
             ConnectionInfo connection = new() { Protocol = ProtocolType.RDP, RDGatewayUsageMethod = RDGatewayUsageMethod.Never };
