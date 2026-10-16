@@ -21,7 +21,7 @@ namespace mRemoteNG.Config.DataProviders
                 PathValidator.ValidatePathOrThrow(fileName, nameof(fileName));
 
                 string backupFileName =
-                    string.Format(Properties.OptionsBackupPage.Default.BackupFileNameFormat, fileName, DateTime.Now);
+                    string.Format(CoreRuntime.Settings.BackupFileNameFormat, fileName, DateTime.Now);
                 
                 PathValidator.ValidatePathOrThrow(backupFileName, nameof(backupFileName));
                 
@@ -47,7 +47,7 @@ namespace mRemoteNG.Config.DataProviders
 
         private bool FeatureIsTurnedOff()
         {
-            return Properties.OptionsBackupPage.Default.BackupFileKeepCount == 0;
+            return CoreRuntime.Settings.BackupFileKeepCount == 0;
         }
     }
 }

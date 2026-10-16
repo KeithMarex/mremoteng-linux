@@ -3,10 +3,13 @@ namespace mRemoteNG.Config.Settings
     /// <summary>
     /// The application settings that platform-neutral code reads. Each app supplies an
     /// implementation through <see cref="mRemoteNG.App.CoreRuntime.Settings"/>; the names match
-    /// the WinForms app's Properties.Settings so both apps share one meaning per setting.
+    /// the WinForms app's Properties.Settings (and its options-page settings classes) so both apps
+    /// share one meaning per setting.
     /// </summary>
     public interface ICoreSettings
     {
+        int BackupFileKeepCount { get; }
+        string BackupFileNameFormat { get; }
         bool ConDefaultAutomaticResize { get; }
         bool ConDefaultCacheBitmaps { get; }
         string ConDefaultColors { get; }

@@ -6,6 +6,8 @@ namespace mRemoteNG.Config.Settings
     [SupportedOSPlatform("windows")]
     public class SettingsBackedCoreSettings : ICoreSettings
     {
+        public int BackupFileKeepCount => Properties.OptionsBackupPage.Default.BackupFileKeepCount;
+        public string BackupFileNameFormat => Properties.OptionsBackupPage.Default.BackupFileNameFormat;
         public bool ConDefaultAutomaticResize => Properties.Settings.Default.ConDefaultAutomaticResize;
         public bool ConDefaultCacheBitmaps => Properties.Settings.Default.ConDefaultCacheBitmaps;
         public string ConDefaultColors => Properties.Settings.Default.ConDefaultColors;
