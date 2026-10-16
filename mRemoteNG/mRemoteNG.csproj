@@ -146,11 +146,6 @@
     <PackageReference Include="VncSharpCore" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Language\Language.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Language.resx</DependentUpon>
-    </Compile>
     <Compile Update="Properties\AssemblyInfo.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -530,6 +525,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExternalConnectors\ExternalConnectors.csproj" />
+    <ProjectReference Include="..\mRemoteNG.Core\mRemoteNG.Core.csproj" />
     <ProjectReference Include="..\mRemoteNG.PluginContracts\mRemoteNG.PluginContracts.csproj" />
     <ProjectReference Include="..\ObjectListView\ObjectListView.NetCore.csproj" />
   </ItemGroup>
@@ -541,13 +537,6 @@
   <ItemGroup>
     <XliffResource Include="MultilingualResources\mRemoteNG.ru-RU.xlf" />
     <XliffResource Include="MultilingualResources\mRemoteNG.ru.xlf" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Language\Language.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <CustomToolNamespace>mRemoteNG.Resources.Language</CustomToolNamespace>
-      <LastGenOutput>Language.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="154.0.34" />
@@ -606,83 +595,83 @@
     <CETCompat>false</CETCompat>
   </PropertyGroup>
   <ItemGroup>
-    <AppSatelliteResourceAssemblies Include="Language\Language.cs-CZ.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.cs-CZ.resx">
       <Culture>cs-CZ</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.de.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.de.resx">
       <Culture>de</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.el.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.el.resx">
       <Culture>el</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.es.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.es.resx">
       <Culture>es</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.es-AR.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.es-AR.resx">
       <Culture>es-AR</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.fi-FI.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.fi-FI.resx">
       <Culture>fi-FI</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.fr.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.fr.resx">
       <Culture>fr</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.hu.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.hu.resx">
       <Culture>hu</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.it.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.it.resx">
       <Culture>it</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.ja-JP.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.ja-JP.resx">
       <Culture>ja-JP</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.ko-KR.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.ko-KR.resx">
       <Culture>ko-KR</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.lt.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.lt.resx">
       <Culture>lt</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.nb-NO.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.nb-NO.resx">
       <Culture>nb-NO</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.nl.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.nl.resx">
       <Culture>nl</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.pl.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.pl.resx">
       <Culture>pl</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.pt.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.pt.resx">
       <Culture>pt</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.pt-BR.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.pt-BR.resx">
       <Culture>pt-BR</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.ru.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.ru.resx">
       <Culture>ru</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.sv-SE.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.sv-SE.resx">
       <Culture>sv-SE</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.ta.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.ta.resx">
       <Culture>ta</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.tr-TR.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.tr-TR.resx">
       <Culture>tr-TR</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.uk.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.uk.resx">
       <Culture>uk</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.zh-CN.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.zh-CN.resx">
       <Culture>zh-CN</Culture>
     </AppSatelliteResourceAssemblies>
-    <AppSatelliteResourceAssemblies Include="Language\Language.zh-TW.resx">
+    <AppSatelliteResourceAssemblies Include="..\mRemoteNG.Core\Language\Language.zh-TW.resx">
       <Culture>zh-TW</Culture>
     </AppSatelliteResourceAssemblies>
   </ItemGroup>
   <Target Name="RelocateSatelliteAssembliesToLanguagesFolder" AfterTargets="Build">
     <ItemGroup>
-      <BuiltSatelliteResourceAssemblies Include="@(AppSatelliteResourceAssemblies->'$(OutDir)%(Culture)\mRemoteNG.resources.dll')" />
-      <PublishedSatelliteResourceAssemblies Include="@(AppSatelliteResourceAssemblies->'$(PublishDir)%(Culture)\mRemoteNG.resources.dll')"
+      <BuiltSatelliteResourceAssemblies Include="@(AppSatelliteResourceAssemblies->'$(OutDir)%(Culture)\mRemoteNG.Core.resources.dll')" />
+      <PublishedSatelliteResourceAssemblies Include="@(AppSatelliteResourceAssemblies->'$(PublishDir)%(Culture)\mRemoteNG.Core.resources.dll')"
                                           Condition="'$(PublishDir)' != '' and Exists('$(PublishDir)')" />
       <BuiltSatelliteCultureDirectories Include="@(AppSatelliteResourceAssemblies->'$(OutDir)%(Culture)')" />
       <PublishedSatelliteCultureDirectories Include="@(AppSatelliteResourceAssemblies->'$(PublishDir)%(Culture)')"
@@ -690,11 +679,11 @@
     </ItemGroup>
 
     <Copy SourceFiles="@(BuiltSatelliteResourceAssemblies)"
-          DestinationFiles="@(AppSatelliteResourceAssemblies->'$(OutDir)Languages\%(Culture)\mRemoteNG.resources.dll')"
+          DestinationFiles="@(AppSatelliteResourceAssemblies->'$(OutDir)Languages\%(Culture)\mRemoteNG.Core.resources.dll')"
           SkipUnchangedFiles="true" />
 
     <Copy SourceFiles="@(PublishedSatelliteResourceAssemblies)"
-          DestinationFiles="@(AppSatelliteResourceAssemblies->'$(PublishDir)Languages\%(Culture)\mRemoteNG.resources.dll')"
+          DestinationFiles="@(AppSatelliteResourceAssemblies->'$(PublishDir)Languages\%(Culture)\mRemoteNG.Core.resources.dll')"
           SkipUnchangedFiles="true"
           Condition="'$(PublishDir)' != '' and Exists('$(PublishDir)')" />
 
