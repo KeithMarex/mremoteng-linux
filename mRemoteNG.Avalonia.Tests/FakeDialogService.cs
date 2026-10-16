@@ -30,6 +30,10 @@ internal sealed class FakeDialogService : IDialogService
         return Task.FromResult(ConfirmAnswer);
     }
 
+    public Func<ViewModels.OptionsViewModel, bool> EditOptions { get; set; } = _ => false;
+
+    public Task<bool> ShowOptionsAsync(ViewModels.OptionsViewModel options) => Task.FromResult(EditOptions(options));
+
     public Task ShowErrorAsync(string title, string message)
     {
         Errors.Add($"{title}: {message}");

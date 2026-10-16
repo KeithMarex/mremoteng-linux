@@ -29,8 +29,23 @@ public static class UiText
     public static string Search => Language.SearchPrompt;
     public static string MoveUp => Language.MoveUp;
     public static string MoveDown => Language.MoveDown;
+    public static string Tools => Menu(Language._Tools);
+    public static string Options => Language.Options;
+    public static string Theme => Language.Theme;
+    public static string Appearance => Language.Appearance;
+    public static string EncryptionEngine => Language.EncryptionEngine;
+    public static string EncryptionBlockCipherMode => Language.EncryptionBlockCipherMode;
+    public static string EncryptionKeyDerivationIterations => Language.EncryptionKeyDerivationIterations;
+    public static string EncryptCompleteConnectionFile => Language.EncryptCompleteConnectionFile;
+    public static string SaveConnectionsAfterEveryEdit => Language.SaveConnectionsAfterEveryEdit;
 
     public const string Edit = "_Edit";
+    public const string ConnectionFile = "Connection file";
+    public const string Security = "Security";
+    public const string FileFormat = "File format version";
+    public const string FileFormatHelp =
+        "Use the version every Windows mRemoteNG in your team can read. Older versions store fewer settings " +
+        "(2.7 lacks e.g. tab colours); the change applies the next time the file is saved.";
     public const string Inherit = "Inherit";
     public const string Ok = "OK";
     public const string Cancel = "Cancel";

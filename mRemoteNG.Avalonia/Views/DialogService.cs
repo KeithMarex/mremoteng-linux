@@ -44,6 +44,9 @@ public sealed class DialogService(Window owner) : IDialogService
     public Task<bool> ConfirmAsync(string title, string message) =>
         OnUiThread(() => new MessageDialog(title, message, isQuestion: true).ShowDialog<bool>(owner));
 
+    public Task<bool> ShowOptionsAsync(ViewModels.OptionsViewModel options) =>
+        OnUiThread(() => new OptionsWindow { DataContext = options }.ShowDialog<bool>(owner));
+
     public Task ShowErrorAsync(string title, string message) =>
         OnUiThread(() => new MessageDialog(title, message, isQuestion: false).ShowDialog<bool>(owner));
 

@@ -23,6 +23,9 @@
                 <Separator />
                 <MenuItem Header="{x:Static app:UiText.Exit}" Click="OnExitClick" InputGesture="Ctrl+Q" HotKey="Ctrl+Q" />
             </MenuItem>
+            <MenuItem Header="{x:Static app:UiText.Tools}">
+                <MenuItem Header="{x:Static app:UiText.Options}" Command="{Binding OpenOptionsCommand}" />
+            </MenuItem>
             <MenuItem Header="{x:Static app:UiText.Edit}">
                 <MenuItem Header="{x:Static app:UiText.NewConnection}" Command="{Binding AddConnectionCommand}" InputGesture="Ctrl+Shift+N" HotKey="Ctrl+Shift+N" />
                 <MenuItem Header="{x:Static app:UiText.NewFolder}" Command="{Binding AddFolderCommand}" />

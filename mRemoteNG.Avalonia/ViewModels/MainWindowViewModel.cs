@@ -52,6 +52,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
     public MessagesViewModel Messages { get; }
 
+    /// <summary>Applies a theme to the running app; set by the app.</summary>
+    public Action<AppTheme> ApplyTheme { get; set; } = _ => { };
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DuplicateCommand), nameof(DeleteCommand), nameof(MoveUpCommand), nameof(MoveDownCommand))]
     private ConnectionNodeViewModel? _selectedNode;
@@ -170,6 +173,18 @@ public sealed partial class MainWindowViewModel : ObservableObject
         {
             await ReportErrorAsync(UiText.CouldNotSave(path), ex);
         }
+    }
+
+    [RelayCommand]
+    private async Task OpenOptionsAsync()
+    {
+        OptionsViewModel options = new(_settings);
+        if (!await _dialogs.ShowOptionsAsync(options))
+            return;
+
+        options.ApplyTo(_settings);
+        ApplyTheme(_settings.Theme);
+        SaveSettings();
     }
 
     [RelayCommand(CanExecute = nameof(HasFile))]
@@ -391,6 +406,11 @@ public sealed partial class MainWindowViewModel : ObservableObject
     private void RememberFile(string path)
     {
         _settings.ConnectionFile = path;
+        SaveSettings();
+    }
+
+    private void SaveSettings()
+    {
         try
         {
             _settingsStore.Save(_settings);

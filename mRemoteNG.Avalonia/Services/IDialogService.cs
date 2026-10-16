@@ -17,5 +17,8 @@ public interface IDialogService
 
     Task<bool> ConfirmAsync(string title, string message);
 
+    /// <summary>Shows the options; true when the user confirmed them.</summary>
+    Task<bool> ShowOptionsAsync(ViewModels.OptionsViewModel options);
+
     Task ShowErrorAsync(string title, string message);
 }
