@@ -6,6 +6,8 @@
     <AssemblyName>mRemoteNG.Core</AssemblyName>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
+    <!-- Code moved from mRemoteNG keeps its nullable annotations; same suppression as mRemoteNG.csproj. -->
+    <NoWarn>$(NoWarn);CS8632</NoWarn>
     <Configurations>Debug;Release;Release Self-Contained;Deploy to github</Configurations>
     <NeutralLanguage>en</NeutralLanguage>
     <!-- Calling a Windows-only API from Core is a build error, not a warning. -->
