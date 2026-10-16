@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using mRemoteNG.Config.Settings;
 using mRemoteNG.Config.Settings.Registry;
+using mRemoteNG.Security;
 
 namespace mRemoteNG.App
 {
@@ -17,6 +18,7 @@ namespace mRemoteNG.App
         {
             CoreRuntime.Settings = new SettingsBackedCoreSettings();
             CoreRuntime.Policy = new RegistryCorePolicy();
+            CoreRuntime.DecryptRdcManPassword = RdcManPasswordDecryptor.Decrypt;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using mRemoteNG.Config.Serializers;
 using mRemoteNG.Config.Serializers.MiscSerializers;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
@@ -125,21 +126,21 @@ public class RemoteDesktopConnectionManager27DeserializerTests
     public void ExceptionThrownOnBadSchemaVersion()
     {
         var badFileContents = Resources.test_rdcman_v2_2_badschemaversion;
-        Assert.That(() => _deserializer.Deserialize(badFileContents), Throws.TypeOf<FileFormatException>());
+        Assert.That(() => _deserializer.Deserialize(badFileContents), Throws.TypeOf<ConnectionFileFormatException>());
     }
 
     [Test]
     public void ExceptionThrownOnUnsupportedVersion()
     {
         var badFileContents = Resources.test_rdcman_badVersionNumber;
-        Assert.That(() => _deserializer.Deserialize(badFileContents), Throws.TypeOf<FileFormatException>());
+        Assert.That(() => _deserializer.Deserialize(badFileContents), Throws.TypeOf<ConnectionFileFormatException>());
     }
 
     [Test]
     public void ExceptionThrownOnNoVersion()
     {
         var badFileContents = Resources.test_rdcman_noversion;
-        Assert.That(() => _deserializer.Deserialize(badFileContents), Throws.TypeOf<FileFormatException>());
+        Assert.That(() => _deserializer.Deserialize(badFileContents), Throws.TypeOf<ConnectionFileFormatException>());
     }
 
     private static IEnumerable<TestCaseData> ExpectedPropertyValues()
