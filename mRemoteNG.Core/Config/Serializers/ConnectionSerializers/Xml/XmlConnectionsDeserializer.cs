@@ -80,7 +80,9 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             }
             catch (Exception ex)
             {
-                CoreRuntime.IsConnectionsFileLoaded = false;
+                // Only a failure to load the connection file itself may block saving it; a failed import must not.
+                if (!import)
+                    CoreRuntime.IsConnectionsFileLoaded = false;
                 CoreRuntime.MessageCollector.AddExceptionStackTrace(Language.LoadFromXmlFailed, ex);
                 throw;
             }

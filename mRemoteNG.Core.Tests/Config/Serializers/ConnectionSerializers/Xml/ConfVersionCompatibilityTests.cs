@@ -41,3 +41,20 @@ namespace mRemoteNG.Core.Tests.Config.Serializers.ConnectionSerializers.Xml
         }
     }
 }
+
+namespace mRemoteNG.Core.Tests.Config.Serializers.ConnectionSerializers.Xml
+{
+    public class ImportFailureTests
+    {
+        [Test]
+        public void AFailedImportDoesNotBlockSavingTheOpenFile()
+        {
+            CoreRuntime.IsConnectionsFileLoaded = true;
+            const string newerFile = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Connections Name=\"Connections\" ConfVersion=\"9.9\" />";
+
+            Assert.Throws<UnsupportedConnectionFileVersionException>(() => new XmlConnectionsDeserializer().Deserialize(newerFile, import: true));
+
+            Assert.That(CoreRuntime.IsConnectionsFileLoaded, Is.True);
+        }
+    }
+}
