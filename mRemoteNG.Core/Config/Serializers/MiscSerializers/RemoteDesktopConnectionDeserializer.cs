@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Versioning;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Tree;
@@ -7,7 +6,6 @@ using mRemoteNG.Tree.Root;
 
 namespace mRemoteNG.Config.Serializers.MiscSerializers
 {
-    [SupportedOSPlatform("windows")]
     public class RemoteDesktopConnectionDeserializer : IDeserializer<string, ConnectionTreeModel>
     {
         // .rdp file schema: https://technet.microsoft.com/en-us/library/ff393699(v=ws.10).aspx

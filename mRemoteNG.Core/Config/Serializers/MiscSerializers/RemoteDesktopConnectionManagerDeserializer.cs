@@ -11,12 +11,10 @@ using mRemoteNG.Container;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using mRemoteNG.Resources.Language;
-using System.Runtime.Versioning;
 using mRemoteNG.Security;
 
 namespace mRemoteNG.Config.Serializers.MiscSerializers
 {
-    [SupportedOSPlatform("windows")]
     public class RemoteDesktopConnectionManagerDeserializer : IDeserializer<string, ConnectionTreeModel>
     {
         private static int _schemaVersion; /* 1 = RDCMan v2.2
@@ -365,7 +363,7 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
             }
             catch (Exception /*ex*/)
             {
-                //Runtime.MessageCollector.AddExceptionMessage("RemoteDesktopConnectionManager.DecryptPassword() failed.", ex, logOnly: true);
+                //CoreRuntime.MessageCollector.AddExceptionMessage("RemoteDesktopConnectionManager.DecryptPassword() failed.", ex, logOnly: true);
                 return string.Empty;
             }
         }

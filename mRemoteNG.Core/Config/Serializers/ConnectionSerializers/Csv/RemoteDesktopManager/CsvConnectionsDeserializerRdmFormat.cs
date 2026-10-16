@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Versioning;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Container;
@@ -14,7 +13,6 @@ using mRemoteNG.Tree;
 
 namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Csv.RemoteDesktopManager
 {
-    [SupportedOSPlatform("windows")]
     /// <summary>
     ///     Import of connections from the Remote Desktop Manager (RDM) in a CSV file format
     /// </summary>

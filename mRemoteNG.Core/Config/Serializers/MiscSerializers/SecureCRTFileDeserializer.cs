@@ -7,12 +7,10 @@ using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using System;
 using System.IO;
-using System.Runtime.Versioning;
 using System.Xml;
 
 namespace mRemoteNG.Config.Serializers.MiscSerializers
 {
-    [SupportedOSPlatform("windows")]
     public class SecureCRTFileDeserializer
     {
         enum SecureCRTNodeType { folder, session };
@@ -98,7 +96,7 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
             }
             catch (ConnectionFileFormatException e)
             {
-                Runtime.MessageCollector.AddExceptionMessage("Error when parsing SecureCRT node: ", e);
+                CoreRuntime.MessageCollector.AddExceptionMessage("Error when parsing SecureCRT node: ", e);
                 return null;
             }
 

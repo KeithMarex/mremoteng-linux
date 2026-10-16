@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using System.Runtime.Versioning;
 using mRemoteNG.App;
 using mRemoteNG.Config.DataProviders;
 using mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
@@ -10,7 +9,6 @@ using mRemoteNG.Messages;
 
 namespace mRemoteNG.Config.Import
 {
-    [SupportedOSPlatform("windows")]
     // ReSharper disable once InconsistentNaming
     public class MRemoteNGXmlImporter : IConnectionImporter<string>
     {
@@ -18,12 +16,12 @@ namespace mRemoteNG.Config.Import
         {
             if (fileName == null)
             {
-                Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, "Unable to import file. File path is null.");
+                CoreRuntime.MessageCollector.AddMessage(MessageClass.ErrorMsg, "Unable to import file. File path is null.");
                 return;
             }
 
             if (!File.Exists(fileName))
-                Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
+                CoreRuntime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
                                                     $"Unable to import file. File does not exist. Path: {fileName}");
 
             FileDataProvider dataProvider = new(fileName);
