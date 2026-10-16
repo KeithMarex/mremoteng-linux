@@ -191,6 +191,25 @@
     <xs:attribute name="UseRestrictedAdmin" type="xs:boolean" use="optional" />
     <xs:attribute name="InheritUseRCG" type="xs:boolean" use="optional" />
     <xs:attribute name="InheritUseRestrictedAdmin" type="xs:boolean" use="optional" />
+    <!-- Written by the 2.8+ node serializer but missing from this schema until now. -->
+    <xs:attribute name="Color" type="xs:string" use="optional" />
+    <xs:attribute name="TabColor" type="xs:string" use="optional" />
+    <xs:attribute name="ConnectionFrameColor" type="xs:string" use="optional" />
+    <xs:attribute name="EnvironmentTags" type="xs:string" use="optional" />
+    <xs:attribute name="RDGatewayAccessToken" type="xs:string" use="optional" />
+    <xs:attribute name="VaultOpenbaoMount" type="xs:string" use="optional" />
+    <xs:attribute name="VaultOpenbaoRole" type="xs:string" use="optional" />
+    <xs:attribute name="VaultOpenbaoSecretEngine" type="xs:string" use="optional" />
+    <xs:attribute name="IsRootGroup" type="xs:boolean" use="optional" />
+    <xs:attribute name="UseRedirectionServerName" type="xs:boolean" use="optional" />
+    <xs:attribute name="InheritColor" type="xs:boolean" use="optional" />
+    <xs:attribute name="InheritTabColor" type="xs:boolean" use="optional" />
+    <xs:attribute name="InheritConnectionFrameColor" type="xs:boolean" use="optional" />
+    <xs:attribute name="InheritEnvironmentTags" type="xs:boolean" use="optional" />
+    <xs:attribute name="InheritOpeningCommand" type="xs:boolean" use="optional" />
+    <xs:attribute name="InheritRDGatewayAccessToken" type="xs:boolean" use="optional" />
+    <xs:attribute name="InheritUseRedirectionServerName" type="xs:boolean" use="optional" />
+    <xs:attribute name="InheritUserViaAPI" type="xs:boolean" use="optional" />
 
   </xs:complexType>
 </xs:schema>
