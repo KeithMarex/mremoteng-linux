@@ -20,6 +20,8 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             AppPaths paths = AppPaths.FromEnvironment();
+            MessageLogFile log = new(CoreRuntime.MessageCollector, paths.LogFile);
+            desktop.Exit += (_, _) => log.Dispose();
             AppSettingsStore settingsStore = new(paths.SettingsFile);
             AppSettings settings = settingsStore.Load();
             CoreRuntime.Settings = settings.Core;

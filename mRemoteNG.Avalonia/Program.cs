@@ -1,5 +1,6 @@
 using System.Reflection;
 using Avalonia;
+using mRemoteNG.App;
 
 namespace mRemoteNG.Avalonia;
 
@@ -13,6 +14,11 @@ internal static class Program
             Console.WriteLine($"mRemoteNG for Linux {Version}");
             return 0;
         }
+
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+            CoreRuntime.MessageCollector.AddExceptionStackTrace("Unhandled error", (Exception)e.ExceptionObject);
+        TaskScheduler.UnobservedTaskException += (_, e) =>
+            CoreRuntime.MessageCollector.AddExceptionStackTrace("Unobserved task error", e.Exception);
 
         return BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
