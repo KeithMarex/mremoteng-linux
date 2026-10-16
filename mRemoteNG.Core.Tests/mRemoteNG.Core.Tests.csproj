@@ -16,4 +16,12 @@
   <ItemGroup>
     <ProjectReference Include="..\mRemoteNG.Core\mRemoteNG.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- Portable helpers shared with mRemoteNGTests; linked so they keep one source. -->
+    <Compile Include="..\mRemoteNGTests\TestHelpers\ConnectionInfoAllConnectionPropertiesEqualityComparer.cs" Link="TestHelpers\ConnectionInfoAllConnectionPropertiesEqualityComparer.cs" />
+    <Compile Include="..\mRemoteNGTests\TestHelpers\ConnectionInfoHelpers.cs" Link="TestHelpers\ConnectionInfoHelpers.cs" />
+    <Compile Include="..\mRemoteNGTests\TestHelpers\ConnectionInheritanceAllPropertiesEqualityComparer.cs" Link="TestHelpers\ConnectionInheritanceAllPropertiesEqualityComparer.cs" />
+    <Compile Include="..\mRemoteNGTests\TestHelpers\Randomizer.cs" Link="TestHelpers\Randomizer.cs" />
+    <Compile Include="..\mRemoteNGTests\TestHelpers\SerializableConnectionInfoAllPropertiesOfType.cs" Link="TestHelpers\SerializableConnectionInfoAllPropertiesOfType.cs" />
+  </ItemGroup>
 </Project>
