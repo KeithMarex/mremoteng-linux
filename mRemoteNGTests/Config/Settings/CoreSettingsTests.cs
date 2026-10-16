@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Reflection;
 using mRemoteNG.App;
 using mRemoteNG.Config.Settings;
+using mRemoteNG.Config.Settings.Registry;
 using NUnit.Framework;
 
 namespace mRemoteNGTests.Config.Settings;
@@ -11,9 +12,10 @@ namespace mRemoteNGTests.Config.Settings;
 public class CoreSettingsTests
 {
     [Test]
-    public void ModuleInitializerBacksCoreSettingsWithPropertiesSettings()
+    public void ModuleInitializerBacksCoreSettingsAndPolicy()
     {
         Assert.That(CoreRuntime.Settings, Is.InstanceOf<SettingsBackedCoreSettings>());
+        Assert.That(CoreRuntime.Policy, Is.InstanceOf<RegistryCorePolicy>());
     }
 
     // CoreSettings is what the Linux app starts from, so it must keep the defaults of Settings.settings.

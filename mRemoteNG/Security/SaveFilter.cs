@@ -1,4 +1,4 @@
-﻿using mRemoteNG.Config.Settings.Registry;
+﻿using mRemoteNG.App;
 using System.Runtime.Versioning;
 
 namespace mRemoteNG.Security
@@ -9,8 +9,8 @@ namespace mRemoteNG.Security
         public SaveFilter(bool disableEverything = false)
         {
             if (disableEverything) return;
-            SaveUsername = CommonRegistrySettings.AllowSaveUsernames;
-            SavePassword = CommonRegistrySettings.AllowSavePasswords;
+            SaveUsername = CoreRuntime.Policy.AllowSaveUsernames;
+            SavePassword = CoreRuntime.Policy.AllowSavePasswords;
             SaveDomain = true;
             SaveCredentialId = true;
             SaveInheritance = true;

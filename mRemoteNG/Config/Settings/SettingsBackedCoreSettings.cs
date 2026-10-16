@@ -1,6 +1,4 @@
-using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
-using mRemoteNG.App;
 
 namespace mRemoteNG.Config.Settings
 {
@@ -87,15 +85,5 @@ namespace mRemoteNG.Config.Settings
             set => Properties.Settings.Default.PuttySavedSessionsPanel = value;
         }
         public bool SetHostnameLikeDisplayName => Properties.Settings.Default.SetHostnameLikeDisplayName;
-    }
-
-    internal static class CoreSettingsInitializer
-    {
-        /// <summary>
-        /// Runs as soon as this assembly loads (app and mRemoteNGTests alike), before any
-        /// connection object can read its defaults.
-        /// </summary>
-        [ModuleInitializer]
-        internal static void Initialize() => CoreRuntime.Settings = new SettingsBackedCoreSettings();
     }
 }
