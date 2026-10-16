@@ -1033,7 +1033,7 @@ namespace mRemoteNG.Connection.Protocol.RDP
             Colors = RDPColors.Colors16Bit,
             Sounds = RDPSounds.DoNotPlay,
             Resolution = RDPResolutions.SmartSize,
-            Port = 3389
+            Port = DefaultPorts.Rdp
         }
 
         #endregion

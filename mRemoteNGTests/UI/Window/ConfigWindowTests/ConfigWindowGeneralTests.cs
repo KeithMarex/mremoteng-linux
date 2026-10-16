@@ -190,8 +190,8 @@ namespace mRemoteNGTests.UI.Window.ConfigWindowTests
             node.RDGatewayUsageMethod = RDGatewayUsageMethod.Never;
             node.RDGatewayUseConnectionCredentials = RDGatewayUseConnectionCredentials.Yes;
             node.RedirectSound = RDPSounds.DoNotPlay;
-            node.VNCAuthMode = ProtocolVNC.AuthMode.AuthVNC;
-            node.VNCProxyType = ProtocolVNC.ProxyType.ProxyNone;
+            node.VNCAuthMode = AuthMode.AuthVNC;
+            node.VNCProxyType = ProxyType.ProxyNone;
             node.UseVmId = false;
             node.Inheritance.TurnOffInheritanceCompletely();
 

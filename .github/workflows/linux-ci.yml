@@ -50,3 +50,18 @@ jobs:
         with:
           name: linux-test-results
           path: TestResults/
+
+  # Fast feedback while code moves into Core; windows-ci.yml still does the real Windows build.
+  winforms-compile-check:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install .NET SDK (from global.json)
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Compile-check the WinForms app
+        run: scripts/linux/check-winforms-build.sh

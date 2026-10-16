@@ -90,8 +90,8 @@ namespace mRemoteNG.UI.Window
             cmenTabStartChat.Click += (sender, args) => StartChat();
             cmenTabTransferFile.Click += (sender, args) => TransferFile();
             cmenTabRefreshScreen.Click += (sender, args) => RefreshScreen();
-            cmenTabSendSpecialKeysCtrlAltDel.Click += (sender, args) => SendSpecialKeys(ProtocolVNC.SpecialKeys.CtrlAltDel);
-            cmenTabSendSpecialKeysCtrlEsc.Click += (sender, args) => SendSpecialKeys(ProtocolVNC.SpecialKeys.CtrlEsc);
+            cmenTabSendSpecialKeysCtrlAltDel.Click += (sender, args) => SendSpecialKeys(SpecialKeys.CtrlAltDel);
+            cmenTabSendSpecialKeysCtrlEsc.Click += (sender, args) => SendSpecialKeys(SpecialKeys.CtrlEsc);
             cmenTabRenameTab.Click += (sender, args) => RenameTab();
             cmenTabDuplicateTab.Click += (sender, args) => DuplicateTab();
             cmenTabReconnect.Click += (sender, args) => Reconnect();
@@ -670,7 +670,7 @@ namespace mRemoteNG.UI.Window
             }
         }
 
-        private void SendSpecialKeys(ProtocolVNC.SpecialKeys keys)
+        private void SendSpecialKeys(SpecialKeys keys)
         {
             try
             {

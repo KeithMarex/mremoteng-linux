@@ -1,0 +1,8 @@
+<Project>
+  <!-- Used by check-winforms-build.sh only: Linux MSBuild cannot generate the MSTSCLib (RDP ActiveX) wrapper,
+       so drop the COM reference and compile empty stand-ins for the types the RDP files declare. -->
+  <ItemGroup>
+    <COMReference Remove="MSTSCLib" />
+    <Compile Include="$(MSBuildThisFileDirectory)MstscLibStubs.cs" Condition="'$(MSBuildProjectName)' == 'mRemoteNG' or $(MSBuildProjectName.StartsWith('mRemoteNG_'))" />
+  </ItemGroup>
+</Project>

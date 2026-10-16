@@ -139,7 +139,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Sql
             connectionInfo.RedirectPrinters = MiscTools.GetBooleanValue(dataRow["RedirectPrinters"]);
             connectionInfo.RedirectSmartCards = MiscTools.GetBooleanValue(dataRow["RedirectSmartCards"]);
             connectionInfo.RedirectSound = (RDPSounds)Enum.Parse(typeof(RDPSounds), (string)dataRow["RedirectSound"]);
-            connectionInfo.RenderingEngine = (HTTPBase.RenderingEngine)Enum.Parse(typeof(HTTPBase.RenderingEngine), (string)dataRow["RenderingEngine"]);
+            connectionInfo.RenderingEngine = (RenderingEngine)Enum.Parse(typeof(RenderingEngine), (string)dataRow["RenderingEngine"]);
             if (dataRow.Table.Columns.Contains("TerminalBackend") && Enum.TryParse(Convert.ToString(dataRow["TerminalBackend"]), out TerminalBackend terminalBackend))
                 connectionInfo.TerminalBackend = terminalBackend;
             connectionInfo.Resolution = Enum.TryParse<RDPResolutions>((string)dataRow["Resolution"], true, out var resolution)
@@ -158,16 +158,16 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Sql
             connectionInfo.Username = (string)dataRow["Username"];
             connectionInfo.UseVmId = MiscTools.GetBooleanValue(dataRow["UseVmId"]);
             connectionInfo.VmId = (string)dataRow["VmId"];
-            connectionInfo.VNCAuthMode = (ProtocolVNC.AuthMode)Enum.Parse(typeof(ProtocolVNC.AuthMode), (string)dataRow["VNCAuthMode"]);
-            connectionInfo.VNCColors = (ProtocolVNC.Colors)Enum.Parse(typeof(ProtocolVNC.Colors), (string)dataRow["VNCColors"]);
-            connectionInfo.VNCCompression = (ProtocolVNC.Compression)Enum.Parse(typeof(ProtocolVNC.Compression), (string)dataRow["VNCCompression"]);
-            connectionInfo.VNCEncoding = (ProtocolVNC.Encoding)Enum.Parse(typeof(ProtocolVNC.Encoding), (string)dataRow["VNCEncoding"]);
+            connectionInfo.VNCAuthMode = (AuthMode)Enum.Parse(typeof(AuthMode), (string)dataRow["VNCAuthMode"]);
+            connectionInfo.VNCColors = (Colors)Enum.Parse(typeof(Colors), (string)dataRow["VNCColors"]);
+            connectionInfo.VNCCompression = (Compression)Enum.Parse(typeof(Compression), (string)dataRow["VNCCompression"]);
+            connectionInfo.VNCEncoding = (Encoding)Enum.Parse(typeof(Encoding), (string)dataRow["VNCEncoding"]);
             connectionInfo.VNCProxyIP = (string)dataRow["VNCProxyIP"];
             connectionInfo.VNCProxyPassword = DecryptValue((string)dataRow["VNCProxyPassword"]);
             connectionInfo.VNCProxyPort = (int)dataRow["VNCProxyPort"];
-            connectionInfo.VNCProxyType = (ProtocolVNC.ProxyType)Enum.Parse(typeof(ProtocolVNC.ProxyType), (string)dataRow["VNCProxyType"]);
+            connectionInfo.VNCProxyType = (ProxyType)Enum.Parse(typeof(ProxyType), (string)dataRow["VNCProxyType"]);
             connectionInfo.VNCProxyUsername = (string)dataRow["VNCProxyUsername"];
-            connectionInfo.VNCSmartSizeMode = (ProtocolVNC.SmartSizeMode)Enum.Parse(typeof(ProtocolVNC.SmartSizeMode), (string)dataRow["VNCSmartSizeMode"]);
+            connectionInfo.VNCSmartSizeMode = (SmartSizeMode)Enum.Parse(typeof(SmartSizeMode), (string)dataRow["VNCSmartSizeMode"]);
             connectionInfo.VNCViewOnly = MiscTools.GetBooleanValue(dataRow["VNCViewOnly"]);
 
             if (!dataRow.IsNull("RdpVersion")) // table allows null values which must be handled

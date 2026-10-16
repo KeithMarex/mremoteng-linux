@@ -281,7 +281,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Csv
 
             if (headers.Contains("RenderingEngine"))
             {
-                if (Enum.TryParse(connectionCsv[headers.IndexOf("RenderingEngine")], out HTTPBase.RenderingEngine value))
+                if (Enum.TryParse(connectionCsv[headers.IndexOf("RenderingEngine")], out RenderingEngine value))
                     connectionRecord.RenderingEngine = value;
             }
 
@@ -419,25 +419,25 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Csv
 
             if (headers.Contains("VNCCompression"))
             {
-                if (Enum.TryParse(connectionCsv[headers.IndexOf("VNCCompression")], out ProtocolVNC.Compression value))
+                if (Enum.TryParse(connectionCsv[headers.IndexOf("VNCCompression")], out Compression value))
                     connectionRecord.VNCCompression = value;
             }
 
             if (headers.Contains("VNCEncoding"))
             {
-                if (Enum.TryParse(connectionCsv[headers.IndexOf("VNCEncoding")], out ProtocolVNC.Encoding value))
+                if (Enum.TryParse(connectionCsv[headers.IndexOf("VNCEncoding")], out Encoding value))
                     connectionRecord.VNCEncoding = value;
             }
 
             if (headers.Contains("VNCAuthMode"))
             {
-                if (Enum.TryParse(connectionCsv[headers.IndexOf("VNCAuthMode")], out ProtocolVNC.AuthMode value))
+                if (Enum.TryParse(connectionCsv[headers.IndexOf("VNCAuthMode")], out AuthMode value))
                     connectionRecord.VNCAuthMode = value;
             }
 
             if (headers.Contains("VNCProxyType"))
             {
-                if (Enum.TryParse(connectionCsv[headers.IndexOf("VNCProxyType")], out ProtocolVNC.ProxyType value))
+                if (Enum.TryParse(connectionCsv[headers.IndexOf("VNCProxyType")], out ProxyType value))
                     connectionRecord.VNCProxyType = value;
             }
 
@@ -449,13 +449,13 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Csv
 
             if (headers.Contains("VNCColors"))
             {
-                if (Enum.TryParse(connectionCsv[headers.IndexOf("VNCColors")], out ProtocolVNC.Colors value))
+                if (Enum.TryParse(connectionCsv[headers.IndexOf("VNCColors")], out Colors value))
                     connectionRecord.VNCColors = value;
             }
 
             if (headers.Contains("VNCSmartSizeMode"))
             {
-                if (Enum.TryParse(connectionCsv[headers.IndexOf("VNCSmartSizeMode")], out ProtocolVNC.SmartSizeMode value))
+                if (Enum.TryParse(connectionCsv[headers.IndexOf("VNCSmartSizeMode")], out SmartSizeMode value))
                     connectionRecord.VNCSmartSizeMode = value;
             }
 

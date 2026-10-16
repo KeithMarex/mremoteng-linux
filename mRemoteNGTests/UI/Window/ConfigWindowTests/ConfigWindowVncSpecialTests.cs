@@ -13,7 +13,7 @@ namespace mRemoteNGTests.UI.Window.ConfigWindowTests
         [Test]
         public void UserDomainPropertiesShown_WhenAuthModeIsWindows()
         {
-            ConnectionInfo.VNCAuthMode = ProtocolVNC.AuthMode.AuthWin;
+            ConnectionInfo.VNCAuthMode = AuthMode.AuthWin;
             ExpectedPropertyList.AddRange(new []
             {
                 nameof(ConnectionInfo.Username),
@@ -21,10 +21,10 @@ namespace mRemoteNGTests.UI.Window.ConfigWindowTests
             });
         }
 
-        [TestCase(ProtocolVNC.ProxyType.ProxyHTTP)]
-        [TestCase(ProtocolVNC.ProxyType.ProxySocks5)]
-        [TestCase(ProtocolVNC.ProxyType.ProxyUltra)]
-        public void ProxyPropertiesShown_WhenProxyModeIsNotNone(ProtocolVNC.ProxyType proxyType)
+        [TestCase(ProxyType.ProxyHTTP)]
+        [TestCase(ProxyType.ProxySocks5)]
+        [TestCase(ProxyType.ProxyUltra)]
+        public void ProxyPropertiesShown_WhenProxyModeIsNotNone(ProxyType proxyType)
         {
             ConnectionInfo.VNCProxyType = proxyType;
             ExpectedPropertyList.AddRange(new[]

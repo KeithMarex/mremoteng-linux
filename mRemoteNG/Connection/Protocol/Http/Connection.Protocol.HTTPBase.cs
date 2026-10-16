@@ -359,18 +359,5 @@ namespace mRemoteNG.Connection.Protocol.Http
         }
 
         #endregion
-
-        #region Enums
-
-        public enum RenderingEngine
-        {
-            [LocalizedAttributes.LocalizedDescription(nameof(Language.HttpInternetExplorer))]
-            IE = 1,
-
-            [LocalizedAttributes.LocalizedDescription(nameof(Language.HttpCEF))]
-            EdgeChromium = 2
-        }
-
-        #endregion
     }
 }

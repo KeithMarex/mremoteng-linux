@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Runtime.Versioning;
 using mRemoteNG.App;
+using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Connection.Protocol.Http;
 using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Connection.Protocol.Rlogin;
@@ -25,7 +26,7 @@ namespace mRemoteNG.Tools
         public static int HttpsPort { get; set; } = (int)ProtocolHTTPS.Defaults.Port;
         public static int RloginPort { get; set; } = (int)ProtocolRlogin.Defaults.Port;
         public static int RdpPort { get; set; } = (int)RdpProtocol.Defaults.Port;
-        public static int VncPort { get; set; } = (int)ProtocolVNC.Defaults.Port;
+        public static int VncPort { get; set; } = DefaultPorts.Vnc;
         public ArrayList OpenPorts { get; set; } = [];
         public ArrayList ClosedPorts { get; set; } = [];
         public bool Rdp { get; set; }

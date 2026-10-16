@@ -15,7 +15,7 @@ namespace mRemoteNG.UI.Controls.ConnectionInfoPropertyGrid
     /// </summary>
     public class ColorStringEditor : ColorEditor
     {
-        private static readonly MiscTools.TabColorConverter Converter = new();
+        private static readonly TabColorConverter Converter = new();
 
         public override object? EditValue(ITypeDescriptorContext? context, IServiceProvider provider, object? value)
         {

@@ -261,7 +261,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
                     if (_confVersion < 0.7)
                     {
                         if (xmlnode.GetAttributeAsBool("UseVNC"))
-                            connectionInfo.Port = (int)ProtocolVNC.Defaults.Port;
+                            connectionInfo.Port = DefaultPorts.Vnc;
                         else
                             connectionInfo.Port = (int)RdpProtocol.Defaults.Port;
                     }
@@ -380,16 +380,16 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
 
                 if (_confVersion >= 1.7)
                 {
-                    connectionInfo.VNCCompression = xmlnode.GetAttributeAsEnum<ProtocolVNC.Compression>("VNCCompression");
-                    connectionInfo.VNCEncoding = xmlnode.GetAttributeAsEnum<ProtocolVNC.Encoding>("VNCEncoding");
-                    connectionInfo.VNCAuthMode = xmlnode.GetAttributeAsEnum<ProtocolVNC.AuthMode>("VNCAuthMode");
-                    connectionInfo.VNCProxyType = xmlnode.GetAttributeAsEnum<ProtocolVNC.ProxyType>("VNCProxyType");
+                    connectionInfo.VNCCompression = xmlnode.GetAttributeAsEnum<Compression>("VNCCompression");
+                    connectionInfo.VNCEncoding = xmlnode.GetAttributeAsEnum<Encoding>("VNCEncoding");
+                    connectionInfo.VNCAuthMode = xmlnode.GetAttributeAsEnum<AuthMode>("VNCAuthMode");
+                    connectionInfo.VNCProxyType = xmlnode.GetAttributeAsEnum<ProxyType>("VNCProxyType");
                     connectionInfo.VNCProxyIP = xmlnode.GetAttributeAsString("VNCProxyIP");
                     connectionInfo.VNCProxyPort = xmlnode.GetAttributeAsInt("VNCProxyPort");
                     connectionInfo.VNCProxyUsername = xmlnode.GetAttributeAsString("VNCProxyUsername");
                     connectionInfo.VNCProxyPassword = _decryptor.Decrypt(xmlnode.GetAttributeAsString("VNCProxyPassword"));
-                    connectionInfo.VNCColors = xmlnode.GetAttributeAsEnum<ProtocolVNC.Colors>("VNCColors");
-                    connectionInfo.VNCSmartSizeMode = xmlnode.GetAttributeAsEnum<ProtocolVNC.SmartSizeMode>("VNCSmartSizeMode");
+                    connectionInfo.VNCColors = xmlnode.GetAttributeAsEnum<Colors>("VNCColors");
+                    connectionInfo.VNCSmartSizeMode = xmlnode.GetAttributeAsEnum<SmartSizeMode>("VNCSmartSizeMode");
                     connectionInfo.VNCViewOnly = xmlnode.GetAttributeAsBool("VNCViewOnly");
                     connectionInfo.Inheritance.VNCCompression = xmlnode.GetAttributeAsBool("InheritVNCCompression");
                     connectionInfo.Inheritance.VNCEncoding = xmlnode.GetAttributeAsBool("InheritVNCEncoding");
@@ -412,7 +412,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
 
                 if (_confVersion >= 1.9)
                 {
-                    connectionInfo.RenderingEngine = xmlnode.GetAttributeAsEnum<HTTPBase.RenderingEngine>("RenderingEngine");
+                    connectionInfo.RenderingEngine = xmlnode.GetAttributeAsEnum<RenderingEngine>("RenderingEngine");
                     connectionInfo.TerminalBackend = xmlnode.GetAttributeAsEnum<TerminalBackend>("TerminalBackend");
                     connectionInfo.MacAddress = xmlnode.GetAttributeAsString("MacAddress");
                     connectionInfo.Inheritance.RenderingEngine = xmlnode.GetAttributeAsBool("InheritRenderingEngine");
