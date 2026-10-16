@@ -37,7 +37,11 @@ namespace mRemoteNG.Connection
         private bool _saveRequested = false;
         private bool _saveAsyncRequested = false;
 
-        public bool IsConnectionsFileLoaded { get; set; }
+        public bool IsConnectionsFileLoaded
+        {
+            get => CoreRuntime.IsConnectionsFileLoaded;
+            set => CoreRuntime.IsConnectionsFileLoaded = value;
+        }
         public bool UsingDatabase { get; private set; }
         public string ConnectionFileName { get; private set; }
         public IConnectionProfileDataProvider ProfileDataProvider { get; set; }

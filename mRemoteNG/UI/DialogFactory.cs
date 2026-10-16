@@ -5,7 +5,9 @@ using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using mRemoteNG.App;
 using mRemoteNG.App.Info;
+using mRemoteNG.Config.Serializers;
 using mRemoteNG.Messages;
+using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.TaskDialog;
 using mRemoteNG.Resources.Language;
 using System.Runtime.Versioning;
@@ -85,6 +87,14 @@ namespace mRemoteNG.UI
         /// connections file path. Don't forget to dispose the dialog when you
         /// are done!
         /// </summary>
+        /// <summary>Tells the user that the connection file needs a newer version of mRemoteNG.</summary>
+        public static void ShowIncompatibleConnectionFileDialog(string connectionFileName, UnsupportedConnectionFileVersionException ex)
+        {
+            CTaskDialog.ShowTaskDialogBox(FrmMain.Default, Application.ProductName, "Incompatible connection file format", $"The format of this connection file is not supported. Please upgrade to a newer version of {Application.ProductName}.",
+                                          string.Format("{1}{0}File Format Version: {2}{0}Highest Supported Version: {3}", Environment.NewLine, connectionFileName, ex.FileVersion, ex.HighestSupportedVersion),
+                                          "", "", "", "", ETaskDialogButtons.Ok, ESysIcons.Error, ESysIcons.Error);
+        }
+
         public static SaveFileDialog ConnectionsSaveAsDialog()
         {
             return new SaveFileDialog

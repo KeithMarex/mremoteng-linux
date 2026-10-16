@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.Versioning;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
@@ -13,7 +12,6 @@ using mRemoteNG.Tree.Root;
 
 namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
 {
-    [SupportedOSPlatform("windows")]
     public class XmlConnectionsSerializer(ICryptographyProvider cryptographyProvider,
                                     ISerializer<ConnectionInfo, XElement> connectionNodeSerializer) : ISerializer<ConnectionTreeModel, string>,
                                             ISerializer<ConnectionInfo, string>
@@ -47,7 +45,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             }
             catch (Exception ex)
             {
-                Runtime.MessageCollector.AddExceptionStackTrace("SaveToXml failed", ex);
+                CoreRuntime.MessageCollector.AddExceptionStackTrace("SaveToXml failed", ex);
             }
 
             return xml;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.Versioning;
 using mRemoteNG.App;
 using mRemoteNG.Messages;
 using mRemoteNG.Resources.Language;
@@ -10,7 +9,6 @@ namespace mRemoteNG.Config.DataProviders
 {
     public class FileBackupCreator
     {
-        [SupportedOSPlatform("windows")]
         public void CreateBackupFile(string fileName)
         {
             try
@@ -21,7 +19,7 @@ namespace mRemoteNG.Config.DataProviders
                 PathValidator.ValidatePathOrThrow(fileName, nameof(fileName));
 
                 string backupFileName =
-                    string.Format(Properties.OptionsBackupPage.Default.BackupFileNameFormat, fileName, DateTime.Now);
+                    string.Format(CoreRuntime.Settings.BackupFileNameFormat, fileName, DateTime.Now);
                 
                 PathValidator.ValidatePathOrThrow(backupFileName, nameof(backupFileName));
                 
@@ -29,7 +27,7 @@ namespace mRemoteNG.Config.DataProviders
             }
             catch (Exception ex)
             {
-                Runtime.MessageCollector.AddExceptionMessage(Language.ConnectionsFileBackupFailed, ex,
+                CoreRuntime.MessageCollector.AddExceptionMessage(Language.ConnectionsFileBackupFailed, ex,
                                                              MessageClass.WarningMsg);
                 throw;
             }
@@ -47,7 +45,7 @@ namespace mRemoteNG.Config.DataProviders
 
         private bool FeatureIsTurnedOff()
         {
-            return Properties.OptionsBackupPage.Default.BackupFileKeepCount == 0;
+            return CoreRuntime.Settings.BackupFileKeepCount == 0;
         }
     }
 }

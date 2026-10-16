@@ -45,7 +45,7 @@ namespace mRemoteNG.App
         /// <summary>
         /// Feature flag to enable the credential manager feature
         /// </summary>
-        public static bool UseCredentialManager => false;
+        public static bool UseCredentialManager => CoreRuntime.UseCredentialManager;
 
         public static WindowList WindowList { get; set; } = null!; // initialized during FrmMain startup
         public static MessageCollector MessageCollector => CoreRuntime.MessageCollector;

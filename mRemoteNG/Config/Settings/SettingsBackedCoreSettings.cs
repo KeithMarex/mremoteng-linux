@@ -1,6 +1,4 @@
-using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
-using mRemoteNG.App;
 
 namespace mRemoteNG.Config.Settings
 {
@@ -8,6 +6,8 @@ namespace mRemoteNG.Config.Settings
     [SupportedOSPlatform("windows")]
     public class SettingsBackedCoreSettings : ICoreSettings
     {
+        public int BackupFileKeepCount => Properties.OptionsBackupPage.Default.BackupFileKeepCount;
+        public string BackupFileNameFormat => Properties.OptionsBackupPage.Default.BackupFileNameFormat;
         public bool ConDefaultAutomaticResize => Properties.Settings.Default.ConDefaultAutomaticResize;
         public bool ConDefaultCacheBitmaps => Properties.Settings.Default.ConDefaultCacheBitmaps;
         public string ConDefaultColors => Properties.Settings.Default.ConDefaultColors;
@@ -87,15 +87,5 @@ namespace mRemoteNG.Config.Settings
             set => Properties.Settings.Default.PuttySavedSessionsPanel = value;
         }
         public bool SetHostnameLikeDisplayName => Properties.Settings.Default.SetHostnameLikeDisplayName;
-    }
-
-    internal static class CoreSettingsInitializer
-    {
-        /// <summary>
-        /// Runs as soon as this assembly loads (app and mRemoteNGTests alike), before any
-        /// connection object can read its defaults.
-        /// </summary>
-        [ModuleInitializer]
-        internal static void Initialize() => CoreRuntime.Settings = new SettingsBackedCoreSettings();
     }
 }

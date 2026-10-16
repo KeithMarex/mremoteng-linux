@@ -1,14 +1,12 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.Versioning;
 
 namespace mRemoteNG.Tools
 {
     /// <summary>
     /// Provides path validation to prevent path traversal attacks
     /// </summary>
-    [SupportedOSPlatform("windows")]
     public static class PathValidator
     {
         /// <summary>

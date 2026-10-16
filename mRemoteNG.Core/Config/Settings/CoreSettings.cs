@@ -6,6 +6,8 @@ namespace mRemoteNG.Config.Settings
     /// </summary>
     public class CoreSettings : ICoreSettings
     {
+        public int BackupFileKeepCount { get; set; } = 10;
+        public string BackupFileNameFormat { get; set; } = "{0}.{1:yyyyMMdd-HHmmssffff}.backup";
         public bool ConDefaultAutomaticResize { get; set; } = true;
         public bool ConDefaultCacheBitmaps { get; set; } = false;
         public string ConDefaultColors { get; set; } = "Colors16Bit";

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Versioning;
 using System.Security;
 using System.Xml.Linq;
 using mRemoteNG.App;
@@ -11,7 +10,6 @@ using mRemoteNG.Security;
 namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
 {
     // ReSharper disable once InconsistentNaming
-    [SupportedOSPlatform("windows")]
     public class XmlConnectionNodeSerializer28(ICryptographyProvider cryptographyProvider,
                                          SecureString encryptionKey,
                                          SaveFilter saveFilter) : ISerializer<ConnectionInfo, XElement>
@@ -48,6 +46,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             element.Add(new XAttribute("Descr", connectionInfo.Description));
             element.Add(new XAttribute("Icon", connectionInfo.Icon));
             element.Add(new XAttribute("Panel", connectionInfo.Panel));
+            element.Add(new XAttribute("Color", connectionInfo.Color ?? string.Empty));
             element.Add(new XAttribute("TabColor", connectionInfo.TabColor));
             element.Add(new XAttribute("ConnectionFrameColor", connectionInfo.ConnectionFrameColor));
             element.Add(new XAttribute("Id", connectionInfo.ConstantID));
@@ -163,7 +162,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
 
         private void AddCredentialAttributes(XContainer element, ConnectionInfo connectionInfo)
         {
-            if (Runtime.UseCredentialManager)
+            if (CoreRuntime.UseCredentialManager)
                 return;
 
             element.Add(_saveFilter.SaveUsername
@@ -199,6 +198,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             AddInheritanceAttribute(element, inheritance.Domain, "InheritDomain");
             AddInheritanceAttribute(element, inheritance.Icon, "InheritIcon");
             AddInheritanceAttribute(element, inheritance.Panel, "InheritPanel");
+            AddInheritanceAttribute(element, inheritance.Color, "InheritColor");
             AddInheritanceAttribute(element, inheritance.TabColor, "InheritTabColor");
             AddInheritanceAttribute(element, inheritance.ConnectionFrameColor, "InheritConnectionFrameColor");
             AddInheritanceAttribute(element, inheritance.Password, "InheritPassword");

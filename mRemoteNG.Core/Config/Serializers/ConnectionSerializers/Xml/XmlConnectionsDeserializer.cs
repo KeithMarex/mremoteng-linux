@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Security;
-using System.Windows.Forms;
 using System.Xml;
 using mRemoteNG.App;
 using mRemoteNG.Connection;
@@ -17,21 +16,18 @@ using mRemoteNG.Security;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
-using mRemoteNG.UI.Forms;
-using mRemoteNG.UI.TaskDialog;
 using mRemoteNG.Resources.Language;
-using System.Runtime.Versioning;
 
 namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
 {
-    [SupportedOSPlatform("windows")]
     public class XmlConnectionsDeserializer(Func<Optional<SecureString>>? authenticationRequestor = null) : IDeserializer<string, ConnectionTreeModel>
     {
         private XmlDocument _xmlDocument;
         private double _confVersion;
         private XmlConnectionsDecryptor _decryptor;
         private readonly string ConnectionFileName = "";
-        private const double MaxSupportedConfVersion = 2.8;
+        // Must be at least the version XmlConnectionSerializerFactory writes (see ConfVersionCompatibilityTests).
+        private const double MaxSupportedConfVersion = 2.9;
         private readonly RootNodeInfo _rootNodeInfo = new(RootNodeType.Connection);
 
         public Func<Optional<SecureString>>? AuthenticationRequestor { get; set; } = authenticationRequestor;
@@ -78,14 +74,14 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
                 AddNodesFromXmlRecursive(_xmlDocument.DocumentElement, _rootNodeInfo);
 
                 if (!import)
-                    Runtime.ConnectionsService.IsConnectionsFileLoaded = true;
+                    CoreRuntime.IsConnectionsFileLoaded = true;
 
                 return connectionTreeModel;
             }
             catch (Exception ex)
             {
-                Runtime.ConnectionsService.IsConnectionsFileLoaded = false;
-                Runtime.MessageCollector.AddExceptionStackTrace(Language.LoadFromXmlFailed, ex);
+                CoreRuntime.IsConnectionsFileLoaded = false;
+                CoreRuntime.MessageCollector.AddExceptionStackTrace(Language.LoadFromXmlFailed, ex);
                 throw;
             }
         }
@@ -105,18 +101,10 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             if (_xmlDocument.DocumentElement != null && _xmlDocument.DocumentElement.HasAttribute("ConfVersion"))
                 _confVersion = Convert.ToDouble(_xmlDocument.DocumentElement.Attributes["ConfVersion"]?.Value.Replace(",", "."), CultureInfo.InvariantCulture);
             else
-                Runtime.MessageCollector.AddMessage(MessageClass.WarningMsg, Language.OldConffile);
+                CoreRuntime.MessageCollector.AddMessage(MessageClass.WarningMsg, Language.OldConffile);
 
             if (!(_confVersion > MaxSupportedConfVersion)) return;
-            ShowIncompatibleVersionDialogBox();
-            throw new Exception($"Incompatible connection file format (file format version {_confVersion}).");
-        }
-
-        private void ShowIncompatibleVersionDialogBox()
-        {
-            CTaskDialog.ShowTaskDialogBox(FrmMain.Default, Application.ProductName, "Incompatible connection file format", $"The format of this connection file is not supported. Please upgrade to a newer version of {Application.ProductName}.",
-                                          string .Format("{1}{0}File Format Version: {2}{0}Highest Supported Version: {3}", Environment.NewLine, ConnectionFileName, _confVersion, MaxSupportedConfVersion),
-                                          "", "", "", "", ETaskDialogButtons.Ok, ESysIcons.Error, ESysIcons.Error);
+            throw new UnsupportedConnectionFileVersionException(_confVersion, MaxSupportedConfVersion);
         }
 
         private void InitializeRootNode(XmlElement connectionsRootElement)
@@ -182,7 +170,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             }
             catch (Exception ex)
             {
-                Runtime.MessageCollector.AddExceptionStackTrace(Language.AddNodeFromXmlFailed, ex);
+                CoreRuntime.MessageCollector.AddExceptionStackTrace(Language.AddNodeFromXmlFailed, ex);
                 throw;
             }
         }
@@ -215,7 +203,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
                             : RDPResolutions.SmartSize;
                     }
 
-                    if (!Runtime.UseCredentialManager || _confVersion <= 2.6) // 0.2 - 2.6
+                    if (!CoreRuntime.UseCredentialManager || _confVersion <= 2.6) // 0.2 - 2.6
                     {
                         connectionInfo.Username = xmlnode.GetAttributeAsString("Username");
                         connectionInfo.Password = _decryptor.Decrypt(xmlnode.GetAttributeAsString("Password"));
@@ -241,7 +229,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
                 }
                 else
                 {
-                    connectionInfo.Port = (int)RdpProtocol.Defaults.Port;
+                    connectionInfo.Port = DefaultPorts.Rdp;
                     connectionInfo.Protocol = ProtocolType.RDP;
                 }
 
@@ -263,7 +251,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
                         if (xmlnode.GetAttributeAsBool("UseVNC"))
                             connectionInfo.Port = DefaultPorts.Vnc;
                         else
-                            connectionInfo.Port = (int)RdpProtocol.Defaults.Port;
+                            connectionInfo.Port = DefaultPorts.Rdp;
                     }
 
                     connectionInfo.UseConsoleSession = false;
@@ -330,6 +318,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
                     connectionInfo.Inheritance.DisplayWallpaper = xmlnode.GetAttributeAsBool("InheritDisplayWallpaper");
                     connectionInfo.Inheritance.Icon = xmlnode.GetAttributeAsBool("InheritIcon");
                     connectionInfo.Inheritance.Panel = xmlnode.GetAttributeAsBool("InheritPanel");
+                    connectionInfo.Inheritance.Color = xmlnode.GetAttributeAsBool("InheritColor");
                     connectionInfo.Inheritance.TabColor = xmlnode.GetAttributeAsBool("InheritTabColor");
                     connectionInfo.Inheritance.ConnectionFrameColor = xmlnode.GetAttributeAsBool("InheritConnectionFrameColor");
                     connectionInfo.Inheritance.Port = xmlnode.GetAttributeAsBool("InheritPort");
@@ -345,7 +334,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
                     connectionInfo.Inheritance.Resolution = xmlnode.GetAttributeAsBool("InheritResolution");
                     connectionInfo.Inheritance.UseConsoleSession = xmlnode.GetAttributeAsBool("InheritUseConsoleSession");
 
-                    if (!Runtime.UseCredentialManager || _confVersion <= 2.6) // 1.3 - 2.6
+                    if (!CoreRuntime.UseCredentialManager || _confVersion <= 2.6) // 1.3 - 2.6
                     {
                         connectionInfo.Inheritance.Domain = xmlnode.GetAttributeAsBool("InheritDomain");
                         connectionInfo.Inheritance.Password = xmlnode.GetAttributeAsBool("InheritPassword");
@@ -354,6 +343,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
 
                     connectionInfo.Icon = xmlnode.GetAttributeAsString("Icon");
                     connectionInfo.Panel = xmlnode.GetAttributeAsString("Panel");
+                    connectionInfo.Color = xmlnode.GetAttributeAsString("Color");
                     connectionInfo.TabColor = xmlnode.GetAttributeAsString("TabColor");
                     connectionInfo.ConnectionFrameColor = xmlnode.GetAttributeAsEnum<ConnectionFrameColor>("ConnectionFrameColor");
                 }
@@ -565,7 +555,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             }
             catch (Exception ex)
             {
-                Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, string.Format(Language.GetConnectionInfoFromXmlFailed, connectionInfo.Name, ConnectionFileName, ex.Message));
+                CoreRuntime.MessageCollector.AddMessage(MessageClass.ErrorMsg, string.Format(Language.GetConnectionInfoFromXmlFailed, connectionInfo.Name, ConnectionFileName, ex.Message));
             }
 
             return connectionInfo;

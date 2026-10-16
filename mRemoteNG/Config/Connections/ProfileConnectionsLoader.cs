@@ -1,8 +1,10 @@
 using System.Runtime.Versioning;
+using mRemoteNG.Config.Serializers;
 using mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
 using mRemoteNG.Config.UserProfiles;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
+using mRemoteNG.UI;
 
 namespace mRemoteNG.Config.Connections
 {
@@ -18,7 +20,15 @@ namespace mRemoteNG.Config.Connections
                 model.AddRootNode(new RootNodeInfo(RootNodeType.Connection));
                 return model;
             }
-            return new XmlConnectionsDeserializer().Deserialize(serializedConnections);
+            try
+            {
+                return new XmlConnectionsDeserializer().Deserialize(serializedConnections);
+            }
+            catch (UnsupportedConnectionFileVersionException ex)
+            {
+                DialogFactory.ShowIncompatibleConnectionFileDialog(string.Empty, ex);
+                throw;
+            }
         }
     }
 }

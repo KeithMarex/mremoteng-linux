@@ -1,4 +1,6 @@
 ﻿using mRemoteNG.Config.DataProviders;
+using mRemoteNG.Config.Serializers;
+using mRemoteNG.UI;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree;
 using System;
@@ -30,7 +32,15 @@ namespace mRemoteNG.Config.Connections
             FileDataProvider dataProvider = new(_connectionFilePath);
             string xmlString = dataProvider.Load();
             XmlConnectionsDeserializer deserializer = new(PromptForPassword);
-            return deserializer.Deserialize(xmlString);
+            try
+            {
+                return deserializer.Deserialize(xmlString);
+            }
+            catch (UnsupportedConnectionFileVersionException ex)
+            {
+                DialogFactory.ShowIncompatibleConnectionFileDialog(_connectionFilePath, ex);
+                throw;
+            }
         }
 
         private Optional<SecureString> PromptForPassword()

@@ -51,14 +51,31 @@ public class FileBackupCreatorTests
     [Test]
     public void CreateBackupFile_WithPathTraversal_ThrowsArgumentException()
     {
-        string maliciousPath = @"..\..\..\Windows\System32\config.xml";
+        string maliciousPath = ExistingFileReachedThrough(@"\..\");
         Assert.Throws<ArgumentException>(() => _fileBackupCreator.CreateBackupFile(maliciousPath));
     }
 
     [Test]
     public void CreateBackupFile_WithForwardSlashTraversal_ThrowsArgumentException()
     {
-        string maliciousPath = @"../../../etc/passwd";
+        string maliciousPath = ExistingFileReachedThrough("/../");
         Assert.Throws<ArgumentException>(() => _fileBackupCreator.CreateBackupFile(maliciousPath));
+    }
+
+    /// <summary>
+    /// CreateBackupFile only validates the path of a file that exists (otherwise there is nothing to back
+    /// up), so the traversal tests need a real file: returns "&lt;dir&gt;/sub{traversal}target.xml" and makes
+    /// sure it exists. On Windows both separators resolve to &lt;dir&gt;/target.xml; on Linux a backslash is
+    /// an ordinary character, so that file is created under the literal name.
+    /// </summary>
+    private string ExistingFileReachedThrough(string traversal)
+    {
+        string subDirectory = Path.Combine(_testFileDirectory, "sub");
+        Directory.CreateDirectory(subDirectory);
+        File.WriteAllText(Path.Combine(_testFileDirectory, "target.xml"), "");
+        string path = subDirectory + traversal + "target.xml";
+        if (!File.Exists(path))
+            File.WriteAllText(path, "");
+        return path;
     }
 }
