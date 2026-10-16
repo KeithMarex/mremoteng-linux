@@ -24,6 +24,16 @@ public class AppPathsTests
     }
 
     [Test]
+    public void SocketsGoToTheRuntimeDirectoryOrElseTheStateDirectory()
+    {
+        AppPaths withRuntime = AppPaths.FromEnvironment(Environment(("HOME", "/home/u"), ("XDG_RUNTIME_DIR", "/run/user/1000")));
+        AppPaths without = AppPaths.FromEnvironment(Environment(("HOME", "/home/u")));
+
+        Assert.That(withRuntime.RuntimeDirectory, Is.EqualTo("/run/user/1000/mRemoteNG"));
+        Assert.That(without.RuntimeDirectory, Is.EqualTo("/home/u/.local/state/mRemoteNG"));
+    }
+
+    [Test]
     public void IgnoresRelativeXdgDirectories()
     {
         AppPaths paths = AppPaths.FromEnvironment(Environment(("HOME", "/home/u"), ("XDG_CONFIG_HOME", "relative/cfg")));

@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using mRemoteNG.App;
 using mRemoteNG.Avalonia.Platform;
 using mRemoteNG.Avalonia.Services;
+using mRemoteNG.Avalonia.Sessions;
 using mRemoteNG.Avalonia.Settings;
 using mRemoteNG.Config.Import;
 using mRemoteNG.Connection;
@@ -20,7 +21,7 @@ using mRemoteNG.Tree.Root;
 
 namespace mRemoteNG.Avalonia.ViewModels;
 
-/// <summary>The main window: the connection tree, its properties, notifications and the file commands.</summary>
+/// <summary>The main window: the connection tree, its properties, the sessions, notifications and the file commands.</summary>
 public sealed partial class MainWindowViewModel : ObservableObject
 {
     private readonly AppSettings _settings;
@@ -34,8 +35,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
     private bool _changingFilePassword;
 
     /// <param name="dispatch">Queues an action on the UI thread (after the current one completes).</param>
+    /// <param name="launcher">Prepares sessions; by default with ssh and telnet from the PATH.</param>
     public MainWindowViewModel(AppSettings settings, AppSettingsStore settingsStore, AppPaths paths,
-                               IDialogService dialogs, Action<Action> dispatch)
+                               IDialogService dialogs, Action<Action> dispatch, SessionLauncher? launcher = null)
     {
         _settings = settings;
         _settingsStore = settingsStore;
@@ -44,6 +46,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
         _dispatch = dispatch;
         _files = new ConnectionFileService(settings);
         Messages = new MessagesViewModel(CoreRuntime.MessageCollector, dispatch);
+        Sessions = new SessionsViewModel(launcher ?? new SessionLauncher(new SessionPrograms(), paths.RuntimeDirectory));
         PropertyPanel.PropertyEdited += OnPropertyEdited;
     }
 
@@ -57,7 +60,8 @@ public sealed partial class MainWindowViewModel : ObservableObject
     public Action<AppTheme> ApplyTheme { get; set; } = _ => { };
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(DuplicateCommand), nameof(DeleteCommand), nameof(MoveUpCommand), nameof(MoveDownCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DuplicateCommand), nameof(DeleteCommand), nameof(MoveUpCommand), nameof(MoveDownCommand),
+                                nameof(ConnectCommand))]
     private ConnectionNodeViewModel? _selectedNode;
 
     [ObservableProperty]
@@ -123,8 +127,19 @@ public sealed partial class MainWindowViewModel : ObservableObject
             await CreateNewAsync(_paths.DefaultConnectionFile);
     }
 
-    /// <summary>Called before the window closes; false keeps it open.</summary>
+    /// <summary>Called before the window closes; false keeps it open. Closing ends the sessions.</summary>
     public async Task<bool> CanCloseAsync()
+    {
+        if (Sessions.LiveCount > 0 && !await _dialogs.ConfirmAsync(UiText.Exit, UiText.ConfirmCloseSessions))
+            return false;
+        if (!await CanDiscardChangesAsync())
+            return false;
+
+        Sessions.CloseAll();
+        return true;
+    }
+
+    private async Task<bool> CanDiscardChangesAsync()
     {
         if (!IsDirty)
             return true;

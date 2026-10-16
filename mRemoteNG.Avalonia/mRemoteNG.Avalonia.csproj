@@ -21,6 +21,8 @@
     <PackageReference Include="Avalonia.Desktop" />
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <!-- MIT; brings XTerm.NET and Porta.Pty (MIT). -->
+    <PackageReference Include="Iciclecreek.Avalonia.Terminal" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\mRemoteNG.Core\mRemoteNG.Core.csproj" />

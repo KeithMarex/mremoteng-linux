@@ -1,6 +1,8 @@
 using System.Reflection;
 using Avalonia;
 using mRemoteNG.App;
+using mRemoteNG.Avalonia.Sessions;
+using mRemoteNG.Avalonia.Sessions.Askpass;
 
 namespace mRemoteNG.Avalonia;
 
@@ -9,6 +11,12 @@ internal static class Program
     [STAThread]
     public static int Main(string[] args)
     {
+        // Started by a session rather than by the user: as ssh's askpass helper, or as a Raw session's relay.
+        if (AskpassClient.IsRequested(Environment.GetEnvironmentVariable))
+            return AskpassClient.Run(args, Environment.GetEnvironmentVariable);
+        if (RawTcpRelay.IsRequested(args))
+            return RawTcpRelay.Run(args);
+
         if (args.Contains("--version"))
         {
             Console.WriteLine($"mRemoteNG for Linux {Version}");

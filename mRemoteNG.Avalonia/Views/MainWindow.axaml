@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:app="using:mRemoteNG.Avalonia"
         xmlns:vm="using:mRemoteNG.Avalonia.ViewModels"
+        xmlns:views="using:mRemoteNG.Avalonia.Views"
         x:Class="mRemoteNG.Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="{Binding Title}"
@@ -11,32 +12,49 @@
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Margin" Value="8,6" />
         </Style>
+        <Style Selector="TextBlock.connected">
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style Selector="TextBlock.ended">
+            <Setter Property="Opacity" Value="0.6" />
+        </Style>
+        <Style Selector="TabStripItem">
+            <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
+            <Setter Property="MinHeight" Value="32" />
+            <Setter Property="Padding" Value="10,2" />
+        </Style>
+        <Style Selector="Button.closeTab">
+            <Setter Property="Padding" Value="4,0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
     </Window.Styles>
 
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
+        <Menu x:Name="MainMenu" DockPanel.Dock="Top">
             <MenuItem Header="{x:Static app:UiText.File}">
-                <MenuItem Header="{x:Static app:UiText.NewConnectionFile}" Command="{Binding NewFileCommand}" InputGesture="Ctrl+N" HotKey="Ctrl+N" />
-                <MenuItem Header="{x:Static app:UiText.OpenConnectionFile}" Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O" HotKey="Ctrl+O" />
-                <MenuItem Header="{x:Static app:UiText.SaveConnectionFile}" Command="{Binding SaveCommand}" InputGesture="Ctrl+S" HotKey="Ctrl+S" />
-                <MenuItem Header="{x:Static app:UiText.SaveConnectionFileAs}" Command="{Binding SaveAsCommand}" InputGesture="Ctrl+Shift+S" HotKey="Ctrl+Shift+S" />
+                <MenuItem Header="{x:Static app:UiText.NewConnectionFile}" Command="{Binding NewFileCommand}" InputGesture="Ctrl+N" />
+                <MenuItem Header="{x:Static app:UiText.OpenConnectionFile}" Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O" />
+                <MenuItem Header="{x:Static app:UiText.SaveConnectionFile}" Command="{Binding SaveCommand}" InputGesture="Ctrl+S" />
+                <MenuItem Header="{x:Static app:UiText.SaveConnectionFileAs}" Command="{Binding SaveAsCommand}" InputGesture="Ctrl+Shift+S" />
                 <Separator />
-                <MenuItem Header="{x:Static app:UiText.ImportFromFile}" Command="{Binding ImportCommand}" InputGesture="Ctrl+I" HotKey="Ctrl+I" />
+                <MenuItem Header="{x:Static app:UiText.ImportFromFile}" Command="{Binding ImportCommand}" InputGesture="Ctrl+I" />
                 <Separator />
-                <MenuItem Header="{x:Static app:UiText.Exit}" Click="OnExitClick" InputGesture="Ctrl+Q" HotKey="Ctrl+Q" />
+                <MenuItem Header="{x:Static app:UiText.Exit}" Click="OnExitClick" InputGesture="Ctrl+Q" />
             </MenuItem>
             <MenuItem Header="{x:Static app:UiText.Tools}">
                 <MenuItem Header="{x:Static app:UiText.Options}" Command="{Binding OpenOptionsCommand}" />
             </MenuItem>
             <MenuItem Header="{x:Static app:UiText.Edit}">
-                <MenuItem Header="{x:Static app:UiText.NewConnection}" Command="{Binding AddConnectionCommand}" InputGesture="Ctrl+Shift+N" HotKey="Ctrl+Shift+N" />
+                <MenuItem Header="{x:Static app:UiText.NewConnection}" Command="{Binding AddConnectionCommand}" InputGesture="Ctrl+Shift+N" />
                 <MenuItem Header="{x:Static app:UiText.NewFolder}" Command="{Binding AddFolderCommand}" />
                 <Separator />
-                <MenuItem Header="{x:Static app:UiText.Duplicate}" Command="{Binding DuplicateCommand}" InputGesture="Ctrl+D" HotKey="Ctrl+D" />
+                <MenuItem Header="{x:Static app:UiText.Duplicate}" Command="{Binding DuplicateCommand}" InputGesture="Ctrl+D" />
                 <MenuItem Header="{x:Static app:UiText.Delete}" Command="{Binding DeleteCommand}" InputGesture="Delete" />
                 <Separator />
-                <MenuItem Header="{x:Static app:UiText.MoveUp}" Command="{Binding MoveUpCommand}" InputGesture="Alt+Up" HotKey="Alt+Up" />
-                <MenuItem Header="{x:Static app:UiText.MoveDown}" Command="{Binding MoveDownCommand}" InputGesture="Alt+Down" HotKey="Alt+Down" />
+                <MenuItem Header="{x:Static app:UiText.MoveUp}" Command="{Binding MoveUpCommand}" InputGesture="Alt+Up" />
+                <MenuItem Header="{x:Static app:UiText.MoveDown}" Command="{Binding MoveDownCommand}" InputGesture="Alt+Down" />
             </MenuItem>
         </Menu>
 
@@ -67,6 +85,7 @@
                           DragDrop.AllowDrop="True">
                     <TreeView.KeyBindings>
                         <KeyBinding Gesture="Delete" Command="{Binding DeleteCommand}" />
+                        <KeyBinding Gesture="Enter" Command="{Binding ConnectCommand}" />
                     </TreeView.KeyBindings>
                     <TreeView.Styles>
                         <Style Selector="TreeViewItem" x:DataType="vm:ConnectionNodeViewModel">
@@ -76,6 +95,8 @@
                     </TreeView.Styles>
                     <TreeView.ContextMenu>
                         <ContextMenu>
+                            <MenuItem Header="{x:Static app:UiText.Connect}" Command="{Binding ConnectCommand}" InputGesture="Enter" />
+                            <Separator />
                             <MenuItem Header="{x:Static app:UiText.NewConnection}" Command="{Binding AddConnectionCommand}" />
                             <MenuItem Header="{x:Static app:UiText.NewFolder}" Command="{Binding AddFolderCommand}" />
                             <Separator />
@@ -89,7 +110,7 @@
                     <TreeView.ItemTemplate>
                         <TreeDataTemplate x:DataType="vm:ConnectionNodeViewModel" ItemsSource="{Binding Children}">
                             <StackPanel Orientation="Horizontal" Spacing="8">
-                                <TextBlock Text="{Binding Name}" />
+                                <TextBlock Text="{Binding Name}" Classes.connected="{Binding IsConnected}" />
                                 <TextBlock Text="{Binding Detail}" Opacity="0.55" />
                             </StackPanel>
                         </TreeDataTemplate>
@@ -134,11 +155,41 @@
 
             <GridSplitter Grid.Column="1" ResizeDirection="Columns" />
 
-            <!-- Sessions (phase 3) -->
-            <Border Grid.Column="2">
-                <TextBlock Text="{x:Static app:UiText.NoSessionsYet}" TextWrapping="Wrap" Opacity="0.6"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="420" TextAlignment="Center" />
-            </Border>
+            <!-- Sessions -->
+            <DockPanel Grid.Column="2">
+                <TabStrip DockPanel.Dock="Top" ItemsSource="{Binding Sessions.Items}" SelectedItem="{Binding Sessions.Selected}"
+                          IsVisible="{Binding Sessions.HasSessions}">
+                    <TabStrip.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SessionViewModel">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <Border Width="4" CornerRadius="2" Background="{Binding TabBrush}"
+                                        IsVisible="{Binding TabBrush, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                <TextBlock Text="{Binding Title}" VerticalAlignment="Center" Classes.ended="{Binding HasEnded}" />
+                                <Button Classes="closeTab" Content="✕" Command="{Binding CloseCommand}"
+                                        ToolTip.Tip="{x:Static app:UiText.CloseTab}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </TabStrip.ItemTemplate>
+                </TabStrip>
+                <Panel>
+                    <TextBlock Text="{x:Static app:UiText.NoSessionsYet}" TextWrapping="Wrap" Opacity="0.6"
+                               IsVisible="{Binding !Sessions.HasSessions}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="420" TextAlignment="Center" />
+                    <!-- Every session stays in the visual tree, so its terminal keeps running; only the selected one shows. -->
+                    <ItemsControl ItemsSource="{Binding Sessions.Items}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Panel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:SessionViewModel">
+                                <views:SessionView IsVisible="{Binding IsSelected}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Panel>
+            </DockPanel>
         </Grid>
     </DockPanel>
 </Window>

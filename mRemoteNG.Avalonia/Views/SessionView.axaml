@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:app="using:mRemoteNG.Avalonia"
+             xmlns:vm="using:mRemoteNG.Avalonia.ViewModels"
+             xmlns:terminal="using:Iciclecreek.Terminal"
+             x:Class="mRemoteNG.Avalonia.Views.SessionView"
+             x:DataType="vm:SessionViewModel">
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Bottom" Margin="8,2">
+            <Button DockPanel.Dock="Right" Content="{x:Static app:UiText.Reconnect}" Command="{Binding ReconnectCommand}"
+                    IsVisible="{Binding HasEnded}" Margin="8,2,0,2" />
+            <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" Opacity="0.7" TextTrimming="CharacterEllipsis"
+                       ToolTip.Tip="{x:Static app:UiText.TerminalShortcuts}" />
+        </DockPanel>
+        <terminal:TerminalControl x:Name="Terminal" BufferSize="5000" />
+    </DockPanel>
+</UserControl>
