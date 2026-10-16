@@ -156,3 +156,55 @@ public class ConnectionFileServiceTests
     private static Optional<SecureString> UnexpectedPasswordPrompt() =>
         throw new AssertionException("The file is not protected; no password should be asked.");
 }
+
+public class ConnectionFileSidecarTests
+{
+    private TempDirectory _directory = null!;
+    private ConnectionFileService _service = null!;
+
+    [SetUp]
+    public void Setup()
+    {
+        _directory = new TempDirectory();
+        _service = new ConnectionFileService(new AppSettings());
+    }
+
+    [TearDown]
+    public void Teardown() => _directory.Dispose();
+
+    [Test]
+    public void SftpSurvivesASaveByWindows177ThroughTheSidecar()
+    {
+        string path = _directory.File("confCons.xml");
+        _service.CreateNew(path);
+        ConnectionInfo sftp = new() { Name = "files", Hostname = "web1", Protocol = ProtocolType.SFTP, Port = 22 };
+        _service.RootNode!.AddChild(sftp);
+        _service.Save();
+        Assert.That(File.Exists(path + ".linux.json"), Is.True);
+
+        // Windows 1.77 keeps Protocol="SSH2" but drops the PluginData element when it saves.
+        XDocument document = XDocument.Load(path);
+        Assert.That(document.Descendants("Node").Single().Attribute("Protocol")!.Value, Is.EqualTo("SSH2"));
+        document.Descendants("PluginData").Remove();
+        document.Save(path);
+
+        ConnectionInfo reopened = new ConnectionFileService(new AppSettings()).Open(path, () => Optional<SecureString>.Empty)
+                                                                             .GetRecursiveChildList().Single(node => node.Name == "files");
+        Assert.That(reopened.Protocol, Is.EqualTo(ProtocolType.SFTP));
+    }
+
+    [Test]
+    public void TheSidecarGoesAwayWithTheLastFileTransferConnection()
+    {
+        string path = _directory.File("confCons.xml");
+        _service.CreateNew(path);
+        ConnectionInfo ftp = new() { Name = "ftp", Hostname = "files", Protocol = ProtocolType.FTP, Port = 21 };
+        _service.RootNode!.AddChild(ftp);
+        _service.Save();
+
+        ftp.Protocol = ProtocolType.SSH2;
+        _service.Save();
+
+        Assert.That(File.Exists(path + ".linux.json"), Is.False);
+    }
+}

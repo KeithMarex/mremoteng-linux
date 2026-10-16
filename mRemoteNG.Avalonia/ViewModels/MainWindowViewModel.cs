@@ -236,6 +236,8 @@ public sealed partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // A connection file written by this app keeps its FTP and SFTP connections in a sidecar.
+        ConnectionFileService.ApplySidecar(path, imported.GetRecursiveChildList());
         ConnectionInfo[] nodes = imported.Children.ToArray();
         foreach (ConnectionInfo node in nodes)
             folder.AddChild(node);

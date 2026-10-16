@@ -2,7 +2,9 @@ using System.Security;
 using mRemoteNG.App;
 using mRemoteNG.Avalonia.Settings;
 using mRemoteNG.Config.DataProviders;
+using mRemoteNG.Config.Serializers.ConnectionSerializers;
 using mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
+using mRemoteNG.Messages;
 using mRemoteNG.Security;
 using mRemoteNG.Security.Factories;
 using mRemoteNG.Tools;
@@ -13,7 +15,8 @@ namespace mRemoteNG.Avalonia.Services;
 
 /// <summary>
 /// Creates, opens and saves connection files (confCons.xml) with the same Core code as Windows mRemoteNG,
-/// so the files stay interchangeable.
+/// so the files stay interchangeable. FTP and SFTP connections, which Windows does not know, are also kept in a
+/// sidecar file next to the connection file (see <see cref="ConnectionFileSidecar"/>).
 /// </summary>
 public sealed class ConnectionFileService(AppSettings settings)
 {
@@ -52,6 +55,7 @@ public sealed class ConnectionFileService(AppSettings settings)
         {
             ConnectionTreeModel? model = new XmlConnectionsDeserializer(passwordPrompt).Deserialize(File.ReadAllText(filePath))
                                          ?? throw new InvalidDataException($"{filePath} could not be opened: it is empty or the password was not given.");
+            ApplySidecar(filePath, model.GetRecursiveChildList());
             Model = model;
             FilePath = filePath;
             CoreRuntime.IsConnectionsFileLoaded = true;
@@ -102,6 +106,30 @@ public sealed class ConnectionFileService(AppSettings settings)
         new FileBackupCreator().CreateBackupFile(fullPath);
         WriteAtomically(fullPath, xml);
         new FileBackupPruner().PruneBackupFiles(fullPath, CoreRuntime.Settings.BackupFileKeepCount);
+
+        string sidecarPath = ConnectionFileSidecar.PathFor(fullPath);
+        if (ConnectionFileSidecar.Build(model.GetRecursiveChildList()) is { } sidecar)
+            WriteAtomically(sidecarPath, sidecar);
+        else
+            File.Delete(sidecarPath);
+    }
+
+    /// <summary>Restores FTP and SFTP connections from the sidecar of <paramref name="connectionFile"/>, if it has one.</summary>
+    public static void ApplySidecar(string connectionFile, IEnumerable<Connection.ConnectionInfo> nodes)
+    {
+        string sidecarPath = ConnectionFileSidecar.PathFor(connectionFile);
+        if (!File.Exists(sidecarPath))
+            return;
+
+        try
+        {
+            ConnectionFileSidecar.Apply(File.ReadAllText(sidecarPath), nodes);
+        }
+        catch (Exception ex) when (ex is System.Text.Json.JsonException or IOException or UnauthorizedAccessException)
+        {
+            CoreRuntime.MessageCollector.AddExceptionMessage($"Could not read {sidecarPath}; FTP and SFTP connections may show as RAW and SSH2.",
+                                                             ex, MessageClass.WarningMsg, logOnly: false);
+        }
     }
 
     // Write next to the target and rename over it, so a crash or full disk never leaves a half-written
