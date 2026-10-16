@@ -44,7 +44,8 @@ public class FileTransferViewModelTests
     {
         Assert.That(_tab.State, Is.EqualTo(FileTransferState.Connected));
         Assert.That(_tab.Remote.CurrentPath, Is.EqualTo("/home/tester"));
-        Assert.That(_tab.Remote.Entries.Select(entry => entry.Name), Is.EqualTo(new[] { "upload", "readme.txt" }), "directories first");
+        Assert.That(_tab.Remote.Entries.Select(entry => entry.Name), Is.EqualTo(new[] { "..", "upload", "readme.txt" }),
+                    "the directory above, then directories");
         Assert.That(_connection.OpenConnections.Count, Is.EqualTo(1));
         Assert.That(_tab.IsUnencrypted, Is.False);
     }
@@ -54,7 +55,7 @@ public class FileTransferViewModelTests
     {
         File.WriteAllText(_local.File("notes.txt"), "uploaded");
         await _tab.Local.RefreshAsync();
-        _tab.Local.SelectedEntries.Add(_tab.Local.Entries.Single());
+        _tab.Local.SelectedEntries.Add(_tab.Local.Entries.Single(entry => !entry.IsParent));
 
         await _tab.UploadCommand.ExecuteAsync(null);
         await Finished(_tab.Transfers.Single());
@@ -101,6 +102,96 @@ public class FileTransferViewModelTests
 
         Assert.That(_dialogs.Errors.Single(), Does.Contain("not a valid name"));
         Assert.That(await _server.ExistsAsync("/home/outside", CancellationToken.None), Is.False);
+    }
+
+    [Test]
+    public async Task TheParentEntryOpensTheDirectoryAboveAndIsNotThereAtTheTop()
+    {
+        await _tab.Remote.OpenCommand.ExecuteAsync(_tab.Remote.Entries[0]);
+        Assert.That(_tab.Remote.CurrentPath, Is.EqualTo("/home"));
+
+        await _tab.Remote.NavigateAsync("/");
+        Assert.That(_tab.Remote.Entries.Any(entry => entry.IsParent), Is.False);
+    }
+
+    [Test]
+    public async Task DroppingOnTheParentMovesUpOnTheServer()
+    {
+        _server.AddFile("/home/tester/upload/report.txt", "q3");
+        _server.AddFile("/home/tester/upload/old/2025.txt", "q4");
+        await _tab.Remote.NavigateAsync("/home/tester/upload");
+
+        await _tab.MoveAsync(_tab.Remote, _tab.Remote.Entries.Where(entry => !entry.IsParent).ToList(), _tab.Remote.Entries[0].FullPath);
+
+        Assert.That(_server.Content("/home/tester/report.txt"), Is.EqualTo("q3"));
+        Assert.That(_server.Content("/home/tester/old/2025.txt"), Is.EqualTo("q4"));
+        Assert.That(_tab.Remote.Entries.Select(entry => entry.Name), Is.EqualTo(new[] { ".." }));
+    }
+
+    [Test]
+    public async Task MovingOntoANameThatIsThereLeavesItWhereItWas()
+    {
+        _server.AddFile("/home/tester/upload/readme.txt", "newer");
+        await _tab.Remote.NavigateAsync("/home/tester/upload");
+
+        await _tab.MoveAsync(_tab.Remote, [_tab.Remote.Entries.Single(entry => entry.Name == "readme.txt")], "/home/tester");
+
+        Assert.That(_dialogs.Errors.Single(), Does.Contain("already exists"));
+        Assert.That(_server.Content("/home/tester/readme.txt"), Is.EqualTo("hello"));
+        Assert.That(_server.Content("/home/tester/upload/readme.txt"), Is.EqualTo("newer"));
+    }
+
+    [Test]
+    public void ADirectoryDoesNotMoveIntoItselfOrWhereItIs()
+    {
+        FileEntryViewModel upload = _tab.Remote.Entries.Single(entry => entry.Name == "upload");
+
+        Assert.That(_tab.Remote.CanMoveInto(upload, "/home/tester/upload"), Is.False);
+        Assert.That(_tab.Remote.CanMoveInto(upload, "/home/tester/upload/sub"), Is.False);
+        Assert.That(_tab.Remote.CanMoveInto(upload, "/home/tester"), Is.False);
+        Assert.That(_tab.Remote.CanMoveInto(upload, "/home"), Is.True);
+        Assert.That(_tab.Remote.CanMoveInto(_tab.Remote.Entries[0], "/"), Is.False, "the .. entry itself");
+    }
+
+    [Test]
+    public async Task DroppingOnTheParentMovesUpOnThisComputer()
+    {
+        Directory.CreateDirectory(_local.File("sub"));
+        File.WriteAllText(_local.File("sub/notes.txt"), "local");
+        await _tab.Local.NavigateAsync(_local.File("sub"));
+
+        await _tab.MoveAsync(_tab.Local, [_tab.Local.Entries.Single(entry => entry.Name == "notes.txt")], _tab.Local.Entries[0].FullPath);
+
+        Assert.That(File.ReadAllText(_local.File("notes.txt")), Is.EqualTo("local"));
+        Assert.That(_tab.Local.Entries.Select(entry => entry.Name), Is.EqualTo(new[] { ".." }));
+    }
+
+    [Test]
+    public async Task DroppingOnADirectoryOfTheOtherPaneTransfersIntoIt()
+    {
+        File.WriteAllText(_local.File("notes.txt"), "uploaded");
+        await _tab.UploadAsync([_local.File("notes.txt")], "/home/tester/upload");
+        await Finished(_tab.Transfers.Single());
+        Assert.That(_server.Content("/home/tester/upload/notes.txt"), Is.EqualTo("uploaded"));
+
+        Directory.CreateDirectory(_local.File("in"));
+        await _tab.DownloadAsync([_tab.Remote.Entries.Single(entry => entry.Name == "readme.txt")], _local.File("in"));
+        await Finished(_tab.Transfers.Last());
+        Assert.That(File.ReadAllText(_local.File("in/readme.txt")), Is.EqualTo("hello"));
+    }
+
+    [Test]
+    public async Task TheParentEntryIsNeverTransferredRenamedOrDeleted()
+    {
+        _tab.Remote.SelectedEntries.Add(_tab.Remote.Entries[0]);
+        Assert.That(_tab.DownloadCommand.CanExecute(null) || _tab.RenameCommand.CanExecute(null) || _tab.DeleteCommand.CanExecute(null), Is.False);
+
+        _tab.Remote.SelectedEntries.Add(_tab.Remote.Entries.Single(entry => entry.Name == "readme.txt"));
+        await _tab.DeleteCommand.ExecuteAsync(null);
+
+        Assert.That(_dialogs.Confirmations.Single(), Does.Contain("readme.txt"));
+        Assert.That(await _server.ExistsAsync("/home/tester/readme.txt", CancellationToken.None), Is.False);
+        Assert.That(await _server.ExistsAsync("/home/tester", CancellationToken.None), Is.True);
     }
 
     [Test]

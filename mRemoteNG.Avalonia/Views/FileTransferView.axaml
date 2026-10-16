@@ -25,6 +25,12 @@
             <Setter Property="Padding" Value="6,2" />
             <Setter Property="MinHeight" Value="0" />
         </Style>
+        <!-- The directory a drop goes into -->
+        <Style Selector="ListBox.files ListBoxItem.dropTarget /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource MrHover}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource MrHoverBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
         <Style Selector="TextBlock.paneTitle">
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Margin" Value="4,4" />

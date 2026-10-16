@@ -82,7 +82,34 @@ internal sealed class FakeRemoteFileSystem : IRemoteFileSystem
         return Task.CompletedTask;
     }
 
-    public Task RenameAsync(string path, string newPath, CancellationToken cancellationToken) => throw new NotSupportedException();
+    /// <summary>Moves a file, or a directory with everything in it; like OpenSSH's server, never over something that is there.</summary>
+    public Task RenameAsync(string path, string newPath, CancellationToken cancellationToken)
+    {
+        if (_files.ContainsKey(newPath) || _directories.Contains(newPath))
+            throw new IOException($"{newPath} already exists.");
+        if (_files.TryRemove(path, out byte[]? data))
+        {
+            _files[newPath] = data;
+            return Task.CompletedTask;
+        }
+
+        if (!_directories.Remove(path))
+            throw new FileNotFoundException($"{path} does not exist.");
+        _directories.Add(newPath);
+        foreach (string directory in _directories.Where(directory => directory.StartsWith(path + "/", StringComparison.Ordinal)).ToList())
+        {
+            _directories.Remove(directory);
+            _directories.Add(newPath + directory[path.Length..]);
+        }
+
+        foreach (string file in _files.Keys.Where(file => file.StartsWith(path + "/", StringComparison.Ordinal)).ToList())
+        {
+            if (_files.TryRemove(file, out byte[]? content))
+                _files[newPath + file[path.Length..]] = content;
+        }
+
+        return Task.CompletedTask;
+    }
 
     public Task DeleteAsync(RemoteEntry entry, CancellationToken cancellationToken)
     {

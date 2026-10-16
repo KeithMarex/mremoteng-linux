@@ -82,6 +82,7 @@ public static class UiText
     public const string Transfers = "Transfers";
     public const string ClearFinished = "Clear finished";
     public const string Upload = "Upload";
+    public const string Move = "Move";
     public const string Refresh = "Refresh";
     public const string Up = "Up";
     public const string NewFolderPrompt = "Name of the new folder:";
@@ -142,6 +143,9 @@ public static class UiText
         : $"{count} items already exist in {directory}. Replace them? (No skips them.)";
     public static string RenamePrompt(string name) => $"New name for {name}:";
     public static string ItemCount(int count) => $"{count} items";
+    public static string NotMovedAlreadyThere(IReadOnlyList<string> names, string directory) => names.Count == 1
+        ? $"\"{names[0]}\" already exists in {directory} and was not moved."
+        : $"{string.Join(", ", names.Select(name => $"\"{name}\""))} already exist in {directory} and were not moved.";
     public static string ConfirmDeleteOnServer(string what) => $"Delete {what} from the server? This cannot be undone.";
     public static string InvalidFileName(string name) => $"\"{name}\" is not a valid name: it may not contain '/' or be '.' or '..'.";
     public static string TransferProgress(string done, string total, string? file) =>
