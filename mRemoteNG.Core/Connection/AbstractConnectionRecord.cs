@@ -244,7 +244,8 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Username)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUsername)),
-         AttributeUsedInProtocol(ProtocolType.RDP, ProtocolType.SSH1, ProtocolType.SSH2, ProtocolType.HTTP, ProtocolType.HTTPS, ProtocolType.IntApp)]
+         AttributeUsedInProtocol(ProtocolType.RDP, ProtocolType.SSH1, ProtocolType.SSH2, ProtocolType.HTTP, ProtocolType.HTTPS, ProtocolType.IntApp,
+            ProtocolType.FTP, ProtocolType.SFTP)]
         public virtual string Username
         {
             get => GetPropertyValue("Username", _username);
@@ -350,7 +351,7 @@ namespace mRemoteNG.Connection
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.SshTunnel)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionSshTunnel)),
          TypeConverter(WinFormsPropertyGridTypes.SshTunnelConverter),
-         AttributeUsedInAllProtocolsExcept()]
+         AttributeUsedInAllProtocolsExcept(ProtocolType.FTP, ProtocolType.SFTP)]
         public string SSHTunnelConnectionName
         {
             get => GetPropertyValue("SSHTunnelConnectionName", _sshTunnelConnectionName).Trim();

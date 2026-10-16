@@ -144,6 +144,10 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
                 if (!parentXmlNode.HasChildNodes) return;
                 foreach (XmlNode xmlNode in parentXmlNode.ChildNodes)
                 {
+                    // A node's other child elements (PluginData) are not tree nodes.
+                    if (xmlNode.Name != "Node")
+                        continue;
+
                     TreeNodeType nodeType = xmlNode.GetAttributeAsEnum("Type", TreeNodeType.Connection);
 
                     // ReSharper disable once SwitchStatementMissingSomeCases
@@ -154,7 +158,9 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
                             parentContainer.AddChild(connectionInfo);
                             break;
                         case TreeNodeType.Container:
-                            ContainerInfo containerInfo = new();
+                            // Keep the folder's Id; it used to get a new one on every load.
+                            string folderId = xmlNode.GetAttributeAsString("Id");
+                            ContainerInfo containerInfo = string.IsNullOrWhiteSpace(folderId) ? new ContainerInfo() : new ContainerInfo(folderId);
 
                             if (_confVersion >= 0.9)
                                 containerInfo.CopyFrom(GetConnectionInfoFromXml(xmlNode));
@@ -524,6 +530,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
                     connectionInfo.EC2Region = xmlnode.GetAttributeAsString("EC2Region");
                     connectionInfo.ReplacePluginProperties(PluginConnectionDataSerializer.Deserialize(xmlnode.SelectSingleNode("PluginData")?.InnerText ?? string.Empty));
                     LegacyPluginDataMigrator.Migrate(connectionInfo);
+                    FileTransferCompatibility.RestoreProtocol(connectionInfo);
                     connectionInfo.UseRestrictedAdmin = xmlnode.GetAttributeAsBool("UseRestrictedAdmin");
                     connectionInfo.Inheritance.UseRestrictedAdmin = xmlnode.GetAttributeAsBool("InheritUseRestrictedAdmin");
                     connectionInfo.UseRCG = xmlnode.GetAttributeAsBool("UseRCG");

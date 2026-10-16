@@ -501,6 +501,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Csv
                 connectionRecord.ReplacePluginProperties(PluginConnectionDataSerializer.Deserialize(connectionCsv[headers.IndexOf("PluginData")]));
             }
             LegacyPluginDataMigrator.Migrate(connectionRecord);
+            FileTransferCompatibility.RestoreProtocol(connectionRecord);
 
             #region Inheritance
 

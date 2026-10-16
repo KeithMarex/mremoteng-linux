@@ -11,6 +11,8 @@ public sealed class SessionLauncher(SessionPrograms programs, string runtimeDire
 {
     private readonly SessionPlanner _planner = new(programs);
 
+    public SessionPrograms Programs { get; } = programs;
+
     /// <exception cref="SessionException">The connection cannot be opened.</exception>
     public PreparedSession Prepare(ConnectionInfo connection)
     {
@@ -19,7 +21,7 @@ public sealed class SessionLauncher(SessionPrograms programs, string runtimeDire
             return new PreparedSession(plan, new Dictionary<string, string>(), plan.Warnings, null);
 
         List<string> warnings = [.. plan.Warnings];
-        if (programs.App is not { } helper)
+        if (Programs.App is not { } helper)
         {
             warnings.Add(UiText.StoredPasswordUnavailable);
             return new PreparedSession(plan, new Dictionary<string, string>(), warnings, null);

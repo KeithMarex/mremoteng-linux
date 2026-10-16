@@ -65,7 +65,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
                 element.Add(new XAttribute("Password", ""));
 
             element.Add(new XAttribute("Hostname", connectionInfo.Hostname));
-            element.Add(new XAttribute("Protocol", connectionInfo.Protocol));
+            element.Add(new XAttribute("Protocol", FileTransferCompatibility.StandIn(connectionInfo.Protocol)));
             element.Add(new XAttribute("SSHTunnelConnectionName", connectionInfo.SSHTunnelConnectionName));
             element.Add(new XAttribute("OpeningCommand", connectionInfo.OpeningCommand));
             element.Add(new XAttribute("SSHOptions", connectionInfo.SSHOptions));

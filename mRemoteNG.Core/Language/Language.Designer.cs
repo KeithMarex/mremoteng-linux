@@ -7287,6 +7287,24 @@ namespace mRemoteNG.Resources.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FTP.
+        /// </summary>
+        public static string Ftp {
+            get {
+                return ResourceManager.GetString("Ftp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SFTP (SSH File Transfer).
+        /// </summary>
+        public static string Sftp {
+            get {
+                return ResourceManager.GetString("Sftp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Telnet.
         /// </summary>
         public static string Telnet {

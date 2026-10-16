@@ -2,7 +2,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using mRemoteNG.App;
+using mRemoteNG.Avalonia.Sessions;
 using mRemoteNG.Connection;
+using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Tree.Root;
 
 namespace mRemoteNG.Avalonia.ViewModels;
@@ -61,9 +63,12 @@ public sealed partial class PropertyPanelViewModel : ObservableObject
 
         HashSet<string> hidden = ConnectionPropertyRules.HiddenConnectionProperties(connection, hideInherited: false).ToHashSet();
         return properties.Where(property =>
-            ConnectionPropertyRules.IsValidForProtocol(property, connection.Protocol, skipProtocolCheck: false) &&
-            !hidden.Contains(property.Name));
+                             ConnectionPropertyRules.IsValidForProtocol(property, connection.Protocol, skipProtocolCheck: false) &&
+                             !hidden.Contains(property.Name))
+                         .Concat(FileTransferProperties.For(connection));
     }
+
+    private static int FtpPortFor(bool implicitTls) => implicitTls ? 990 : DefaultPorts.Ftp;
 
     private void OnItemChanged(PropertyItemViewModel item)
     {
@@ -73,6 +78,10 @@ public sealed partial class PropertyPanelViewModel : ObservableObject
             // Same follow-up edits as the WinForms property grid.
             case nameof(ConnectionInfo.Protocol):
                 connection.SetDefaultPort();
+                break;
+            // Implicit TLS has a port of its own.
+            case FileTransferSettings.EncryptionKey when connection.Port == FtpPortFor(implicitTls: false) || connection.Port == FtpPortFor(implicitTls: true):
+                connection.Port = FtpPortFor(FileTransferSettings.Encryption(connection) == FileTransfer.Ftp.FtpEncryption.Implicit);
                 break;
             case nameof(ConnectionInfo.Name) when CoreRuntime.Settings.SetHostnameLikeDisplayName
                                                   && !string.IsNullOrEmpty(connection.Name):

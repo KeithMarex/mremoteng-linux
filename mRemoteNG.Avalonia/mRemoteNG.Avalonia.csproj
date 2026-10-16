@@ -26,5 +26,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\mRemoteNG.Core\mRemoteNG.Core.csproj" />
+    <ProjectReference Include="..\mRemoteNG.FileTransfer\mRemoteNG.FileTransfer.csproj" />
   </ItemGroup>
 </Project>

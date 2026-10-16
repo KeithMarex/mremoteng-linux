@@ -66,6 +66,9 @@ namespace mRemoteNG.Connection.Protocol
                         throw (new Exception(Language.NoExtAppDefined));
                     }
                     return new IntegratedProgram();
+                case ProtocolType.FTP:
+                case ProtocolType.SFTP:
+                    throw new NotSupportedException("FTP and SFTP connections can only be opened in mRemoteNG for Linux so far.");
             }
 
             return default(ProtocolBase);

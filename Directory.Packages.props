@@ -21,6 +21,7 @@
     <PackageVersion Include="DockPanelSuite" Version="3.1.1" />
     <PackageVersion Include="DockPanelSuite.ThemeVS2015" Version="3.1.1" />
     <PackageVersion Include="envdte" Version="17.14.40260" />
+    <PackageVersion Include="FluentFTP" Version="55.0.0" />
     <PackageVersion Include="Gherkin" Version="42.0.1" />
     <PackageVersion Include="Google.Protobuf" Version="3.36.2" />
     <PackageVersion Include="Iciclecreek.Avalonia.Terminal" Version="4.1.0" />

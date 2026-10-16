@@ -8,6 +8,7 @@ namespace mRemoteNG.Connection.Protocol
         public const int Ard = 5900;
         public const int Ssh = 22;
         public const int Telnet = 23;
+        public const int Ftp = 21;
         public const int Rlogin = 513;
         public const int Raw = 23;
         public const int Http = 80;
@@ -21,7 +22,8 @@ namespace mRemoteNG.Connection.Protocol
                 ProtocolType.RDP => Rdp,
                 ProtocolType.VNC => Vnc,
                 ProtocolType.ARD => Ard,
-                ProtocolType.SSH1 or ProtocolType.SSH2 or ProtocolType.Terminal => Ssh,
+                ProtocolType.SSH1 or ProtocolType.SSH2 or ProtocolType.Terminal or ProtocolType.SFTP => Ssh,
+                ProtocolType.FTP => Ftp,
                 ProtocolType.Telnet => Telnet,
                 ProtocolType.Rlogin => Rlogin,
                 ProtocolType.RAW => Raw,

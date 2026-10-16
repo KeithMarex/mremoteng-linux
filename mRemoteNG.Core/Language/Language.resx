@@ -1791,6 +1791,12 @@ If you run into such an error, please create a new connection file!</value>
   <data name="Updates" xml:space="preserve">
     <value>Updates</value>
   </data>
+  <data name="Ftp" xml:space="preserve">
+    <value>FTP</value>
+  </data>
+  <data name="Sftp" xml:space="preserve">
+    <value>SFTP (SSH File Transfer)</value>
+  </data>
   <data name="Telnet" xml:space="preserve">
     <value>Telnet</value>
   </data>

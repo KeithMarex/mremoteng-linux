@@ -26,6 +26,12 @@ public sealed class AppSettings
     public int EncryptionKeyDerivationIterations { get; set; } = 10000;
     public bool EncryptCompleteConnectionsFile { get; set; }
 
+    /// <summary>
+    /// FTPS certificates the user chose to trust although the system does not ("host:port" to SHA-256 fingerprint),
+    /// such as a server's self-signed certificate.
+    /// </summary>
+    public Dictionary<string, string> TrustedCertificates { get; set; } = new();
+
     /// <summary>The settings shared with Core (defaults for new connections and more).</summary>
     public CoreSettings Core { get; set; } = new();
 }

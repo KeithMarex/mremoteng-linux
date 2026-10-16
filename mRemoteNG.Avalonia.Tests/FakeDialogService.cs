@@ -1,5 +1,6 @@
 using System.Security;
 using mRemoteNG.Avalonia.Services;
+using mRemoteNG.FileTransfer;
 using mRemoteNG.Security;
 
 namespace mRemoteNG.Avalonia.Tests;
@@ -27,6 +28,29 @@ internal sealed class FakeDialogService : IDialogService
         Task.FromResult(Passwords.Count > 0 && Passwords.Dequeue() is { } password ? password.ConvertToSecureString() : null);
 
     public Task<SecureString?> AskNewPasswordAsync(string fileName) => Task.FromResult(NewPassword?.ConvertToSecureString());
+
+    public Queue<string?> Secrets { get; } = new();
+    public List<string> SecretPrompts { get; } = [];
+
+    public Task<SecureString?> AskSecretAsync(string prompt)
+    {
+        SecretPrompts.Add(prompt);
+        return Task.FromResult(Secrets.Count > 0 && Secrets.Dequeue() is { } secret ? secret.ConvertToSecureString() : null);
+    }
+
+    public TrustDecision TrustAnswer { get; set; } = TrustDecision.Reject;
+    public List<string> TrustQuestions { get; } = [];
+
+    public Task<TrustDecision> AskTrustAsync(string title, string message)
+    {
+        TrustQuestions.Add(message);
+        return Task.FromResult(TrustAnswer);
+    }
+
+    public Queue<string?> Texts { get; } = new();
+
+    public Task<string?> AskTextAsync(string title, string prompt, string initialText) =>
+        Task.FromResult(Texts.Count > 0 ? Texts.Dequeue() : null);
 
     public Task<bool> ConfirmAsync(string title, string message)
     {

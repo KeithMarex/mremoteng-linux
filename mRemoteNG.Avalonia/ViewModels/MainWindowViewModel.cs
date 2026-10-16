@@ -46,7 +46,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
         _dispatch = dispatch;
         _files = new ConnectionFileService(settings);
         Messages = new MessagesViewModel(CoreRuntime.MessageCollector, dispatch);
-        Sessions = new SessionsViewModel(launcher ?? new SessionLauncher(new SessionPrograms(), paths.RuntimeDirectory));
+        Sessions = CreateSessions(launcher ?? new SessionLauncher(new SessionPrograms(), paths.RuntimeDirectory));
         PropertyPanel.PropertyEdited += OnPropertyEdited;
     }
 
@@ -61,7 +61,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DuplicateCommand), nameof(DeleteCommand), nameof(MoveUpCommand), nameof(MoveDownCommand),
-                                nameof(ConnectCommand))]
+                                nameof(ConnectCommand), nameof(OpenFileTransferCommand))]
     private ConnectionNodeViewModel? _selectedNode;
 
     [ObservableProperty]
@@ -236,6 +236,8 @@ public sealed partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // A connection file written by this app keeps its FTP and SFTP connections in a sidecar.
+        ConnectionFileService.ApplySidecar(path, imported.GetRecursiveChildList());
         ConnectionInfo[] nodes = imported.Children.ToArray();
         foreach (ConnectionInfo node in nodes)
             folder.AddChild(node);

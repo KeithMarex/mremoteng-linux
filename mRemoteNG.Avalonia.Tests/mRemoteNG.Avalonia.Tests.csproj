@@ -19,6 +19,10 @@
     <ProjectReference Include="..\mRemoteNG.Avalonia\mRemoteNG.Avalonia.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <!-- The in-memory server of the file transfer engine's tests. -->
+    <Compile Include="..\mRemoteNG.FileTransfer.Tests\FakeRemoteFileSystem.cs" Link="FakeRemoteFileSystem.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <!-- A real connection file written by Windows mRemoteNG (from mRemoteNGTests). -->
     <None Include="..\mRemoteNGTests\Resources\confCons_v2_6.xml" Link="Fixtures\confCons_v2_6.xml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

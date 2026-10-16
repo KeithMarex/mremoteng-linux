@@ -62,7 +62,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             }
 
             element.Add(new XAttribute("Hostname", connectionInfo.Hostname));
-            element.Add(new XAttribute("Protocol", connectionInfo.Protocol));
+            element.Add(new XAttribute("Protocol", FileTransferCompatibility.StandIn(connectionInfo.Protocol)));
             element.Add(new XAttribute("RdpVersion", connectionInfo.RdpVersion.ToString().ToLowerInvariant()));
             element.Add(new XAttribute("SSHTunnelConnectionName", connectionInfo.SSHTunnelConnectionName));
             element.Add(new XAttribute("OpeningCommand", connectionInfo.OpeningCommand));
@@ -152,7 +152,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             element.Add(new XAttribute("ExternalCredentialProvider", connectionInfo.ExternalCredentialProvider));
             element.Add(new XAttribute("ExternalAddressProvider", connectionInfo.ExternalAddressProvider));
 
-            string serializedPluginData = PluginConnectionDataSerializer.Serialize(connectionInfo.PluginProperties);
+            string serializedPluginData = FileTransferCompatibility.SerializedPluginData(connectionInfo);
             if (!string.IsNullOrEmpty(serializedPluginData))
                 element.Add(new XElement("PluginData", serializedPluginData));
         }

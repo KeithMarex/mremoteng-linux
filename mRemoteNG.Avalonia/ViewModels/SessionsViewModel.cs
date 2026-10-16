@@ -5,31 +5,35 @@ using mRemoteNG.Connection;
 
 namespace mRemoteNG.Avalonia.ViewModels;
 
-/// <summary>The session tabs.</summary>
-public sealed partial class SessionsViewModel(SessionLauncher launcher) : ObservableObject
+/// <summary>The session tabs: terminals and file transfers.</summary>
+/// <param name="launcher">Prepares terminal sessions.</param>
+/// <param name="createFileTransfer">Creates a file transfer tab for a connection.</param>
+public sealed partial class SessionsViewModel(SessionLauncher launcher, Func<ConnectionInfo, FileTransferViewModel> createFileTransfer)
+    : ObservableObject
 {
-    public ObservableCollection<SessionViewModel> Items { get; } = [];
+    public ObservableCollection<SessionTabViewModel> Items { get; } = [];
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasSessions))]
-    private SessionViewModel? _selected;
+    private SessionTabViewModel? _selected;
 
     public bool HasSessions => Items.Count > 0;
 
     /// <summary>The sessions that are connected; closing the app asks about them first.</summary>
     public int LiveCount => Items.Count(session => session.IsLive);
 
-    /// <summary>Opens a tab for <paramref name="connection"/>; it connects as soon as its terminal is shown.</summary>
-    public SessionViewModel Open(ConnectionInfo connection)
+    /// <summary>Opens a terminal tab for <paramref name="connection"/>; it connects as soon as its terminal is shown.</summary>
+    public SessionViewModel Open(ConnectionInfo connection) => Add(new SessionViewModel(connection, launcher));
+
+    /// <summary>Opens a file transfer tab (FTP, SFTP, or SFTP to an SSH connection's host) and connects it.</summary>
+    public FileTransferViewModel OpenFileTransfer(ConnectionInfo connection)
     {
-        SessionViewModel session = new(connection, launcher);
-        session.CloseRequested += OnCloseRequested;
-        Items.Add(session);
-        Selected = session;
-        return session;
+        FileTransferViewModel fileTransfer = Add(createFileTransfer(connection));
+        _ = fileTransfer.ConnectAsync();
+        return fileTransfer;
     }
 
-    public void Close(SessionViewModel session)
+    public void Close(SessionTabViewModel session)
     {
         int index = Items.IndexOf(session);
         if (index < 0)
@@ -46,11 +50,11 @@ public sealed partial class SessionsViewModel(SessionLauncher launcher) : Observ
     /// <summary>Ends every session (the app is closing).</summary>
     public void CloseAll()
     {
-        foreach (SessionViewModel session in Items.ToArray())
+        foreach (SessionTabViewModel session in Items.ToArray())
             Close(session);
     }
 
-    partial void OnSelectedChanged(SessionViewModel? oldValue, SessionViewModel? newValue)
+    partial void OnSelectedChanged(SessionTabViewModel? oldValue, SessionTabViewModel? newValue)
     {
         if (oldValue is not null)
             oldValue.IsSelected = false;
@@ -58,5 +62,13 @@ public sealed partial class SessionsViewModel(SessionLauncher launcher) : Observ
             newValue.IsSelected = true;
     }
 
-    private void OnCloseRequested(object? sender, EventArgs e) => Close((SessionViewModel)sender!);
+    private T Add<T>(T session) where T : SessionTabViewModel
+    {
+        session.CloseRequested += OnCloseRequested;
+        Items.Add(session);
+        Selected = session;
+        return session;
+    }
+
+    private void OnCloseRequested(object? sender, EventArgs e) => Close((SessionTabViewModel)sender!);
 }
