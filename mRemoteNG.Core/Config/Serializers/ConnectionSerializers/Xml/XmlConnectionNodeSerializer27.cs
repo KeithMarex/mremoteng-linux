@@ -3,6 +3,7 @@ using System.Security;
 using System.Xml.Linq;
 using mRemoteNG.App;
 using mRemoteNG.Connection;
+using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Container;
 using mRemoteNG.Plugins;
 using mRemoteNG.Security;
@@ -87,7 +88,8 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             element.Add(new XAttribute("DisableCursorShadow", connectionInfo.DisableCursorShadow.ToString().ToLowerInvariant()));
             element.Add(new XAttribute("DisableCursorBlinking", connectionInfo.DisableCursorBlinking.ToString().ToLowerInvariant()));
             element.Add(new XAttribute("CacheBitmaps", connectionInfo.CacheBitmaps.ToString().ToLowerInvariant()));
-            element.Add(new XAttribute("RedirectDiskDrives", connectionInfo.RedirectDiskDrives.ToString().ToLowerInvariant()));
+            // Up to 2.7 this attribute is a boolean (2.8 made it an RDPDiskDrives name); readers map true to Local.
+            element.Add(new XAttribute("RedirectDiskDrives", (connectionInfo.RedirectDiskDrives != RDPDiskDrives.None).ToString().ToLowerInvariant()));
             element.Add(new XAttribute("RedirectPorts", connectionInfo.RedirectPorts.ToString().ToLowerInvariant()));
             element.Add(new XAttribute("RedirectPrinters", connectionInfo.RedirectPrinters.ToString().ToLowerInvariant()));
             element.Add(new XAttribute("RedirectClipboard", connectionInfo.RedirectClipboard.ToString().ToLowerInvariant()));
