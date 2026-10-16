@@ -1,0 +1,6 @@
+<Project>
+  <!-- Used by check-winforms-build.sh only: Linux MSBuild cannot generate the MSTSCLib (RDP ActiveX) wrapper. -->
+  <ItemGroup>
+    <COMReference Remove="MSTSCLib" />
+  </ItemGroup>
+</Project>
