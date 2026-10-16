@@ -168,7 +168,7 @@ namespace mRemoteNG.Connection
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Color)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionColor)),
          Editor(typeof(UI.Controls.ConnectionInfoPropertyGrid.ColorStringEditor), typeof(System.Drawing.Design.UITypeEditor)),
-         TypeConverter(typeof(MiscTools.TabColorConverter))]
+         TypeConverter(typeof(TabColorConverter))]
         public virtual string Color
         {
             get => GetPropertyValue("Color", _color);
@@ -179,7 +179,7 @@ namespace mRemoteNG.Connection
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.TabColor)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionTabColor)),
          Editor(typeof(UI.Controls.ConnectionInfoPropertyGrid.ColorStringEditor), typeof(System.Drawing.Design.UITypeEditor)),
-         TypeConverter(typeof(MiscTools.TabColorConverter))]
+         TypeConverter(typeof(TabColorConverter))]
         public virtual string TabColor
         {
             get => GetPropertyValue("TabColor", _tabColor);
@@ -189,7 +189,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Display)),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.ConnectionFrameColor)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionConnectionFrameColor)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter))]
+         TypeConverter(typeof(EnumTypeConverter))]
         public virtual ConnectionFrameColor ConnectionFrameColor
         {
             get => GetPropertyValue("ConnectionFrameColor", _connectionFrameColor);
@@ -224,7 +224,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.ExternalCredentialProvider)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionExternalCredentialProvider)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP, ProtocolType.SSH1, ProtocolType.SSH2)]
         public ExternalCredentialProvider ExternalCredentialProvider
         {
@@ -287,7 +287,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.VaultOpenbaoSecretEngine)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionVaultOpenbaoSecretEngine)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP, ProtocolType.SSH1, ProtocolType.SSH2)]
         public VaultOpenbaoSecretEngine VaultOpenbaoSecretEngine {
             get => GetPropertyValue("VaultOpenbaoSecretEngine", _vaultSecretEngine);
@@ -310,7 +310,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.ExternalAddressProvider)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionExternalAddressProvider)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP, ProtocolType.SSH2)]
         public ExternalAddressProvider ExternalAddressProvider
         {
@@ -375,7 +375,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Protocol)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionProtocol)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter))]
+         TypeConverter(typeof(EnumTypeConverter))]
         public virtual ProtocolType Protocol
         {
             get => GetPropertyValue("Protocol", _protocol);
@@ -385,7 +385,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.RdpVersion)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRdpVersion)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public virtual RdpVersion RdpVersion
         {
@@ -429,7 +429,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.UseConsoleSession)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUseConsoleSession)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool UseConsoleSession
         {
@@ -440,7 +440,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.AuthenticationLevel)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionAuthenticationLevel)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public AuthenticationLevel RDPAuthenticationLevel
         {
@@ -488,7 +488,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.RenderingEngine)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRenderingEngine)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.HTTP, ProtocolType.HTTPS)]
         public HTTPBase.RenderingEngine RenderingEngine
         {
@@ -499,7 +499,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.TerminalBackend)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionTerminalBackend)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.SSH1, ProtocolType.SSH2)]
         public TerminalBackend TerminalBackend
         {
@@ -510,7 +510,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.UseCredSsp)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUseCredSsp)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool UseCredSsp
         {
@@ -521,7 +521,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.UseRestrictedAdmin)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUseRestrictedAdmin)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool UseRestrictedAdmin
         {
@@ -532,7 +532,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.UseRCG)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUseRCG)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool UseRCG
         {
@@ -543,7 +543,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.UseRedirectionServerName)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUseRedirectionServerName)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool UseRedirectionServerName
         {
@@ -554,7 +554,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.UseVmId)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUseVmId)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool UseVmId
         {
@@ -565,7 +565,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.UseEnhancedMode)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUseEnhancedMode)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool UseEnhancedMode
         {
@@ -579,7 +579,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.RDPGateway), 4),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.RdpGatewayUsageMethod)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRdpGatewayUsageMethod)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public RDGatewayUsageMethod RDGatewayUsageMethod
         {
@@ -600,7 +600,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.RDPGateway), 4),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.RdpGatewayUseConnectionCredentials)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRDGatewayUseConnectionCredentials)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public RDGatewayUseConnectionCredentials RDGatewayUseConnectionCredentials
         {
@@ -653,7 +653,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.RDPGateway), 4),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.ExternalCredentialProvider)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionExternalCredentialProvider)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public ExternalCredentialProvider RDGatewayExternalCredentialProvider
         {
@@ -678,7 +678,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Resolution)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionResolution)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public RDPResolutions Resolution
         {
@@ -689,7 +689,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.AutomaticResize)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionAutomaticResize)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool AutomaticResize
         {
@@ -700,7 +700,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Colors)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionColors)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public RDPColors Colors
         {
@@ -711,7 +711,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.CacheBitmaps)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionCacheBitmaps)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool CacheBitmaps
         {
@@ -722,7 +722,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.DisplayWallpaper)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDisplayWallpaper)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool DisplayWallpaper
         {
@@ -733,7 +733,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.DisplayThemes)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDisplayThemes)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool DisplayThemes
         {
@@ -744,7 +744,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.FontSmoothing)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionEnableFontSmoothing)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool EnableFontSmoothing
         {
@@ -755,7 +755,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.EnableDesktopComposition)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionEnableDesktopComposition)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool EnableDesktopComposition
         {
@@ -766,7 +766,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.DisableFullWindowDrag)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDisableFullWindowDrag)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool DisableFullWindowDrag
         {
@@ -777,7 +777,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.DisableMenuAnimations)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDisableMenuAnimations)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool DisableMenuAnimations
         {
@@ -788,7 +788,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.DisableCursorShadow)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDisableCursorShadow)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool DisableCursorShadow
         {
@@ -799,7 +799,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.DisableCursorShadow)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDisableCursorShadow)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool DisableCursorBlinking
         {
@@ -813,7 +813,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.RedirectKeys)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectKeys)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool RedirectKeys
         {
@@ -824,7 +824,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.DiskDrives)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectDrives)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public RDPDiskDrives RedirectDiskDrives
         {
@@ -845,7 +845,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Printers)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectPrinters)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool RedirectPrinters
         {
@@ -856,7 +856,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Clipboard)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectClipboard)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool RedirectClipboard
         {
@@ -868,7 +868,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Ports)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectPorts)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool RedirectPorts
         {
@@ -879,7 +879,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.SmartCard)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectSmartCards)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool RedirectSmartCards
         {
@@ -890,7 +890,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Sounds)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectSounds)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public RDPSounds RedirectSound
         {
@@ -901,7 +901,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.SoundQuality)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionSoundQuality)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public RDPSoundQuality SoundQuality
         {
@@ -912,7 +912,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.AudioCapture)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectAudioCapture)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.RDP)]
         public bool RedirectAudioCapture
         {
@@ -976,7 +976,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Miscellaneous), 7),
             LocalizedAttributes.LocalizedDisplayName(nameof(Language.Favorite)),
             LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionFavorite)),
-            TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
+            TypeConverter(typeof(YesNoTypeConverter))]
         public virtual bool Favorite
         {
             get => GetPropertyValue("Favorite", _favorite);
@@ -1011,7 +1011,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Compression)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionCompression)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.VNC, ProtocolType.ARD),
          Browsable(false)]
         public ProtocolVNC.Compression VNCCompression
@@ -1023,7 +1023,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Encoding)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionEncoding)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.VNC, ProtocolType.ARD),
          Browsable(false)]
         public ProtocolVNC.Encoding VNCEncoding
@@ -1035,7 +1035,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.AuthenticationMode)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionAuthenticationMode)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.VNC, ProtocolType.ARD),
          Browsable(false)]
         public ProtocolVNC.AuthMode VNCAuthMode
@@ -1047,7 +1047,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Proxy), 7),
             LocalizedAttributes.LocalizedDisplayName(nameof(Language.ProxyType)),
             LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionVNCProxyType)),
-            TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+            TypeConverter(typeof(EnumTypeConverter)),
             AttributeUsedInProtocol(ProtocolType.VNC, ProtocolType.ARD),
             Browsable(false)]
         public ProtocolVNC.ProxyType VNCProxyType
@@ -1104,7 +1104,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Colors)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionColors)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.VNC, ProtocolType.ARD),
          Browsable(false)]
         public ProtocolVNC.Colors VNCColors
@@ -1116,7 +1116,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.SmartSizeMode)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionSmartSizeMode)),
-         TypeConverter(typeof(MiscTools.EnumTypeConverter)),
+         TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.VNC, ProtocolType.ARD)]
         public ProtocolVNC.SmartSizeMode VNCSmartSizeMode
         {
@@ -1127,7 +1127,7 @@ namespace mRemoteNG.Connection
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.ViewOnly)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionViewOnly)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter)),
+         TypeConverter(typeof(YesNoTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.VNC, ProtocolType.ARD)]
         public bool VNCViewOnly
         {

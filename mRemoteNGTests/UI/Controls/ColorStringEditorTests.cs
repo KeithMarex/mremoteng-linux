@@ -68,7 +68,7 @@ namespace mRemoteNGTests.UI.Controls
         [Test]
         public void StandardValuesAreStringsSoTheDropDownCanBeCommitted()
         {
-            var standardValues = new MiscTools.TabColorConverter().GetStandardValues(null);
+            var standardValues = new TabColorConverter().GetStandardValues(null);
             Assert.That(standardValues, Is.Not.Null);
             Assert.That(standardValues.Cast<object>(), Is.All.InstanceOf<string>());
         }

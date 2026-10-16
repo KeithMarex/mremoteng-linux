@@ -84,7 +84,7 @@ internal sealed class PluginConnectionPropertyDescriptor(ConnectionPropertyDefin
         var attributes = new List<Attribute> { new BrowsableAttribute(true) };
         if (definition.PropertyType == PluginPropertyType.Boolean)
         {
-            attributes.Add(new TypeConverterAttribute(typeof(Tools.MiscTools.YesNoTypeConverter)));
+            attributes.Add(new TypeConverterAttribute(typeof(Tools.YesNoTypeConverter)));
         }
 
         return attributes.ToArray();

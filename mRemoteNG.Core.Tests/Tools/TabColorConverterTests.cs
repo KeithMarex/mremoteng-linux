@@ -7,12 +7,12 @@ namespace mRemoteNGTests.Tools
 {
     public class TabColorConverterTests
     {
-        private MiscTools.TabColorConverter _converter;
+        private TabColorConverter _converter;
 
         [SetUp]
         public void Setup()
         {
-            _converter = new MiscTools.TabColorConverter();
+            _converter = new TabColorConverter();
         }
 
         [TestCase(typeof(string), true)]
@@ -44,7 +44,7 @@ namespace mRemoteNGTests.Tools
         {
             var color = Color.FromArgb(255, 128, 64, 32);
             var result = _converter.ConvertFrom(color);
-            Assert.That(result, Is.EqualTo("#80401F"));
+            Assert.That(result, Is.EqualTo("#804020"));
         }
 
         [Test]
@@ -114,7 +114,8 @@ namespace mRemoteNGTests.Tools
             var colorString = "#FF0000";
             var result = _converter.ConvertTo(colorString, typeof(Color));
             var expectedColor = Color.FromArgb(255, 255, 0, 0);
-            Assert.That(result, Is.EqualTo(expectedColor));
+            // ColorConverter returns the matching named color (Color.Red), so compare the ARGB value.
+            Assert.That(((Color)result).ToArgb(), Is.EqualTo(expectedColor.ToArgb()));
         }
 
         [Test]

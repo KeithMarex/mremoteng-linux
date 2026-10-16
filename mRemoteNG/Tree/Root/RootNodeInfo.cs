@@ -37,7 +37,7 @@ namespace mRemoteNG.Tree.Root
          Browsable(true),
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.PasswordProtect)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionPasswordProtect)),
-         TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
+         TypeConverter(typeof(YesNoTypeConverter))]
         public new bool Password { get; set; }
 
         [Browsable(false)]
