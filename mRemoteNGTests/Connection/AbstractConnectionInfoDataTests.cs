@@ -176,7 +176,7 @@ public class AbstractConnectionInfoDataTests
     {
         var wasCalled = false;
         _testAbstractConnectionInfoData.PropertyChanged += (sender, args) => wasCalled = true;
-        _testAbstractConnectionInfoData.RenderingEngine = HTTPBase.RenderingEngine.EdgeChromium;
+        _testAbstractConnectionInfoData.RenderingEngine = RenderingEngine.EdgeChromium;
         Assert.That(wasCalled, Is.True);
     }
 
@@ -446,7 +446,7 @@ public class AbstractConnectionInfoDataTests
     {
         var wasCalled = false;
         _testAbstractConnectionInfoData.PropertyChanged += (sender, args) => wasCalled = true;
-        _testAbstractConnectionInfoData.VNCCompression = ProtocolVNC.Compression.Comp5;
+        _testAbstractConnectionInfoData.VNCCompression = Compression.Comp5;
         Assert.That(wasCalled, Is.True);
     }
 
@@ -455,7 +455,7 @@ public class AbstractConnectionInfoDataTests
     {
         var wasCalled = false;
         _testAbstractConnectionInfoData.PropertyChanged += (sender, args) => wasCalled = true;
-        _testAbstractConnectionInfoData.VNCEncoding = ProtocolVNC.Encoding.EncTight;
+        _testAbstractConnectionInfoData.VNCEncoding = Encoding.EncTight;
         Assert.That(wasCalled, Is.True);
     }
 
@@ -464,7 +464,7 @@ public class AbstractConnectionInfoDataTests
     {
         var wasCalled = false;
         _testAbstractConnectionInfoData.PropertyChanged += (sender, args) => wasCalled = true;
-        _testAbstractConnectionInfoData.VNCAuthMode = ProtocolVNC.AuthMode.AuthWin;
+        _testAbstractConnectionInfoData.VNCAuthMode = AuthMode.AuthWin;
         Assert.That(wasCalled, Is.True);
     }
 
@@ -473,7 +473,7 @@ public class AbstractConnectionInfoDataTests
     {
         var wasCalled = false;
         _testAbstractConnectionInfoData.PropertyChanged += (sender, args) => wasCalled = true;
-        _testAbstractConnectionInfoData.VNCProxyType = ProtocolVNC.ProxyType.ProxyUltra;
+        _testAbstractConnectionInfoData.VNCProxyType = ProxyType.ProxyUltra;
         Assert.That(wasCalled, Is.True);
     }
 
@@ -518,7 +518,7 @@ public class AbstractConnectionInfoDataTests
     {
         var wasCalled = false;
         _testAbstractConnectionInfoData.PropertyChanged += (sender, args) => wasCalled = true;
-        _testAbstractConnectionInfoData.VNCColors = ProtocolVNC.Colors.Col8Bit;
+        _testAbstractConnectionInfoData.VNCColors = Colors.Col8Bit;
         Assert.That(wasCalled, Is.True);
     }
 
@@ -527,7 +527,7 @@ public class AbstractConnectionInfoDataTests
     {
         var wasCalled = false;
         _testAbstractConnectionInfoData.PropertyChanged += (sender, args) => wasCalled = true;
-        _testAbstractConnectionInfoData.VNCSmartSizeMode = ProtocolVNC.SmartSizeMode.SmartSFree;
+        _testAbstractConnectionInfoData.VNCSmartSizeMode = SmartSizeMode.SmartSFree;
         Assert.That(wasCalled, Is.True);
     }
 

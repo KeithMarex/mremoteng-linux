@@ -13,7 +13,7 @@ namespace mRemoteNG.Connection.Protocol.Http
 
         public enum Defaults
         {
-            Port = 443
+            Port = DefaultPorts.Https
         }
     }
 }

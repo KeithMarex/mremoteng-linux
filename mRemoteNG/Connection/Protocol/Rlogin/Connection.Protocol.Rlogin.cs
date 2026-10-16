@@ -12,7 +12,7 @@ namespace mRemoteNG.Connection.Protocol.Rlogin
 
         public enum Defaults
         {
-            Port = 513
+            Port = DefaultPorts.Rlogin
         }
     }
 }

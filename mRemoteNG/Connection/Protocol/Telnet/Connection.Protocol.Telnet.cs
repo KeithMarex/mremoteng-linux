@@ -12,7 +12,7 @@ namespace mRemoteNG.Connection.Protocol.Telnet
 
         public enum Defaults
         {
-            Port = 23
+            Port = DefaultPorts.Telnet
         }
     }
 }

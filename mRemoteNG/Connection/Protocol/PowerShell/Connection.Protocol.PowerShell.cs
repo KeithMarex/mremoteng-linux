@@ -250,7 +250,7 @@ namespace mRemoteNG.Connection.Protocol.PowerShell
 
         public enum Defaults
         {
-            Port = 5985
+            Port = DefaultPorts.PowerShell
         }
 
         #endregion

@@ -6,7 +6,7 @@ namespace mRemoteNG.Connection.Protocol.VNC
 {
     public enum Defaults
     {
-        Port = 5900
+        Port = DefaultPorts.Vnc
     }
 
     public enum SpecialKeys

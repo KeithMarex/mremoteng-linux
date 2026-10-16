@@ -289,12 +289,12 @@ namespace mRemoteNG.UI.Controls.ConnectionInfoPropertyGrid {
 
         private List<string> SpecialVncExclusions() {
             List<string> strHide = new();
-            if (SelectedConnectionInfo.VNCAuthMode == ProtocolVNC.AuthMode.AuthVNC) {
+            if (SelectedConnectionInfo.VNCAuthMode == AuthMode.AuthVNC) {
                 strHide.Add(nameof(AbstractConnectionRecord.Username));
                 strHide.Add(nameof(AbstractConnectionRecord.Domain));
             }
 
-            if (SelectedConnectionInfo.VNCProxyType == ProtocolVNC.ProxyType.ProxyNone) {
+            if (SelectedConnectionInfo.VNCProxyType == ProxyType.ProxyNone) {
                 strHide.Add(nameof(AbstractConnectionRecord.VNCProxyIP));
                 strHide.Add(nameof(AbstractConnectionRecord.VNCProxyPassword));
                 strHide.Add(nameof(AbstractConnectionRecord.VNCProxyPort));

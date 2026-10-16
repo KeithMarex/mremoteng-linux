@@ -14,7 +14,7 @@ namespace mRemoteNG.Connection.Protocol.Http
 
         public enum Defaults
         {
-            Port = 80
+            Port = DefaultPorts.Http
         }
     }
 }

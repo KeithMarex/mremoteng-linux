@@ -11,9 +11,9 @@ namespace mRemoteNG.Connection.Protocol.ARD
         {
         }
 
-        public new enum Defaults
+        public enum Defaults
         {
-            Port = 5900
+            Port = DefaultPorts.Ard
         }
     }
 }

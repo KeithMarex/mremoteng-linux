@@ -13,7 +13,7 @@ namespace mRemoteNG.Connection.Protocol.SSH
 
         public enum Defaults
         {
-            Port = 22
+            Port = DefaultPorts.Ssh
         }
     }
 }

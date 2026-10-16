@@ -12,7 +12,7 @@ namespace mRemoteNG.Connection.Protocol.RAW
 
         public enum Defaults
         {
-            Port = 23
+            Port = DefaultPorts.Raw
         }
     }
 }

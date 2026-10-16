@@ -310,48 +310,7 @@ namespace mRemoteNG.Connection
 
         private static int GetDefaultPort(ProtocolType protocol)
         {
-            try
-            {
-                // ReSharper disable once SwitchStatementMissingSomeCases
-                switch (protocol)
-                {
-                    case ProtocolType.RDP:
-                        return (int)RdpProtocol.Defaults.Port;
-                    case ProtocolType.VNC:
-                        return (int)ProtocolVNC.Defaults.Port;
-                    case ProtocolType.ARD:
-                        return (int)ProtocolARD.Defaults.Port;
-                    case ProtocolType.SSH1:
-                        return (int)ProtocolSSH1.Defaults.Port;
-                    case ProtocolType.SSH2:
-                        return (int)ProtocolSSH2.Defaults.Port;
-                    case ProtocolType.Telnet:
-                        return (int)ProtocolTelnet.Defaults.Port;
-                    case ProtocolType.Rlogin:
-                        return (int)ProtocolRlogin.Defaults.Port;
-                    case ProtocolType.RAW:
-                        return (int)RawProtocol.Defaults.Port;
-                    case ProtocolType.HTTP:
-                        return (int)ProtocolHTTP.Defaults.Port;
-                    case ProtocolType.HTTPS:
-                        return (int)ProtocolHTTPS.Defaults.Port;
-                    case ProtocolType.PowerShell:
-                        return (int)ProtocolPowerShell.Defaults.Port;
-                    case ProtocolType.WSL:
-                        return (int)ProtocolWSL.Defaults.Port;
-                    case ProtocolType.Terminal:
-                        return (int)ProtocolTerminal.Defaults.Port;
-                    case ProtocolType.IntApp:
-                        return (int)IntegratedProgram.Defaults.Port;
-                }
-
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                Runtime.MessageCollector.AddExceptionMessage(Language.ConnectionSetDefaultPortFailed, ex);
-                return 0;
-            }
+            return DefaultPorts.For(protocol);
         }
 
         private void SetTreeDisplayDefaults()
@@ -385,7 +344,7 @@ namespace mRemoteNG.Connection
             RDPMinutesToIdleTimeout = Settings.Default.ConDefaultRDPMinutesToIdleTimeout;
             RDPAlertIdleTimeout = Settings.Default.ConDefaultRDPAlertIdleTimeout;
             LoadBalanceInfo = Settings.Default.ConDefaultLoadBalanceInfo;
-            RenderingEngine = (HTTPBase.RenderingEngine)Enum.Parse(typeof(HTTPBase.RenderingEngine), Settings.Default.ConDefaultRenderingEngine);
+            RenderingEngine = (RenderingEngine)Enum.Parse(typeof(RenderingEngine), Settings.Default.ConDefaultRenderingEngine);
             TerminalBackend = (TerminalBackend)Enum.Parse(typeof(TerminalBackend), Settings.Default.ConDefaultTerminalBackend);
             UseCredSsp = Settings.Default.ConDefaultUseCredSsp;
             UseRestrictedAdmin = Settings.Default.ConDefaultUseRestrictedAdmin;
@@ -463,16 +422,16 @@ namespace mRemoteNG.Connection
 
         private void SetVncDefaults()
         {
-            VNCCompression = (ProtocolVNC.Compression)Enum.Parse(typeof(ProtocolVNC.Compression), Settings.Default.ConDefaultVNCCompression);
-            VNCEncoding = (ProtocolVNC.Encoding)Enum.Parse(typeof(ProtocolVNC.Encoding), Settings.Default.ConDefaultVNCEncoding);
-            VNCAuthMode = (ProtocolVNC.AuthMode)Enum.Parse(typeof(ProtocolVNC.AuthMode), Settings.Default.ConDefaultVNCAuthMode);
-            VNCProxyType = (ProtocolVNC.ProxyType)Enum.Parse(typeof(ProtocolVNC.ProxyType), Settings.Default.ConDefaultVNCProxyType);
+            VNCCompression = (Compression)Enum.Parse(typeof(Compression), Settings.Default.ConDefaultVNCCompression);
+            VNCEncoding = (Encoding)Enum.Parse(typeof(Encoding), Settings.Default.ConDefaultVNCEncoding);
+            VNCAuthMode = (AuthMode)Enum.Parse(typeof(AuthMode), Settings.Default.ConDefaultVNCAuthMode);
+            VNCProxyType = (ProxyType)Enum.Parse(typeof(ProxyType), Settings.Default.ConDefaultVNCProxyType);
             VNCProxyIP = Settings.Default.ConDefaultVNCProxyIP;
             VNCProxyPort = Settings.Default.ConDefaultVNCProxyPort;
             VNCProxyUsername = Settings.Default.ConDefaultVNCProxyUsername;
             VNCProxyPassword = Settings.Default.ConDefaultVNCProxyPassword;
-            VNCColors = (ProtocolVNC.Colors)Enum.Parse(typeof(ProtocolVNC.Colors), Settings.Default.ConDefaultVNCColors);
-            VNCSmartSizeMode = (ProtocolVNC.SmartSizeMode)Enum.Parse(typeof(ProtocolVNC.SmartSizeMode), Settings.Default.ConDefaultVNCSmartSizeMode);
+            VNCColors = (Colors)Enum.Parse(typeof(Colors), Settings.Default.ConDefaultVNCColors);
+            VNCSmartSizeMode = (SmartSizeMode)Enum.Parse(typeof(SmartSizeMode), Settings.Default.ConDefaultVNCSmartSizeMode);
             VNCViewOnly = Settings.Default.ConDefaultVNCViewOnly;
         }
 

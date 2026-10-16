@@ -56,7 +56,7 @@ namespace mRemoteNG.Connection
         private int _rdpMinutesToIdleTimeout;
         private bool _rdpAlertIdleTimeout;
         private string _loadBalanceInfo;
-        private HTTPBase.RenderingEngine _renderingEngine;
+        private RenderingEngine _renderingEngine;
         private TerminalBackend _terminalBackend;
         private bool _useCredSsp;
         private bool _useRestrictedAdmin;
@@ -109,16 +109,16 @@ namespace mRemoteNG.Connection
         private string _rdpStartProgramWorkDir;
         private bool _favorite;
 
-        private ProtocolVNC.Compression _vncCompression;
-        private ProtocolVNC.Encoding _vncEncoding;
-        private ProtocolVNC.AuthMode _vncAuthMode;
-        private ProtocolVNC.ProxyType _vncProxyType;
+        private Compression _vncCompression;
+        private Encoding _vncEncoding;
+        private AuthMode _vncAuthMode;
+        private ProxyType _vncProxyType;
         private string _vncProxyIp;
         private int _vncProxyPort;
         private string _vncProxyUsername;
         private string _vncProxyPassword;
-        private ProtocolVNC.Colors _vncColors;
-        private ProtocolVNC.SmartSizeMode _vncSmartSizeMode;
+        private Colors _vncColors;
+        private SmartSizeMode _vncSmartSizeMode;
         private bool _vncViewOnly;
 
         #endregion
@@ -490,7 +490,7 @@ namespace mRemoteNG.Connection
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRenderingEngine)),
          TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.HTTP, ProtocolType.HTTPS)]
-        public HTTPBase.RenderingEngine RenderingEngine
+        public RenderingEngine RenderingEngine
         {
             get => GetPropertyValue("RenderingEngine", _renderingEngine);
             set => SetField(ref _renderingEngine, value, "RenderingEngine");
@@ -1014,7 +1014,7 @@ namespace mRemoteNG.Connection
          TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.VNC, ProtocolType.ARD),
          Browsable(false)]
-        public ProtocolVNC.Compression VNCCompression
+        public Compression VNCCompression
         {
             get => GetPropertyValue("VNCCompression", _vncCompression);
             set => SetField(ref _vncCompression, value, "VNCCompression");
@@ -1026,7 +1026,7 @@ namespace mRemoteNG.Connection
          TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.VNC, ProtocolType.ARD),
          Browsable(false)]
-        public ProtocolVNC.Encoding VNCEncoding
+        public Encoding VNCEncoding
         {
             get => GetPropertyValue("VNCEncoding", _vncEncoding);
             set => SetField(ref _vncEncoding, value, "VNCEncoding");
@@ -1038,7 +1038,7 @@ namespace mRemoteNG.Connection
          TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.VNC, ProtocolType.ARD),
          Browsable(false)]
-        public ProtocolVNC.AuthMode VNCAuthMode
+        public AuthMode VNCAuthMode
         {
             get => GetPropertyValue("VNCAuthMode", _vncAuthMode);
             set => SetField(ref _vncAuthMode, value, "VNCAuthMode");
@@ -1050,7 +1050,7 @@ namespace mRemoteNG.Connection
             TypeConverter(typeof(EnumTypeConverter)),
             AttributeUsedInProtocol(ProtocolType.VNC, ProtocolType.ARD),
             Browsable(false)]
-        public ProtocolVNC.ProxyType VNCProxyType
+        public ProxyType VNCProxyType
         {
             get => GetPropertyValue("VNCProxyType", _vncProxyType);
             set => SetField(ref _vncProxyType, value, "VNCProxyType");
@@ -1107,7 +1107,7 @@ namespace mRemoteNG.Connection
          TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.VNC, ProtocolType.ARD),
          Browsable(false)]
-        public ProtocolVNC.Colors VNCColors
+        public Colors VNCColors
         {
             get => GetPropertyValue("VNCColors", _vncColors);
             set => SetField(ref _vncColors, value, "VNCColors");
@@ -1118,7 +1118,7 @@ namespace mRemoteNG.Connection
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionSmartSizeMode)),
          TypeConverter(typeof(EnumTypeConverter)),
          AttributeUsedInProtocol(ProtocolType.VNC, ProtocolType.ARD)]
-        public ProtocolVNC.SmartSizeMode VNCSmartSizeMode
+        public SmartSizeMode VNCSmartSizeMode
         {
             get => GetPropertyValue("VNCSmartSizeMode", _vncSmartSizeMode);
             set => SetField(ref _vncSmartSizeMode, value, "VNCSmartSizeMode");

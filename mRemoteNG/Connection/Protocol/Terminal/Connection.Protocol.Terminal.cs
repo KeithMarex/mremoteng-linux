@@ -241,7 +241,7 @@ namespace mRemoteNG.Connection.Protocol.Terminal
 
         public enum Defaults
         {
-            Port = 22
+            Port = DefaultPorts.Ssh
         }
 
         #endregion
