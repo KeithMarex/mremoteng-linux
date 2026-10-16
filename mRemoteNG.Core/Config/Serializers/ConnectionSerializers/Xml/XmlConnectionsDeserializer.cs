@@ -530,6 +530,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
                     connectionInfo.EC2Region = xmlnode.GetAttributeAsString("EC2Region");
                     connectionInfo.ReplacePluginProperties(PluginConnectionDataSerializer.Deserialize(xmlnode.SelectSingleNode("PluginData")?.InnerText ?? string.Empty));
                     LegacyPluginDataMigrator.Migrate(connectionInfo);
+                    FileTransferCompatibility.RestoreProtocol(connectionInfo);
                     connectionInfo.UseRestrictedAdmin = xmlnode.GetAttributeAsBool("UseRestrictedAdmin");
                     connectionInfo.Inheritance.UseRestrictedAdmin = xmlnode.GetAttributeAsBool("InheritUseRestrictedAdmin");
                     connectionInfo.UseRCG = xmlnode.GetAttributeAsBool("UseRCG");

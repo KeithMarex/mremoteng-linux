@@ -48,7 +48,15 @@ namespace mRemoteNG.Connection.Protocol
         AnyDesk = 14,
 
         [LocalizedAttributes.LocalizedDescription(nameof(Language.ExternalTool))]
-        IntApp = 20
+        IntApp = 20,
+
+        // File transfer (mRemoteNG for Linux). Windows mRemoteNG does not know these, so connection files store them
+        // as SSH2 and RAW plus a marker; see FileTransferCompatibility.
+        [LocalizedAttributes.LocalizedDescription(nameof(Language.Ftp))]
+        FTP = 100,
+
+        [LocalizedAttributes.LocalizedDescription(nameof(Language.Sftp))]
+        SFTP = 101
     }
 
     public class ProtocolFeature
