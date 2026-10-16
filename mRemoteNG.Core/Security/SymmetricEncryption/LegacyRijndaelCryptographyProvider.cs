@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.Versioning;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
@@ -11,7 +10,6 @@ using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.Security.SymmetricEncryption
 {
-    [SupportedOSPlatform("windows")]
     public class LegacyRijndaelCryptographyProvider : ICryptographyProvider
     {
         public int BlockSizeInBytes { get; }
@@ -58,7 +56,7 @@ namespace mRemoteNG.Security.SymmetricEncryption
             }
             catch (Exception ex)
             {
-                Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, string.Format(Language.ErrorEncryptionFailed, ex.Message));
+                CoreRuntime.MessageCollector.AddMessage(MessageClass.ErrorMsg, string.Format(Language.ErrorEncryptionFailed, ex.Message));
             }
 
             return strToEncrypt;

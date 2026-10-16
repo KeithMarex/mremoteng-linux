@@ -48,7 +48,7 @@ namespace mRemoteNG.App
         public static bool UseCredentialManager => false;
 
         public static WindowList WindowList { get; set; } = null!; // initialized during FrmMain startup
-        public static MessageCollector MessageCollector { get; } = new MessageCollector();
+        public static MessageCollector MessageCollector => CoreRuntime.MessageCollector;
         public static NotificationAreaIcon NotificationAreaIcon { get; set; } = null!; // initialized on demand by settings/UI
         public static ExternalToolsService ExternalToolsService { get; } = new ExternalToolsService();
         public static PluginService PluginService { get; } = new PluginService();

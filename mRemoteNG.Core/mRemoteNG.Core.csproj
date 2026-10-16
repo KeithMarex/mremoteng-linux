@@ -6,8 +6,8 @@
     <AssemblyName>mRemoteNG.Core</AssemblyName>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
-    <!-- Code moved from mRemoteNG keeps its nullable annotations; same suppression as mRemoteNG.csproj. -->
-    <NoWarn>$(NoWarn);CS8632</NoWarn>
+    <!-- Same suppressions as mRemoteNG.csproj for the moved code: nullable annotations, obsolete Rfc2898DeriveBytes ctor. -->
+    <NoWarn>$(NoWarn);CS8632;SYSLIB0060</NoWarn>
     <Configurations>Debug;Release;Release Self-Contained;Deploy to github</Configurations>
     <NeutralLanguage>en</NeutralLanguage>
     <!-- Calling a Windows-only API from Core is a build error, not a warning. -->
@@ -15,6 +15,9 @@
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="mRemoteNG.Core.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Language\Language.Designer.cs">

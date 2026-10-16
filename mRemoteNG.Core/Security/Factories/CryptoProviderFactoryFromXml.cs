@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Runtime.Versioning;
 using System.Xml.Linq;
 using mRemoteNG.Security.SymmetricEncryption;
 
 namespace mRemoteNG.Security.Factories
 {
-    [SupportedOSPlatform("windows")]
     public class CryptoProviderFactoryFromXml : ICryptoProviderFactory
     {
         private readonly XElement _element;

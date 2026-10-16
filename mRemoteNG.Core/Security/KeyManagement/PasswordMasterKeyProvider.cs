@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.Versioning;
 using System.Security;
 using System.Threading.Tasks;
 using mRemoteNG.Resources.Language;
@@ -12,7 +11,6 @@ namespace mRemoteNG.Security.KeyManagement
     /// Obtains a master key by prompting the user for a password.
     /// Uses the existing <see cref="IKeyProvider"/> (typically <c>FrmPassword</c>).
     /// </summary>
-    [SupportedOSPlatform("windows")]
     public class PasswordMasterKeyProvider : IMasterKeyProvider
     {
         private readonly Func<IKeyProvider> _keyProviderFactory;
