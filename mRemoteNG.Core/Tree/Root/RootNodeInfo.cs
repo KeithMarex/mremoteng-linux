@@ -8,10 +8,18 @@ using mRemoteNG.Resources.Language;
 namespace mRemoteNG.Tree.Root
 {
     [DefaultProperty("Name")]
-    public class RootNodeInfo(RootNodeType rootType, string uniqueId) : ContainerInfo(uniqueId)
+    public class RootNodeInfo : ContainerInfo
     {
-        private string _name = Language.Connections;
+        private string _name;
         private string _customPassword = "";
+
+        public RootNodeInfo(RootNodeType rootType, string uniqueId)
+            : base(uniqueId)
+        {
+            // Set after the base constructor: ContainerInfo's defaults name every container "New Folder".
+            _name = Language.Connections;
+            Type = rootType;
+        }
 
         public RootNodeInfo(RootNodeType rootType)
             : this(rootType, Guid.NewGuid().ToString())
@@ -51,7 +59,7 @@ namespace mRemoteNG.Tree.Root
 
         [Browsable(false)] public string DefaultPassword { get; } = "mR3m"; //TODO move password away from code to settings
 
-        [Browsable(false)] public RootNodeType Type { get; set; } = rootType;
+        [Browsable(false)] public RootNodeType Type { get; set; }
 
         public override TreeNodeType GetTreeNodeType()
         {
