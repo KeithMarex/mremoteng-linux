@@ -26,6 +26,9 @@ public static class UiText
     public static string Properties => Language.Properties;
     public static string Notifications => Language.Notifications;
     public static string Password => Language.Password;
+    public static string Search => Language.SearchPrompt;
+    public static string MoveUp => Language.MoveUp;
+    public static string MoveDown => Language.MoveDown;
 
     public const string Edit = "_Edit";
     public const string Inherit = "Inherit";

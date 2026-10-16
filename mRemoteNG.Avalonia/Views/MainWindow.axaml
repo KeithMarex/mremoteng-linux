@@ -29,6 +29,9 @@
                 <Separator />
                 <MenuItem Header="{x:Static app:UiText.Duplicate}" Command="{Binding DuplicateCommand}" InputGesture="Ctrl+D" HotKey="Ctrl+D" />
                 <MenuItem Header="{x:Static app:UiText.Delete}" Command="{Binding DeleteCommand}" InputGesture="Delete" />
+                <Separator />
+                <MenuItem Header="{x:Static app:UiText.MoveUp}" Command="{Binding MoveUpCommand}" InputGesture="Alt+Up" HotKey="Alt+Up" />
+                <MenuItem Header="{x:Static app:UiText.MoveDown}" Command="{Binding MoveDownCommand}" InputGesture="Alt+Down" HotKey="Alt+Down" />
             </MenuItem>
         </Menu>
 
@@ -51,15 +54,19 @@
         </Border>
 
         <Grid ColumnDefinitions="420,4,*">
-            <Grid RowDefinitions="Auto,*,4,Auto,*">
+            <Grid RowDefinitions="Auto,Auto,*,4,Auto,*">
                 <TextBlock Classes="panelHeader" Text="{x:Static app:UiText.Connections}" />
-                <TreeView Grid.Row="1" x:Name="ConnectionTree" ItemsSource="{Binding RootNodes}" SelectedItem="{Binding SelectedNode}">
+                <TextBox Grid.Row="1" Margin="8,0,8,4" PlaceholderText="{x:Static app:UiText.Search}"
+                         Text="{Binding SearchText}" />
+                <TreeView Grid.Row="2" x:Name="ConnectionTree" ItemsSource="{Binding RootNodes}" SelectedItem="{Binding SelectedNode}"
+                          DragDrop.AllowDrop="True">
                     <TreeView.KeyBindings>
                         <KeyBinding Gesture="Delete" Command="{Binding DeleteCommand}" />
                     </TreeView.KeyBindings>
                     <TreeView.Styles>
                         <Style Selector="TreeViewItem" x:DataType="vm:ConnectionNodeViewModel">
                             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                            <Setter Property="IsVisible" Value="{Binding IsVisible}" />
                         </Style>
                     </TreeView.Styles>
                     <TreeView.ContextMenu>
@@ -69,6 +76,9 @@
                             <Separator />
                             <MenuItem Header="{x:Static app:UiText.Duplicate}" Command="{Binding DuplicateCommand}" />
                             <MenuItem Header="{x:Static app:UiText.Delete}" Command="{Binding DeleteCommand}" />
+                            <Separator />
+                            <MenuItem Header="{x:Static app:UiText.MoveUp}" Command="{Binding MoveUpCommand}" />
+                            <MenuItem Header="{x:Static app:UiText.MoveDown}" Command="{Binding MoveDownCommand}" />
                         </ContextMenu>
                     </TreeView.ContextMenu>
                     <TreeView.ItemTemplate>
@@ -81,10 +91,10 @@
                     </TreeView.ItemTemplate>
                 </TreeView>
 
-                <GridSplitter Grid.Row="2" ResizeDirection="Rows" />
+                <GridSplitter Grid.Row="3" ResizeDirection="Rows" />
 
-                <TextBlock Grid.Row="3" Classes="panelHeader" Text="{x:Static app:UiText.Properties}" />
-                <ScrollViewer Grid.Row="4" HorizontalScrollBarVisibility="Disabled">
+                <TextBlock Grid.Row="4" Classes="panelHeader" Text="{x:Static app:UiText.Properties}" />
+                <ScrollViewer Grid.Row="5" HorizontalScrollBarVisibility="Disabled">
                     <ItemsControl ItemsSource="{Binding PropertyPanel.Groups}" Margin="8,0,8,8">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="vm:PropertyGroupViewModel">

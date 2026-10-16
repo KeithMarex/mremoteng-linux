@@ -53,8 +53,11 @@ public sealed partial class MainWindowViewModel : ObservableObject
     public MessagesViewModel Messages { get; }
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(DuplicateCommand), nameof(DeleteCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DuplicateCommand), nameof(DeleteCommand), nameof(MoveUpCommand), nameof(MoveDownCommand))]
     private ConnectionNodeViewModel? _selectedNode;
+
+    [ObservableProperty]
+    private string _searchText = string.Empty;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Title))]
@@ -71,6 +74,29 @@ public sealed partial class MainWindowViewModel : ObservableObject
     private bool CanModifySelection => SelectedNode is { IsRoot: false };
 
     partial void OnSelectedNodeChanged(ConnectionNodeViewModel? value) => PropertyPanel.Connection = value?.Connection;
+
+    partial void OnSearchTextChanged(string value) => ApplySearch();
+
+    /// <summary>Whether <paramref name="source"/> may be dropped at <paramref name="position"/> of <paramref name="target"/>.</summary>
+    public bool CanMove(ConnectionNodeViewModel source, ConnectionNodeViewModel target, MovePosition position) =>
+        ConnectionTreeMoveRules.CanMove(source.Connection, target.Connection, position);
+
+    /// <summary>Moves a node in the tree (drag and drop), using the same rules as the WinForms tree.</summary>
+    public void Move(ConnectionNodeViewModel source, ConnectionNodeViewModel target, MovePosition position)
+    {
+        if (!CanMove(source, target, position))
+            return;
+
+        ConnectionInfo moved = source.Connection;
+        ConnectionTreeMoveRules.Move(moved, target.Connection, position);
+        if (position == MovePosition.Onto)
+            target.IsExpanded = true;
+        ApplySearch();
+        SelectedNode = FindNode(moved);
+        // Reordering within a folder keeps the same selected node, so refresh these explicitly.
+        MoveUpCommand.NotifyCanExecuteChanged();
+        MoveDownCommand.NotifyCanExecuteChanged();
+    }
 
     /// <summary>Opens the last used connection file, or the default one (created when missing).</summary>
     public async Task InitializeAsync()
@@ -161,6 +187,30 @@ public sealed partial class MainWindowViewModel : ObservableObject
         SelectedNode = FindNode(copy);
     }
 
+    [RelayCommand(CanExecute = nameof(CanMoveUp))]
+    private void MoveUp() => MoveBesideSibling(-1, MovePosition.Above);
+
+    [RelayCommand(CanExecute = nameof(CanMoveDown))]
+    private void MoveDown() => MoveBesideSibling(+1, MovePosition.Below);
+
+    private bool CanMoveUp => SiblingOfSelection(-1) is not null;
+
+    private bool CanMoveDown => SiblingOfSelection(+1) is not null;
+
+    private ConnectionNodeViewModel? SiblingOfSelection(int offset)
+    {
+        if (SelectedNode is not { IsRoot: false, Parent: { } parent } node)
+            return null;
+        int index = parent.Children.IndexOf(node) + offset;
+        return index >= 0 && index < parent.Children.Count ? parent.Children[index] : null;
+    }
+
+    private void MoveBesideSibling(int offset, MovePosition position)
+    {
+        if (SiblingOfSelection(offset) is { } sibling)
+            Move(SelectedNode!, sibling, position);
+    }
+
     [RelayCommand(CanExecute = nameof(CanModifySelection))]
     private async Task DeleteAsync()
     {
@@ -228,6 +278,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
         foreach (ContainerInfo rootNode in model.RootNodes)
             RootNodes.Add(new ConnectionNodeViewModel(rootNode));
 
+        ApplySearch();
         SelectedNode = RootNodes.FirstOrDefault();
         IsDirty = false;
         OnPropertyChanged(nameof(FilePath));
@@ -243,7 +294,14 @@ public sealed partial class MainWindowViewModel : ObservableObject
         ConnectionNodeViewModel target = (SelectedNode ?? RootNodes.First()).TargetFolder;
         ((ContainerInfo)target.Connection).AddChild(item);
         target.IsExpanded = true;
+        SearchText = string.Empty; // a new item would not match the search
         SelectedNode = FindNode(item);
+    }
+
+    private void ApplySearch()
+    {
+        foreach (ConnectionNodeViewModel root in RootNodes)
+            root.ApplyFilter(SearchText);
     }
 
     private ConnectionNodeViewModel? FindNode(ConnectionInfo connection) =>
