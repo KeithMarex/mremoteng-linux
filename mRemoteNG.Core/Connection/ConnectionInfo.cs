@@ -200,7 +200,8 @@ namespace mRemoteNG.Connection
             string[] excludedProperties = new[]
             {
                 "Parent", "Name", "Hostname", "Port", "Inheritance", "OpenConnections",
-                "IsContainer", "IsDefault", "PositionID", "ConstantID", "TreeNode", "IsQuickConnect", "PleaseConnect"
+                "IsContainer", "IsDefault", "PositionID", "ConstantID", "TreeNode", "IsQuickConnect", "PleaseConnect",
+                nameof(PluginProperties) // read-only; persisted separately as PluginData
             };
 
             return GetProperties(excludedProperties);
