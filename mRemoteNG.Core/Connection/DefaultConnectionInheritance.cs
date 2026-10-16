@@ -1,12 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Runtime.Versioning;
 using mRemoteNG.App;
 
 
 namespace mRemoteNG.Connection
 {
-    [SupportedOSPlatform("windows")]
     public class DefaultConnectionInheritance : ConnectionInfoInheritance
     {
         [Browsable(false)]
@@ -30,7 +28,7 @@ namespace mRemoteNG.Connection
                 System.Reflection.PropertyInfo propertyFromSettings = typeof(TSource).GetProperty(propertyNameMutator(property.Name));
                 if (propertyFromSettings == null)
                 {
-                    Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg, $"DefaultConInherit-LoadFrom: Could not load {property.Name}", true);
+                    CoreRuntime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg, $"DefaultConInherit-LoadFrom: Could not load {property.Name}", true);
                     continue;
                 }
 
@@ -50,7 +48,7 @@ namespace mRemoteNG.Connection
                 object localValue = property.GetValue(Instance, null);
                 if (propertyFromSettings == null)
                 {
-                    Runtime.MessageCollector?.AddMessage(Messages.MessageClass.ErrorMsg, $"DefaultConInherit-SaveTo: Could not load {property.Name}", true);
+                    CoreRuntime.MessageCollector?.AddMessage(Messages.MessageClass.ErrorMsg, $"DefaultConInherit-SaveTo: Could not load {property.Name}", true);
                     continue;
                 }
 

@@ -15,6 +15,10 @@
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="mRemoteNG.Core.Tests" />
+    <!-- Code moved out of mRemoteNG keeps the internal access it had there (e.g. ConnectionInfo.Parent's
+         setter, ReplacePluginProperties used by the deserializers that have not moved yet). -->
+    <InternalsVisibleTo Include="mRemoteNG" />
+    <InternalsVisibleTo Include="mRemoteNGTests" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" />

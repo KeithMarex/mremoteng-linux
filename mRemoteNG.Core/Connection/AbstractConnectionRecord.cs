@@ -7,16 +7,13 @@ using mRemoteNG.Connection.Protocol.Http;
 using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Connection.Protocol.Terminal;
 using mRemoteNG.Connection.Protocol.VNC;
-using mRemoteNG.Properties;
 using mRemoteNG.Tools;
 using mRemoteNG.Tools.Attributes;
 using mRemoteNG.Resources.Language;
-using System.Runtime.Versioning;
 using System.Security;
 
 namespace mRemoteNG.Connection
 {
-    [SupportedOSPlatform("windows")]
     public abstract class AbstractConnectionRecord(string uniqueId) : INotifyPropertyChanged
     {
         #region Fields

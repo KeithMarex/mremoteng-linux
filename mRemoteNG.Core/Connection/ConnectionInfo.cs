@@ -5,28 +5,18 @@ using System.Linq;
 using System.Reflection;
 using mRemoteNG.App;
 using mRemoteNG.Connection.Protocol;
-using mRemoteNG.Connection.Protocol.ARD;
 using mRemoteNG.Connection.Protocol.Http;
-using mRemoteNG.Connection.Protocol.PowerShell;
 using mRemoteNG.Connection.Protocol.Terminal;
-using mRemoteNG.Connection.Protocol.WSL;
-using mRemoteNG.Connection.Protocol.RAW;
 using mRemoteNG.Connection.Protocol.RDP;
-using mRemoteNG.Connection.Protocol.Rlogin;
-using mRemoteNG.Connection.Protocol.SSH;
-using mRemoteNG.Connection.Protocol.Telnet;
 using mRemoteNG.Connection.Protocol.VNC;
 using mRemoteNG.Container;
-using mRemoteNG.Properties;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree;
 using mRemoteNG.Resources.Language;
 using mRemoteNG.Tree.Root;
-using System.Runtime.Versioning;
 
 namespace mRemoteNG.Connection
 {
-    [SupportedOSPlatform("windows")]
     [DefaultProperty("Name")]
     [TypeDescriptionProvider(WinFormsPropertyGridTypes.ConnectionInfoTypeDescriptionProvider)]
     public class ConnectionInfo : AbstractConnectionRecord, IHasParent, IInheritable
@@ -303,7 +293,7 @@ namespace mRemoteNG.Connection
             }
             catch (Exception e)
             {
-                Runtime.MessageCollector.AddExceptionStackTrace($"Error retrieving inherited property '{propertyName}'", e);
+                CoreRuntime.MessageCollector.AddExceptionStackTrace($"Error retrieving inherited property '{propertyName}'", e);
                 inheritedValue = default(TPropertyType);
                 return false;
             }

@@ -1,12 +1,9 @@
 ﻿using mRemoteNG.App;
-using mRemoteNG.Properties;
 using mRemoteNG.Tools;
 using mRemoteNG.Resources.Language;
-using System.Runtime.Versioning;
 
 namespace mRemoteNG.Tree.Root
 {
-    [SupportedOSPlatform("windows")]
     public class RootPuttySessionsNodeInfo : RootNodeInfo
     {
         private string _name;

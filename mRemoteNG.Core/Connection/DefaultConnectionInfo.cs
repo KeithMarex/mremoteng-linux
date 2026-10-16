@@ -1,13 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Configuration;
-using System.Runtime.Versioning;
 using mRemoteNG.App;
 
 
 namespace mRemoteNG.Connection
 {
-    [SupportedOSPlatform("windows")]
     public class DefaultConnectionInfo : ConnectionInfo
     {
         [Browsable(false)]
@@ -32,7 +29,7 @@ namespace mRemoteNG.Connection
                     string expectedPropertyName = propertyNameMutator(property.Name);
                     System.Reflection.PropertyInfo propertyFromSource = typeof(TSource).GetProperty(expectedPropertyName);
                     if (propertyFromSource == null)
-                        throw new SettingsPropertyNotFoundException($"No property with name '{expectedPropertyName}' found.");
+                        throw new MissingMemberException($"No property with name '{expectedPropertyName}' found.");
 
                     object valueFromSource = propertyFromSource.GetValue(sourceInstance, null);
 
@@ -46,7 +43,7 @@ namespace mRemoteNG.Connection
                 }
                 catch (Exception ex)
                 {
-                    Runtime.MessageCollector?.AddExceptionStackTrace($"Error loading default connectioninfo property {property.Name}", ex);
+                    CoreRuntime.MessageCollector?.AddExceptionStackTrace($"Error loading default connectioninfo property {property.Name}", ex);
                 }
             }
         }
@@ -66,7 +63,7 @@ namespace mRemoteNG.Connection
                     System.Reflection.PropertyInfo propertyFromDestination = typeof(TDestination).GetProperty(expectedPropertyName);
 
                     if (propertyFromDestination == null)
-                        throw new SettingsPropertyNotFoundException($"No property with name '{expectedPropertyName}' found.");
+                        throw new MissingMemberException($"No property with name '{expectedPropertyName}' found.");
 
                     // ensure value is of correct type
                     object value = Convert.ChangeType(property.GetValue(Instance, null), propertyFromDestination.PropertyType);
@@ -75,7 +72,7 @@ namespace mRemoteNG.Connection
                 }
                 catch (Exception ex)
                 {
-                    Runtime.MessageCollector?.AddExceptionStackTrace($"Error saving default connectioninfo property {property.Name}", ex);
+                    CoreRuntime.MessageCollector?.AddExceptionStackTrace($"Error saving default connectioninfo property {property.Name}", ex);
                 }
             }
         }

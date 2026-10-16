@@ -5,11 +5,9 @@ using System.Reflection;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree.Root;
 using mRemoteNG.Resources.Language;
-using System.Runtime.Versioning;
 
 namespace mRemoteNG.Connection
 {
-    [SupportedOSPlatform("windows")]
     public class ConnectionInfoInheritance
     {
         private ConnectionInfoInheritance _tempInheritanceStorage;

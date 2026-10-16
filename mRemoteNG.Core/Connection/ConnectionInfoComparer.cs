@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.Versioning;
 
 namespace mRemoteNG.Connection
 {
-    [SupportedOSPlatform("windows")]
     public class ConnectionInfoComparer<TProperty>(Func<ConnectionInfo, TProperty> sortExpression) : IComparer<ConnectionInfo> where TProperty : IComparable<TProperty>
     {
         private readonly Func<ConnectionInfo, TProperty> _sortExpression = sortExpression;

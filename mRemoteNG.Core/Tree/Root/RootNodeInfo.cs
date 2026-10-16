@@ -4,11 +4,9 @@ using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Tools;
 using mRemoteNG.Resources.Language;
-using System.Runtime.Versioning;
 
 namespace mRemoteNG.Tree.Root
 {
-    [SupportedOSPlatform("windows")]
     [DefaultProperty("Name")]
     public class RootNodeInfo(RootNodeType rootType, string uniqueId) : ContainerInfo(uniqueId)
     {

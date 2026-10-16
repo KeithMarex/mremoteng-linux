@@ -1,17 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Runtime.Versioning;
 using mRemoteNG.App;
 using mRemoteNG.Connection;
 using mRemoteNG.Container;
-using mRemoteNG.Properties;
 using mRemoteNG.Tree.Root;
 
 
 namespace mRemoteNG.Tree
 {
-    [SupportedOSPlatform("windows")]
     public sealed class ConnectionTreeModel : INotifyCollectionChanged, INotifyPropertyChanged
     {
         public List<ContainerInfo> RootNodes { get; } = [];
