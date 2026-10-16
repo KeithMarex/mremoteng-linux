@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using mRemoteNG.App;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Connection.Protocol.Http;
 using mRemoteNG.Connection.Protocol.RDP;
@@ -250,7 +251,7 @@ namespace mRemoteNG.Connection
         public virtual string Username
         {
             get => GetPropertyValue("Username", _username);
-            set => SetField(ref _username, Settings.Default.DoNotTrimUsername ? value : value?.Trim(), "Username");
+            set => SetField(ref _username, CoreRuntime.Settings.DoNotTrimUsername ? value : value?.Trim(), "Username");
         }
 
         [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2),

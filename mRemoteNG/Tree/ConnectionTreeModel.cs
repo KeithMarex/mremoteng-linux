@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.Versioning;
+using mRemoteNG.App;
 using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Properties;
@@ -98,7 +99,7 @@ namespace mRemoteNG.Tree
                 return;
 
             connectionInfo.Name = newName;
-            if (Settings.Default.SetHostnameLikeDisplayName)
+            if (CoreRuntime.Settings.SetHostnameLikeDisplayName)
                 connectionInfo.Hostname = newName;
         }
 

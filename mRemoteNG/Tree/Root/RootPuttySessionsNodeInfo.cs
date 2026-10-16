@@ -1,4 +1,5 @@
-﻿using mRemoteNG.Properties;
+﻿using mRemoteNG.App;
+using mRemoteNG.Properties;
 using mRemoteNG.Tools;
 using mRemoteNG.Resources.Language;
 using System.Runtime.Versioning;
@@ -16,9 +17,9 @@ namespace mRemoteNG.Tree.Root
         {
             _name = Language.PuttySavedSessionsRootName;
             _panel =
-                string.IsNullOrEmpty(Settings.Default.PuttySavedSessionsPanel)
+                string.IsNullOrEmpty(CoreRuntime.Settings.PuttySavedSessionsPanel)
                     ? Language.General
-                    : Settings.Default.PuttySavedSessionsPanel;
+                    : CoreRuntime.Settings.PuttySavedSessionsPanel;
         }
 
         #region Public Properties
@@ -40,7 +41,7 @@ namespace mRemoteNG.Tree.Root
             set
             {
                 _panel = value;
-                Settings.Default.PuttySavedSessionsPanel = value;
+                CoreRuntime.Settings.PuttySavedSessionsPanel = value;
             }
         }
 

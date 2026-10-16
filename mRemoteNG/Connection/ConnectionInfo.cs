@@ -316,8 +316,8 @@ namespace mRemoteNG.Connection
         private void SetTreeDisplayDefaults()
         {
             Name = Language.NewConnection;
-            Description = Settings.Default.ConDefaultDescription;
-            Icon = Settings.Default.ConDefaultIcon;
+            Description = CoreRuntime.Settings.ConDefaultDescription;
+            Icon = CoreRuntime.Settings.ConDefaultIcon;
             Panel = Language.General;
             Color = string.Empty;
             TabColor = string.Empty;
@@ -327,31 +327,31 @@ namespace mRemoteNG.Connection
         private void SetConnectionDefaults()
         {
             Hostname = string.Empty;
-            ExternalAddressProvider = (ExternalAddressProvider)Enum.Parse(typeof(ExternalAddressProvider), Settings.Default.ConDefaultExternalAddressProvider);
-            EC2Region = Settings.Default.ConDefaultEC2Region;
-            ExternalCredentialProvider = (ExternalCredentialProvider)Enum.Parse(typeof(ExternalCredentialProvider), Settings.Default.ConDefaultExternalCredentialProvider);
+            ExternalAddressProvider = (ExternalAddressProvider)Enum.Parse(typeof(ExternalAddressProvider), CoreRuntime.Settings.ConDefaultExternalAddressProvider);
+            EC2Region = CoreRuntime.Settings.ConDefaultEC2Region;
+            ExternalCredentialProvider = (ExternalCredentialProvider)Enum.Parse(typeof(ExternalCredentialProvider), CoreRuntime.Settings.ConDefaultExternalCredentialProvider);
             UserViaAPI = "";
         }
 
         private void SetProtocolDefaults()
         {
-            Protocol = (ProtocolType)Enum.Parse(typeof(ProtocolType), Settings.Default.ConDefaultProtocol);
-            ExtApp = Settings.Default.ConDefaultExtApp;
+            Protocol = (ProtocolType)Enum.Parse(typeof(ProtocolType), CoreRuntime.Settings.ConDefaultProtocol);
+            ExtApp = CoreRuntime.Settings.ConDefaultExtApp;
             Port = 0;
-            PuttySession = Settings.Default.ConDefaultPuttySession;
-            UseConsoleSession = Settings.Default.ConDefaultUseConsoleSession;
-            RDPAuthenticationLevel = (AuthenticationLevel)Enum.Parse(typeof(AuthenticationLevel), Settings.Default.ConDefaultRDPAuthenticationLevel);
-            RDPMinutesToIdleTimeout = Settings.Default.ConDefaultRDPMinutesToIdleTimeout;
-            RDPAlertIdleTimeout = Settings.Default.ConDefaultRDPAlertIdleTimeout;
-            LoadBalanceInfo = Settings.Default.ConDefaultLoadBalanceInfo;
-            RenderingEngine = (RenderingEngine)Enum.Parse(typeof(RenderingEngine), Settings.Default.ConDefaultRenderingEngine);
-            TerminalBackend = (TerminalBackend)Enum.Parse(typeof(TerminalBackend), Settings.Default.ConDefaultTerminalBackend);
-            UseCredSsp = Settings.Default.ConDefaultUseCredSsp;
-            UseRestrictedAdmin = Settings.Default.ConDefaultUseRestrictedAdmin;
-            UseRCG = Settings.Default.ConDefaultUseRCG;
-            UseRedirectionServerName = Settings.Default.ConDefaultUseRedirectionServerName;
-            UseVmId = Settings.Default.ConDefaultUseVmId;
-            UseEnhancedMode = Settings.Default.ConDefaultUseEnhancedMode;
+            PuttySession = CoreRuntime.Settings.ConDefaultPuttySession;
+            UseConsoleSession = CoreRuntime.Settings.ConDefaultUseConsoleSession;
+            RDPAuthenticationLevel = (AuthenticationLevel)Enum.Parse(typeof(AuthenticationLevel), CoreRuntime.Settings.ConDefaultRDPAuthenticationLevel);
+            RDPMinutesToIdleTimeout = CoreRuntime.Settings.ConDefaultRDPMinutesToIdleTimeout;
+            RDPAlertIdleTimeout = CoreRuntime.Settings.ConDefaultRDPAlertIdleTimeout;
+            LoadBalanceInfo = CoreRuntime.Settings.ConDefaultLoadBalanceInfo;
+            RenderingEngine = (RenderingEngine)Enum.Parse(typeof(RenderingEngine), CoreRuntime.Settings.ConDefaultRenderingEngine);
+            TerminalBackend = (TerminalBackend)Enum.Parse(typeof(TerminalBackend), CoreRuntime.Settings.ConDefaultTerminalBackend);
+            UseCredSsp = CoreRuntime.Settings.ConDefaultUseCredSsp;
+            UseRestrictedAdmin = CoreRuntime.Settings.ConDefaultUseRestrictedAdmin;
+            UseRCG = CoreRuntime.Settings.ConDefaultUseRCG;
+            UseRedirectionServerName = CoreRuntime.Settings.ConDefaultUseRedirectionServerName;
+            UseVmId = CoreRuntime.Settings.ConDefaultUseVmId;
+            UseEnhancedMode = CoreRuntime.Settings.ConDefaultUseEnhancedMode;
         }
 
         private void SetRemoteDesktopServicesDefaults()
@@ -362,77 +362,77 @@ namespace mRemoteNG.Connection
 
         private void SetRdGatewayDefaults()
         {
-            RDGatewayUsageMethod = (RDGatewayUsageMethod)Enum.Parse(typeof(RDGatewayUsageMethod), Settings.Default.ConDefaultRDGatewayUsageMethod);
-            RDGatewayHostname = Settings.Default.ConDefaultRDGatewayHostname;
-            RDGatewayUseConnectionCredentials = (RDGatewayUseConnectionCredentials)Enum.Parse(typeof(RDGatewayUseConnectionCredentials), Settings.Default.ConDefaultRDGatewayUseConnectionCredentials);
-            RDGatewayUsername = Settings.Default.ConDefaultRDGatewayUsername;
-            RDGatewayPassword = Settings.Default.ConDefaultRDGatewayPassword;
-            RDGatewayDomain = Settings.Default.ConDefaultRDGatewayDomain;
-            RDGatewayAccessToken = Settings.Default.ConDefaultRDGatewayAccessToken;
-            RDGatewayExternalCredentialProvider = (ExternalCredentialProvider)Enum.Parse(typeof(ExternalCredentialProvider), Settings.Default.ConDefaultRDGatewayExternalCredentialProvider);
-            RDGatewayUserViaAPI = Settings.Default.ConDefaultRDGatewayUserViaAPI;
+            RDGatewayUsageMethod = (RDGatewayUsageMethod)Enum.Parse(typeof(RDGatewayUsageMethod), CoreRuntime.Settings.ConDefaultRDGatewayUsageMethod);
+            RDGatewayHostname = CoreRuntime.Settings.ConDefaultRDGatewayHostname;
+            RDGatewayUseConnectionCredentials = (RDGatewayUseConnectionCredentials)Enum.Parse(typeof(RDGatewayUseConnectionCredentials), CoreRuntime.Settings.ConDefaultRDGatewayUseConnectionCredentials);
+            RDGatewayUsername = CoreRuntime.Settings.ConDefaultRDGatewayUsername;
+            RDGatewayPassword = CoreRuntime.Settings.ConDefaultRDGatewayPassword;
+            RDGatewayDomain = CoreRuntime.Settings.ConDefaultRDGatewayDomain;
+            RDGatewayAccessToken = CoreRuntime.Settings.ConDefaultRDGatewayAccessToken;
+            RDGatewayExternalCredentialProvider = (ExternalCredentialProvider)Enum.Parse(typeof(ExternalCredentialProvider), CoreRuntime.Settings.ConDefaultRDGatewayExternalCredentialProvider);
+            RDGatewayUserViaAPI = CoreRuntime.Settings.ConDefaultRDGatewayUserViaAPI;
         }
 
         private void SetAppearanceDefaults()
         {
-            Resolution = Enum.TryParse(Settings.Default.ConDefaultResolution, out RDPResolutions res)
+            Resolution = Enum.TryParse(CoreRuntime.Settings.ConDefaultResolution, out RDPResolutions res)
                 ? res
                 : RDPResolutions.SmartSize;
-            AutomaticResize = Settings.Default.ConDefaultAutomaticResize;
-            Colors = (RDPColors)Enum.Parse(typeof(RDPColors), Settings.Default.ConDefaultColors);
-            CacheBitmaps = Settings.Default.ConDefaultCacheBitmaps;
-            DisplayWallpaper = Settings.Default.ConDefaultDisplayWallpaper;
-            DisplayThemes = Settings.Default.ConDefaultDisplayThemes;
-            EnableFontSmoothing = Settings.Default.ConDefaultEnableFontSmoothing;
-            EnableDesktopComposition = Settings.Default.ConDefaultEnableDesktopComposition;
-            DisableFullWindowDrag = Settings.Default.ConDefaultDisableFullWindowDrag;
-            DisableMenuAnimations = Settings.Default.ConDefaultDisableMenuAnimations;
-            DisableCursorShadow = Settings.Default.ConDefaultDisableCursorShadow;
-            DisableCursorBlinking = Settings.Default.ConDefaultDisableCursorBlinking;
+            AutomaticResize = CoreRuntime.Settings.ConDefaultAutomaticResize;
+            Colors = (RDPColors)Enum.Parse(typeof(RDPColors), CoreRuntime.Settings.ConDefaultColors);
+            CacheBitmaps = CoreRuntime.Settings.ConDefaultCacheBitmaps;
+            DisplayWallpaper = CoreRuntime.Settings.ConDefaultDisplayWallpaper;
+            DisplayThemes = CoreRuntime.Settings.ConDefaultDisplayThemes;
+            EnableFontSmoothing = CoreRuntime.Settings.ConDefaultEnableFontSmoothing;
+            EnableDesktopComposition = CoreRuntime.Settings.ConDefaultEnableDesktopComposition;
+            DisableFullWindowDrag = CoreRuntime.Settings.ConDefaultDisableFullWindowDrag;
+            DisableMenuAnimations = CoreRuntime.Settings.ConDefaultDisableMenuAnimations;
+            DisableCursorShadow = CoreRuntime.Settings.ConDefaultDisableCursorShadow;
+            DisableCursorBlinking = CoreRuntime.Settings.ConDefaultDisableCursorBlinking;
         }
 
         private void SetRedirectDefaults()
         {
-            RedirectKeys = Settings.Default.ConDefaultRedirectKeys;
-            RedirectDiskDrives = Settings.Default.ConDefaultRedirectDiskDrives 
+            RedirectKeys = CoreRuntime.Settings.ConDefaultRedirectKeys;
+            RedirectDiskDrives = CoreRuntime.Settings.ConDefaultRedirectDiskDrives 
                 ? RDPDiskDrives.All 
                 : RDPDiskDrives.None;
-            RedirectDiskDrivesCustom = Settings.Default.ConDefaultRedirectDiskDrivesCustom;
-            RedirectPrinters = Settings.Default.ConDefaultRedirectPrinters;
-            RedirectClipboard = Settings.Default.ConDefaultRedirectClipboard;
-            RedirectPorts = Settings.Default.ConDefaultRedirectPorts;
-            RedirectSmartCards = Settings.Default.ConDefaultRedirectSmartCards;
-            RedirectAudioCapture = Settings.Default.ConDefaultRedirectAudioCapture;
-            RedirectSound = (RDPSounds)Enum.Parse(typeof(RDPSounds), Settings.Default.ConDefaultRedirectSound);
-            SoundQuality = (RDPSoundQuality)Enum.Parse(typeof(RDPSoundQuality), Settings.Default.ConDefaultSoundQuality);
+            RedirectDiskDrivesCustom = CoreRuntime.Settings.ConDefaultRedirectDiskDrivesCustom;
+            RedirectPrinters = CoreRuntime.Settings.ConDefaultRedirectPrinters;
+            RedirectClipboard = CoreRuntime.Settings.ConDefaultRedirectClipboard;
+            RedirectPorts = CoreRuntime.Settings.ConDefaultRedirectPorts;
+            RedirectSmartCards = CoreRuntime.Settings.ConDefaultRedirectSmartCards;
+            RedirectAudioCapture = CoreRuntime.Settings.ConDefaultRedirectAudioCapture;
+            RedirectSound = (RDPSounds)Enum.Parse(typeof(RDPSounds), CoreRuntime.Settings.ConDefaultRedirectSound);
+            SoundQuality = (RDPSoundQuality)Enum.Parse(typeof(RDPSoundQuality), CoreRuntime.Settings.ConDefaultSoundQuality);
         }
 
         private void SetMiscDefaults()
         {
-            PreExtApp = Settings.Default.ConDefaultPreExtApp;
-            PostExtApp = Settings.Default.ConDefaultPostExtApp;
-            MacAddress = Settings.Default.ConDefaultMacAddress;
-            UserField = Settings.Default.ConDefaultUserField;
-            EnvironmentTags = Settings.Default.ConDefaultEnvironmentTags;
-            Favorite = Settings.Default.ConDefaultFavorite;
-            RDPStartProgram = Settings.Default.ConDefaultRDPStartProgram;
-            RDPStartProgramWorkDir = Settings.Default.ConDefaultRDPStartProgramWorkDir;
-            OpeningCommand = Settings.Default.OpeningCommand;
+            PreExtApp = CoreRuntime.Settings.ConDefaultPreExtApp;
+            PostExtApp = CoreRuntime.Settings.ConDefaultPostExtApp;
+            MacAddress = CoreRuntime.Settings.ConDefaultMacAddress;
+            UserField = CoreRuntime.Settings.ConDefaultUserField;
+            EnvironmentTags = CoreRuntime.Settings.ConDefaultEnvironmentTags;
+            Favorite = CoreRuntime.Settings.ConDefaultFavorite;
+            RDPStartProgram = CoreRuntime.Settings.ConDefaultRDPStartProgram;
+            RDPStartProgramWorkDir = CoreRuntime.Settings.ConDefaultRDPStartProgramWorkDir;
+            OpeningCommand = CoreRuntime.Settings.OpeningCommand;
         }
 
         private void SetVncDefaults()
         {
-            VNCCompression = (Compression)Enum.Parse(typeof(Compression), Settings.Default.ConDefaultVNCCompression);
-            VNCEncoding = (Encoding)Enum.Parse(typeof(Encoding), Settings.Default.ConDefaultVNCEncoding);
-            VNCAuthMode = (AuthMode)Enum.Parse(typeof(AuthMode), Settings.Default.ConDefaultVNCAuthMode);
-            VNCProxyType = (ProxyType)Enum.Parse(typeof(ProxyType), Settings.Default.ConDefaultVNCProxyType);
-            VNCProxyIP = Settings.Default.ConDefaultVNCProxyIP;
-            VNCProxyPort = Settings.Default.ConDefaultVNCProxyPort;
-            VNCProxyUsername = Settings.Default.ConDefaultVNCProxyUsername;
-            VNCProxyPassword = Settings.Default.ConDefaultVNCProxyPassword;
-            VNCColors = (Colors)Enum.Parse(typeof(Colors), Settings.Default.ConDefaultVNCColors);
-            VNCSmartSizeMode = (SmartSizeMode)Enum.Parse(typeof(SmartSizeMode), Settings.Default.ConDefaultVNCSmartSizeMode);
-            VNCViewOnly = Settings.Default.ConDefaultVNCViewOnly;
+            VNCCompression = (Compression)Enum.Parse(typeof(Compression), CoreRuntime.Settings.ConDefaultVNCCompression);
+            VNCEncoding = (Encoding)Enum.Parse(typeof(Encoding), CoreRuntime.Settings.ConDefaultVNCEncoding);
+            VNCAuthMode = (AuthMode)Enum.Parse(typeof(AuthMode), CoreRuntime.Settings.ConDefaultVNCAuthMode);
+            VNCProxyType = (ProxyType)Enum.Parse(typeof(ProxyType), CoreRuntime.Settings.ConDefaultVNCProxyType);
+            VNCProxyIP = CoreRuntime.Settings.ConDefaultVNCProxyIP;
+            VNCProxyPort = CoreRuntime.Settings.ConDefaultVNCProxyPort;
+            VNCProxyUsername = CoreRuntime.Settings.ConDefaultVNCProxyUsername;
+            VNCProxyPassword = CoreRuntime.Settings.ConDefaultVNCProxyPassword;
+            VNCColors = (Colors)Enum.Parse(typeof(Colors), CoreRuntime.Settings.ConDefaultVNCColors);
+            VNCSmartSizeMode = (SmartSizeMode)Enum.Parse(typeof(SmartSizeMode), CoreRuntime.Settings.ConDefaultVNCSmartSizeMode);
+            VNCViewOnly = CoreRuntime.Settings.ConDefaultVNCViewOnly;
         }
 
         private void SetNonBrowsablePropertiesDefaults()
