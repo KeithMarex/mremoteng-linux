@@ -19,6 +19,10 @@ internal sealed class FakeDialogService : IDialogService
 
     public Task<string?> PickConnectionFileToSaveAsync(string suggestedFileName) => Task.FromResult(FileToSave);
 
+    public string? FileToImport { get; set; }
+
+    public Task<string?> PickFileToImportAsync() => Task.FromResult(FileToImport);
+
     public Task<SecureString?> AskPasswordAsync(string fileName) =>
         Task.FromResult(Passwords.Count > 0 && Passwords.Dequeue() is { } password ? password.ConvertToSecureString() : null);
 
@@ -29,6 +33,10 @@ internal sealed class FakeDialogService : IDialogService
         Confirmations.Add(message);
         return Task.FromResult(ConfirmAnswer);
     }
+
+    public Func<ViewModels.OptionsViewModel, bool> EditOptions { get; set; } = _ => false;
+
+    public Task<bool> ShowOptionsAsync(ViewModels.OptionsViewModel options) => Task.FromResult(EditOptions(options));
 
     public Task ShowErrorAsync(string title, string message)
     {

@@ -18,6 +18,8 @@ public sealed class AppSettings
     /// <summary>Save after every change, as the WinForms app does by default.</summary>
     public bool SaveConnectionsAfterEveryEdit { get; set; } = true;
 
+    public AppTheme Theme { get; set; } = AppTheme.System;
+
     // Same defaults as the WinForms app's security options.
     public BlockCipherEngines EncryptionEngine { get; set; } = BlockCipherEngines.AES;
     public BlockCipherModes EncryptionBlockCipherMode { get; set; } = BlockCipherModes.GCM;

@@ -9,6 +9,9 @@ public interface IDialogService
 
     Task<string?> PickConnectionFileToSaveAsync(string suggestedFileName);
 
+    /// <summary>Asks for a file to import (any format Core's FileImporters understands).</summary>
+    Task<string?> PickFileToImportAsync();
+
     /// <summary>Asks for the password of a protected connection file; null when cancelled. Callable from any thread.</summary>
     Task<SecureString?> AskPasswordAsync(string fileName);
 
@@ -16,6 +19,9 @@ public interface IDialogService
     Task<SecureString?> AskNewPasswordAsync(string fileName);
 
     Task<bool> ConfirmAsync(string title, string message);
+
+    /// <summary>Shows the options; true when the user confirmed them.</summary>
+    Task<bool> ShowOptionsAsync(ViewModels.OptionsViewModel options);
 
     Task ShowErrorAsync(string title, string message);
 }

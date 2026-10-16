@@ -38,51 +38,15 @@ namespace mRemoteNG.Tree
             switch (dropTargetLocation)
             {
                 case DropTargetLocation.Item:
-                    DropModelOntoTarget(dropSource, dropTarget);
+                    ConnectionTreeMoveRules.Move(dropSource, dropTarget, MovePosition.Onto);
                     break;
                 case DropTargetLocation.AboveItem:
-                    DropModelAboveTarget(dropSource, dropTarget);
+                    ConnectionTreeMoveRules.Move(dropSource, dropTarget, MovePosition.Above);
                     break;
                 case DropTargetLocation.BelowItem:
-                    DropModelBelowTarget(dropSource, dropTarget);
+                    ConnectionTreeMoveRules.Move(dropSource, dropTarget, MovePosition.Below);
                     break;
             }
-        }
-
-        private void DropModelOntoTarget(ConnectionInfo dropSource, ConnectionInfo dropTarget)
-        {
-            if (!(dropTarget is ContainerInfo dropTargetAsContainer)) return;
-            dropSource.SetParent(dropTargetAsContainer);
-            DemoteRootGroupIfNested(dropSource, dropTargetAsContainer);
-        }
-
-        private void DropModelAboveTarget(ConnectionInfo dropSource, ConnectionInfo dropTarget)
-        {
-            if (!dropSource.Parent.Equals(dropTarget.Parent))
-                dropTarget.Parent.AddChildAbove(dropSource, dropTarget);
-            else
-                dropTarget.Parent.SetChildAbove(dropSource, dropTarget);
-            DemoteRootGroupIfNested(dropSource, dropTarget.Parent);
-        }
-
-        private void DropModelBelowTarget(ConnectionInfo dropSource, ConnectionInfo dropTarget)
-        {
-            if (!dropSource.Parent.Equals(dropTarget.Parent))
-                dropTarget.Parent.AddChildBelow(dropSource, dropTarget);
-            else
-                dropTarget.Parent.SetChildBelow(dropSource, dropTarget);
-            DemoteRootGroupIfNested(dropSource, dropTarget.Parent);
-        }
-
-        /// <summary>
-        /// A container flagged as a top-level root group should only keep that flag while it
-        /// remains a direct child of the master root node. If it has been dropped into any
-        /// other container it becomes a normal nested folder again.
-        /// </summary>
-        private static void DemoteRootGroupIfNested(ConnectionInfo dropSource, ContainerInfo newParent)
-        {
-            if (dropSource is ContainerInfo { IsRootGroup: true } droppedContainer && newParent is not RootNodeInfo)
-                droppedContainer.IsRootGroup = false;
         }
 
         public void HandleEvent_ModelCanDrop(object? sender, ModelDropEventArgs e)
@@ -147,7 +111,7 @@ namespace mRemoteNG.Tree
         private DragDropEffects HandleCanDropBetweenItems(ConnectionInfo dropSource, ConnectionInfo? dropTarget)
         {
             DragDropEffects dragDropEffect = DragDropEffects.None;
-            if (AncestorDraggingOntoChild(dropSource, dropTarget))
+            if (ConnectionTreeMoveRules.IsAncestorOf(dropSource, dropTarget))
                 _infoMessage = Language.NodeCannotDragParentOnChild;
             else if (dropTarget is PuttySessionInfo || dropTarget is RootNodeInfo)
                 _enableFeedback = false;
@@ -162,37 +126,13 @@ namespace mRemoteNG.Tree
 
         private bool IsValidDrag(ConnectionInfo dropSource, ConnectionInfo dropTarget)
         {
-            bool validDrag = false;
-            if (NodeDraggingOntoSelf(dropSource, dropTarget))
-                _infoMessage = Language.NodeCannotDragOnSelf;
-            else if (AncestorDraggingOntoChild(dropSource, dropTarget))
-                _infoMessage = Language.NodeCannotDragParentOnChild;
-            else if (DraggingOntoCurrentParent(dropSource, dropTarget))
-                _infoMessage = Language.NodeAlreadyInFolder;
-            else
-                validDrag = true;
-            return validDrag;
+            _infoMessage = ConnectionTreeMoveRules.ReasonNotMovableOnto(dropSource, dropTarget);
+            return _infoMessage == null;
         }
 
         private bool NodeIsDraggable(ConnectionInfo node)
         {
-            return node != null && !(node is RootNodeInfo) && !(node is PuttySessionInfo);
-        }
-
-        private bool NodeDraggingOntoSelf(ConnectionInfo source, ConnectionInfo? target)
-        {
-            return source.Equals(target);
-        }
-
-        private bool AncestorDraggingOntoChild(ConnectionInfo source, ConnectionInfo? target)
-        {
-            return target is not null && source is ContainerInfo sourceAsContainer &&
-                   sourceAsContainer.GetRecursiveChildList().Contains(target);
-        }
-
-        private bool DraggingOntoCurrentParent(ConnectionInfo source, ConnectionInfo? target)
-        {
-            return target is ContainerInfo targetAsContainer && targetAsContainer.Children.Contains(source);
+            return ConnectionTreeMoveRules.IsMovable(node) && node is not PuttySessionInfo;
         }
     }
 }

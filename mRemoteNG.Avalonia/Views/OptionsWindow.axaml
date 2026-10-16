@@ -1,0 +1,50 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="using:mRemoteNG.Avalonia"
+        xmlns:vm="using:mRemoteNG.Avalonia.ViewModels"
+        x:Class="mRemoteNG.Avalonia.Views.OptionsWindow"
+        x:DataType="vm:OptionsViewModel"
+        Title="{x:Static app:UiText.Options}"
+        Width="560" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <StackPanel Margin="16" Spacing="12">
+        <TextBlock Text="{x:Static app:UiText.ConnectionFile}" FontWeight="SemiBold" />
+        <Grid ColumnDefinitions="220,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+            <TextBlock Text="{x:Static app:UiText.FileFormat}" VerticalAlignment="Center" />
+            <ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
+                      ItemsSource="{x:Static vm:OptionsViewModel.FileVersions}" SelectedItem="{Binding FileVersion}" />
+            <TextBlock Grid.Row="1" Grid.ColumnSpan="2" TextWrapping="Wrap" Opacity="0.7"
+                       Text="{x:Static app:UiText.FileFormatHelp}" />
+            <CheckBox Grid.Row="2" Grid.ColumnSpan="2" IsChecked="{Binding SaveConnectionsAfterEveryEdit}"
+                      Content="{x:Static app:UiText.SaveConnectionsAfterEveryEdit}" />
+        </Grid>
+
+        <TextBlock Text="{x:Static app:UiText.Security}" FontWeight="SemiBold" />
+        <Grid ColumnDefinitions="220,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
+            <TextBlock Text="{x:Static app:UiText.EncryptionEngine}" VerticalAlignment="Center" />
+            <ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
+                      ItemsSource="{x:Static vm:OptionsViewModel.EncryptionEngines}" SelectedItem="{Binding EncryptionEngine}" />
+            <TextBlock Grid.Row="1" Text="{x:Static app:UiText.EncryptionBlockCipherMode}" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch"
+                      ItemsSource="{x:Static vm:OptionsViewModel.BlockCipherModes}" SelectedItem="{Binding EncryptionBlockCipherMode}" />
+            <TextBlock Grid.Row="2" Text="{x:Static app:UiText.EncryptionKeyDerivationIterations}" VerticalAlignment="Center" TextWrapping="Wrap" />
+            <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding KeyDerivationIterations}" Increment="1000"
+                           Minimum="{x:Static vm:OptionsViewModel.MinimumKeyDerivationIterations}"
+                           Maximum="{x:Static vm:OptionsViewModel.MaximumKeyDerivationIterations}" FormatString="0" />
+            <CheckBox Grid.Row="3" Grid.ColumnSpan="2" IsChecked="{Binding EncryptCompleteConnectionsFile}"
+                      Content="{x:Static app:UiText.EncryptCompleteConnectionFile}" />
+        </Grid>
+
+        <TextBlock Text="{x:Static app:UiText.Appearance}" FontWeight="SemiBold" />
+        <Grid ColumnDefinitions="220,*">
+            <TextBlock Text="{x:Static app:UiText.Theme}" VerticalAlignment="Center" />
+            <ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
+                      ItemsSource="{x:Static vm:OptionsViewModel.Themes}" SelectedItem="{Binding Theme}" />
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button Content="{x:Static app:UiText.Ok}" IsDefault="True" Click="OnOkClick" MinWidth="80" />
+            <Button Content="{x:Static app:UiText.Cancel}" IsCancel="True" Click="OnCancelClick" MinWidth="80" />
+        </StackPanel>
+    </StackPanel>
+</Window>

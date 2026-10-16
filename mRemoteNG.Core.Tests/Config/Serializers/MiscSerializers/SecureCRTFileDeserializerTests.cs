@@ -7,11 +7,9 @@ using mRemoteNG.Container;
 using NUnit.Framework;
 using mRemoteNGTests.Properties;
 using mRemoteNG.Tree;
-using System.Runtime.Versioning;
 
 namespace mRemoteNGTests.Config.Serializers.MiscSerializers;
 
-[SupportedOSPlatform("windows")]
 public class SecureCRTFileDeserializerTests
 {
     private SecureCRTFileDeserializer _deserializer;

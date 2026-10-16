@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Versioning;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Connection.Protocol.Http;
@@ -16,7 +15,6 @@ using mRemoteNG.Tree.Root;
 
 namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Csv
 {
-    [SupportedOSPlatform("windows")]
     public class CsvConnectionsDeserializerMremotengFormat : IDeserializer<string, ConnectionTreeModel>
     {
         public ConnectionTreeModel Deserialize(string serializedData)

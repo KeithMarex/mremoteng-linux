@@ -1,3 +1,4 @@
+using System;
 using mRemoteNG.Config.Settings;
 using mRemoteNG.Messages;
 
@@ -28,5 +29,12 @@ namespace mRemoteNG.App
         /// the (empty) connection tree from being saved over the file.
         /// </summary>
         public static bool IsConnectionsFileLoaded { get; set; }
+
+        /// <summary>
+        /// Decrypts a password from an RDCMan (.rdg) file. RDCMan protects them with Windows DPAPI in machine
+        /// scope, so only the WinForms app on that machine installs a real decryptor; elsewhere imported RDCMan
+        /// passwords stay empty.
+        /// </summary>
+        public static Func<string, string> DecryptRdcManPassword { get; set; } = _ => string.Empty;
     }
 }

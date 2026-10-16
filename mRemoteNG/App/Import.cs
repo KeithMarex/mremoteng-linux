@@ -161,25 +161,7 @@ namespace mRemoteNG.App
 
         private static IConnectionImporter<string> BuildConnectionImporterFromFileExtension(string fileName)
         {
-            // TODO: Use the file contents to determine the file type instead of trusting the extension
-            string extension = Path.GetExtension(fileName) ?? "";
-            switch (extension.ToLowerInvariant())
-            {
-                case ".xml":
-                    return new MRemoteNGXmlImporter();
-                case ".csv":
-                    return new MRemoteNGCsvImporter();
-                case ".rdp":
-                    return new RemoteDesktopConnectionImporter();
-                case ".rdg":
-                    return new RemoteDesktopConnectionManagerImporter();
-                case ".dat":
-                    return new PuttyConnectionManagerImporter();
-                case ".crt":
-                    return new SecureCRTImporter();
-                default:
-                    throw new FileFormatException("Unrecognized file format.");
-            }
+            return FileImporters.ForFile(fileName);
         }
     }
 }

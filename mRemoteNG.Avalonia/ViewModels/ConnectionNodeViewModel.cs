@@ -11,6 +11,9 @@ namespace mRemoteNG.Avalonia.ViewModels;
 /// <summary>A node of the connection tree, kept in sync with the connection or folder it wraps.</summary>
 public sealed class ConnectionNodeViewModel : ObservableObject, IDisposable
 {
+    private bool _isVisible = true;
+    private bool _expandedByFilter;
+
     public ConnectionNodeViewModel(ConnectionInfo connection, ConnectionNodeViewModel? parent = null)
     {
         Connection = connection;
@@ -38,17 +41,69 @@ public sealed class ConnectionNodeViewModel : ObservableObject, IDisposable
     /// <summary>The protocol shown next to a connection's name; empty for folders.</summary>
     public string Detail => IsFolder ? string.Empty : Connection.Protocol.ToString();
 
+    /// <summary>
+    /// Expanded state, stored in the connection file. While a search shows matches inside a collapsed
+    /// folder, the folder is opened in the view only, so searching does not change the file.
+    /// </summary>
     public bool IsExpanded
     {
-        get => Connection is ContainerInfo { IsExpanded: true };
+        get => _expandedByFilter || Connection is ContainerInfo { IsExpanded: true };
         set
         {
-            if (Connection is not ContainerInfo container || container.IsExpanded == value)
+            if (Connection is not ContainerInfo container || value == IsExpanded)
                 return;
+
+            if (!value)
+                _expandedByFilter = false;
             container.IsExpanded = value;
             OnPropertyChanged();
         }
     }
+
+    /// <summary>False while a search is active and neither this node nor anything below it matches.</summary>
+    public bool IsVisible
+    {
+        get => _isVisible;
+        private set => SetProperty(ref _isVisible, value);
+    }
+
+    /// <summary>
+    /// Shows only nodes whose name, host name or description contains <paramref name="searchText"/>, plus
+    /// the folders leading to them (opened); an empty text shows everything again. Returns whether this node
+    /// or anything below it matches.
+    /// </summary>
+    public bool ApplyFilter(string? searchText)
+    {
+        string text = searchText?.Trim() ?? string.Empty;
+        bool childMatches = false;
+        foreach (ConnectionNodeViewModel child in Children)
+            childMatches |= child.ApplyFilter(text);
+
+        if (text.Length == 0)
+        {
+            IsVisible = true;
+            SetExpandedByFilter(false);
+            return true;
+        }
+
+        bool matches = childMatches || Matches(text);
+        IsVisible = matches || IsRoot;
+        SetExpandedByFilter(childMatches);
+        return matches;
+    }
+
+    private void SetExpandedByFilter(bool expanded)
+    {
+        bool wasExpanded = IsExpanded;
+        _expandedByFilter = expanded;
+        if (IsExpanded != wasExpanded)
+            OnPropertyChanged(nameof(IsExpanded));
+    }
+
+    private bool Matches(string text) =>
+        Connection.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase) ||
+        (!IsFolder && Connection.Hostname.Contains(text, StringComparison.CurrentCultureIgnoreCase)) ||
+        Connection.Description.Contains(text, StringComparison.CurrentCultureIgnoreCase);
 
     /// <summary>The folder new items are added to when this node is selected.</summary>
     public ConnectionNodeViewModel TargetFolder => IsFolder ? this : Parent ?? this;

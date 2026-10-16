@@ -3,6 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
+using mRemoteNG.App;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Connection.Protocol.RDP;
@@ -10,12 +11,10 @@ using mRemoteNG.Container;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using mRemoteNG.Resources.Language;
-using System.Runtime.Versioning;
 using mRemoteNG.Security;
 
 namespace mRemoteNG.Config.Serializers.MiscSerializers
 {
-    [SupportedOSPlatform("windows")]
     public class RemoteDesktopConnectionManagerDeserializer : IDeserializer<string, ConnectionTreeModel>
     {
         private static int _schemaVersion; /* 1 = RDCMan v2.2
@@ -42,11 +41,11 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
         private static void VerifySchemaVersion(XmlNode rdcManNode)
         {
 	        if (!int.TryParse(rdcManNode?.Attributes?["schemaVersion"]?.Value, out int version))
-		        throw new FileFormatException("Could not find schema version attribute.");
+		        throw new ConnectionFileFormatException("Could not find schema version attribute.");
 
             if (version != 1 && version != 3)
             {
-                throw new FileFormatException($"Unsupported schema version ({version}).");
+                throw new ConnectionFileFormatException($"Unsupported schema version ({version}).");
             }
 
             _schemaVersion = version;
@@ -60,7 +59,7 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
                 Version version = new(versionAttribute);
                 if (!(version == new Version(2, 7)) && !(version == new Version(2, 83)))
                 {
-                    throw new FileFormatException($"Unsupported file version ({version}).");
+                    throw new ConnectionFileFormatException($"Unsupported file version ({version}).");
                 }
             }
             else
@@ -71,12 +70,12 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
                     Version version = new(versionNode);
                     if (!(version == new Version(2, 2)))
                     {
-                        throw new FileFormatException($"Unsupported file version ({version}).");
+                        throw new ConnectionFileFormatException($"Unsupported file version ({version}).");
                     }
                 }
                 else
                 {
-                    throw new FileFormatException("Unknown file version");
+                    throw new ConnectionFileFormatException("Unknown file version");
                 }
             }
         }
@@ -360,14 +359,11 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
 
             try
             {
-                byte[] plaintextData = ProtectedData.Unprotect(Convert.FromBase64String(ciphertext), new byte[] { },
-                                                            DataProtectionScope.LocalMachine);
-                char[] charArray = Encoding.Unicode.GetChars(plaintextData);
-                return new string(charArray);
+                return CoreRuntime.DecryptRdcManPassword(ciphertext);
             }
             catch (Exception /*ex*/)
             {
-                //Runtime.MessageCollector.AddExceptionMessage("RemoteDesktopConnectionManager.DecryptPassword() failed.", ex, logOnly: true);
+                //CoreRuntime.MessageCollector.AddExceptionMessage("RemoteDesktopConnectionManager.DecryptPassword() failed.", ex, logOnly: true);
                 return string.Empty;
             }
         }

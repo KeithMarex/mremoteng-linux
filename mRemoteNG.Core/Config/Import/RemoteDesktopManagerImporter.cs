@@ -1,7 +1,6 @@
 ﻿#region
 
 using System.IO;
-using System.Runtime.Versioning;
 using mRemoteNG.App;
 using mRemoteNG.Config.DataProviders;
 using mRemoteNG.Config.Serializers.ConnectionSerializers.Csv.RemoteDesktopManager;
@@ -12,19 +11,18 @@ using mRemoteNG.Messages;
 
 namespace mRemoteNG.Config.Import
 {
-    [SupportedOSPlatform("windows")]
     public class RemoteDesktopManagerImporter : IConnectionImporter<string>
     {
         public void Import(string filePath, ContainerInfo destinationContainer)
         {
             if (string.IsNullOrEmpty(filePath))
             {
-                Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, $"Unable to import file. File path is null.");
+                CoreRuntime.MessageCollector.AddMessage(MessageClass.ErrorMsg, $"Unable to import file. File path is null.");
                 return;
             }
 
             if (!File.Exists(filePath))
-                Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, $"Unable to import file. File does not exist. Path: {filePath}");
+                CoreRuntime.MessageCollector.AddMessage(MessageClass.ErrorMsg, $"Unable to import file. File does not exist. Path: {filePath}");
 
             FileDataProvider dataProvider = new(filePath);
             string csvString = dataProvider.Load();
@@ -40,7 +38,7 @@ namespace mRemoteNG.Config.Import
             }
             else
             {
-                Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, "Unable to import file. File is empty.");
+                CoreRuntime.MessageCollector.AddMessage(MessageClass.ErrorMsg, "Unable to import file. File is empty.");
                 return;
             }
         }

@@ -8,6 +8,7 @@ using mRemoteNG.App;
 using mRemoteNG.Avalonia.Platform;
 using mRemoteNG.Avalonia.Services;
 using mRemoteNG.Avalonia.Settings;
+using mRemoteNG.Config.Import;
 using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Messages;
@@ -52,9 +53,15 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
     public MessagesViewModel Messages { get; }
 
+    /// <summary>Applies a theme to the running app; set by the app.</summary>
+    public Action<AppTheme> ApplyTheme { get; set; } = _ => { };
+
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(DuplicateCommand), nameof(DeleteCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DuplicateCommand), nameof(DeleteCommand), nameof(MoveUpCommand), nameof(MoveDownCommand))]
     private ConnectionNodeViewModel? _selectedNode;
+
+    [ObservableProperty]
+    private string _searchText = string.Empty;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Title))]
@@ -71,6 +78,29 @@ public sealed partial class MainWindowViewModel : ObservableObject
     private bool CanModifySelection => SelectedNode is { IsRoot: false };
 
     partial void OnSelectedNodeChanged(ConnectionNodeViewModel? value) => PropertyPanel.Connection = value?.Connection;
+
+    partial void OnSearchTextChanged(string value) => ApplySearch();
+
+    /// <summary>Whether <paramref name="source"/> may be dropped at <paramref name="position"/> of <paramref name="target"/>.</summary>
+    public bool CanMove(ConnectionNodeViewModel source, ConnectionNodeViewModel target, MovePosition position) =>
+        ConnectionTreeMoveRules.CanMove(source.Connection, target.Connection, position);
+
+    /// <summary>Moves a node in the tree (drag and drop), using the same rules as the WinForms tree.</summary>
+    public void Move(ConnectionNodeViewModel source, ConnectionNodeViewModel target, MovePosition position)
+    {
+        if (!CanMove(source, target, position))
+            return;
+
+        ConnectionInfo moved = source.Connection;
+        ConnectionTreeMoveRules.Move(moved, target.Connection, position);
+        if (position == MovePosition.Onto)
+            target.IsExpanded = true;
+        ApplySearch();
+        SelectedNode = FindNode(moved);
+        // Reordering within a folder keeps the same selected node, so refresh these explicitly.
+        MoveUpCommand.NotifyCanExecuteChanged();
+        MoveDownCommand.NotifyCanExecuteChanged();
+    }
 
     /// <summary>Opens the last used connection file, or the default one (created when missing).</summary>
     public async Task InitializeAsync()
@@ -146,6 +176,60 @@ public sealed partial class MainWindowViewModel : ObservableObject
         }
     }
 
+    [RelayCommand]
+    private async Task OpenOptionsAsync()
+    {
+        OptionsViewModel options = new(_settings);
+        if (!await _dialogs.ShowOptionsAsync(options))
+            return;
+
+        options.ApplyTo(_settings);
+        ApplyTheme(_settings.Theme);
+        SaveSettings();
+    }
+
+    /// <summary>Imports a file (mRemoteNG XML/CSV, .rdp, RDCMan, PuTTY CM, SecureCRT) into the selected folder.</summary>
+    [RelayCommand(CanExecute = nameof(HasFile))]
+    private async Task ImportAsync()
+    {
+        string? path = await _dialogs.PickFileToImportAsync();
+        if (path is null)
+            return;
+
+        ConnectionNodeViewModel target = (SelectedNode ?? RootNodes.First()).TargetFolder;
+        ContainerInfo folder = (ContainerInfo)target.Connection;
+        ContainerInfo imported = new();
+        bool passwordCancelled = false;
+        try
+        {
+            if (!File.Exists(path))
+                throw new FileNotFoundException("The file to import does not exist.", path);
+
+            // Importing a protected file asks for its password synchronously, so it runs off the UI thread;
+            // the result is moved into the tree here, on the UI thread.
+            await Task.Run(() => FileImporters.ForFile(path, () =>
+            {
+                Optional<SecureString> password = AskPassword(Path.GetFileName(path));
+                passwordCancelled = !password.Any();
+                return password;
+            }).Import(path, imported));
+        }
+        catch (Exception ex)
+        {
+            if (!passwordCancelled)
+                await ReportErrorAsync(UiText.CouldNotImport(path), ex);
+            return;
+        }
+
+        ConnectionInfo[] nodes = imported.Children.ToArray();
+        foreach (ConnectionInfo node in nodes)
+            folder.AddChild(node);
+        target.IsExpanded = true;
+        SearchText = string.Empty;
+        if (nodes.Length > 0)
+            SelectedNode = FindNode(nodes[^1]);
+    }
+
     [RelayCommand(CanExecute = nameof(HasFile))]
     private void AddConnection() => AddItem(new ConnectionInfo());
 
@@ -159,6 +243,30 @@ public sealed partial class MainWindowViewModel : ObservableObject
         ConnectionInfo copy = original.Clone();
         original.Parent?.AddChildBelow(copy, original);
         SelectedNode = FindNode(copy);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanMoveUp))]
+    private void MoveUp() => MoveBesideSibling(-1, MovePosition.Above);
+
+    [RelayCommand(CanExecute = nameof(CanMoveDown))]
+    private void MoveDown() => MoveBesideSibling(+1, MovePosition.Below);
+
+    private bool CanMoveUp => SiblingOfSelection(-1) is not null;
+
+    private bool CanMoveDown => SiblingOfSelection(+1) is not null;
+
+    private ConnectionNodeViewModel? SiblingOfSelection(int offset)
+    {
+        if (SelectedNode is not { IsRoot: false, Parent: { } parent } node)
+            return null;
+        int index = parent.Children.IndexOf(node) + offset;
+        return index >= 0 && index < parent.Children.Count ? parent.Children[index] : null;
+    }
+
+    private void MoveBesideSibling(int offset, MovePosition position)
+    {
+        if (SiblingOfSelection(offset) is { } sibling)
+            Move(SelectedNode!, sibling, position);
     }
 
     [RelayCommand(CanExecute = nameof(CanModifySelection))]
@@ -228,12 +336,14 @@ public sealed partial class MainWindowViewModel : ObservableObject
         foreach (ContainerInfo rootNode in model.RootNodes)
             RootNodes.Add(new ConnectionNodeViewModel(rootNode));
 
+        ApplySearch();
         SelectedNode = RootNodes.FirstOrDefault();
         IsDirty = false;
         OnPropertyChanged(nameof(FilePath));
         OnPropertyChanged(nameof(Title));
         SaveCommand.NotifyCanExecuteChanged();
         SaveAsCommand.NotifyCanExecuteChanged();
+        ImportCommand.NotifyCanExecuteChanged();
         AddConnectionCommand.NotifyCanExecuteChanged();
         AddFolderCommand.NotifyCanExecuteChanged();
     }
@@ -243,7 +353,14 @@ public sealed partial class MainWindowViewModel : ObservableObject
         ConnectionNodeViewModel target = (SelectedNode ?? RootNodes.First()).TargetFolder;
         ((ContainerInfo)target.Connection).AddChild(item);
         target.IsExpanded = true;
+        SearchText = string.Empty; // a new item would not match the search
         SelectedNode = FindNode(item);
+    }
+
+    private void ApplySearch()
+    {
+        foreach (ConnectionNodeViewModel root in RootNodes)
+            root.ApplyFilter(SearchText);
     }
 
     private ConnectionNodeViewModel? FindNode(ConnectionInfo connection) =>
@@ -333,6 +450,11 @@ public sealed partial class MainWindowViewModel : ObservableObject
     private void RememberFile(string path)
     {
         _settings.ConnectionFile = path;
+        SaveSettings();
+    }
+
+    private void SaveSettings()
+    {
         try
         {
             _settingsStore.Save(_settings);

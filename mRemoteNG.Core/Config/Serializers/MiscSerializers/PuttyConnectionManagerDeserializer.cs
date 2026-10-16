@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.Versioning;
 using System.Xml;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
@@ -11,7 +10,6 @@ using mRemoteNG.Tree.Root;
 
 namespace mRemoteNG.Config.Serializers.MiscSerializers
 {
-    [SupportedOSPlatform("windows")]
     public class PuttyConnectionManagerDeserializer : IDeserializer<string, ConnectionTreeModel>
     {
         public ConnectionTreeModel Deserialize(string puttycmConnectionsXml)
@@ -53,7 +51,7 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
                         ImportConnection(childNode, newContainer);
                         break;
                     default:
-                        throw (new FileFormatException($"Unrecognized child node ({childNode.Name})."));
+                        throw (new ConnectionFileFormatException($"Unrecognized child node ({childNode.Name})."));
                 }
             }
         }
@@ -66,14 +64,14 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
                 case "root":
                     if (string.Compare(xmlNodeType, "database", StringComparison.OrdinalIgnoreCase) != 0)
                     {
-                        throw (new FileFormatException($"Unrecognized root node type ({xmlNodeType})."));
+                        throw (new ConnectionFileFormatException($"Unrecognized root node type ({xmlNodeType})."));
                     }
 
                     break;
                 case "container":
                     if (string.Compare(xmlNodeType, "folder", StringComparison.OrdinalIgnoreCase) != 0)
                     {
-                        throw (new FileFormatException($"Unrecognized root node type ({xmlNodeType})."));
+                        throw (new ConnectionFileFormatException($"Unrecognized root node type ({xmlNodeType})."));
                     }
 
                     break;
@@ -99,7 +97,7 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
         {
             string connectionNodeType = connectionNode.Attributes?["type"].Value;
             if (string.Compare(connectionNodeType, "PuTTY", StringComparison.OrdinalIgnoreCase) != 0)
-                throw (new FileFormatException($"Unrecognized connection node type ({connectionNodeType})."));
+                throw (new ConnectionFileFormatException($"Unrecognized connection node type ({connectionNodeType})."));
 
             ConnectionInfo connectionInfo = ConnectionInfoFromXml(connectionNode);
             parentContainer.AddChild(connectionInfo);
@@ -122,7 +120,7 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
                     connectionInfo.Protocol = ProtocolType.SSH2;
                     break;
                 default:
-                    throw new FileFormatException($"Unrecognized protocol ({protocol}).");
+                    throw new ConnectionFileFormatException($"Unrecognized protocol ({protocol}).");
             }
 
             connectionInfo.Hostname = connectionInfoNode.SelectSingleNode("./host")?.InnerText;

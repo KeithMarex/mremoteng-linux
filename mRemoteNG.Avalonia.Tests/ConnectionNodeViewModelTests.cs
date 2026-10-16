@@ -64,3 +64,63 @@ public class ConnectionNodeViewModelTests
         Assert.That(folderNode.Children.Single().TargetFolder, Is.SameAs(folderNode));
     }
 }
+
+public class ConnectionTreeSearchTests
+{
+    private RootNodeInfo _root = null!;
+    private ContainerInfo _web = null!;
+    private ConnectionNodeViewModel _rootNode = null!;
+
+    [SetUp]
+    public void Setup()
+    {
+        _root = new RootNodeInfo(RootNodeType.Connection);
+        _web = new ContainerInfo { Name = "web", IsExpanded = false };
+        ContainerInfo db = new() { Name = "databases" };
+        _root.AddChild(_web);
+        _root.AddChild(db);
+        _web.AddChild(new ConnectionInfo { Name = "frontend", Hostname = "fe01.example.org" });
+        db.AddChild(new ConnectionInfo { Name = "postgres", Hostname = "pg01.example.org" });
+        _rootNode = new ConnectionNodeViewModel(_root);
+    }
+
+    [Test]
+    public void OnlyMatchesAndTheirFoldersStayVisible()
+    {
+        _rootNode.ApplyFilter("front");
+
+        Assert.That(VisibleNames(), Is.EqualTo(new[] { "Connections", "web", "frontend" }));
+    }
+
+    [Test]
+    public void HostNamesMatchToo()
+    {
+        _rootNode.ApplyFilter("PG01");
+
+        Assert.That(VisibleNames(), Does.Contain("postgres").And.Not.Contain("frontend"));
+    }
+
+    [Test]
+    public void FoldersWithMatchesOpenWithoutChangingTheFile()
+    {
+        ConnectionNodeViewModel webNode = _rootNode.Children.First();
+
+        _rootNode.ApplyFilter("front");
+
+        Assert.That(webNode.IsExpanded, Is.True);
+        Assert.That(_web.IsExpanded, Is.False);
+    }
+
+    [Test]
+    public void ClearingTheSearchShowsEverythingAsBefore()
+    {
+        _rootNode.ApplyFilter("front");
+        _rootNode.ApplyFilter("");
+
+        Assert.That(VisibleNames(), Has.Length.EqualTo(5));
+        Assert.That(_rootNode.Children.First().IsExpanded, Is.False);
+    }
+
+    private string[] VisibleNames() =>
+        _rootNode.SelfAndDescendants().Where(node => node.IsVisible).Select(node => node.Name).ToArray();
+}

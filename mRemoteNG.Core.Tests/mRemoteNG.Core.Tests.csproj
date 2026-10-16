@@ -27,7 +27,9 @@
     <Compile Include="..\mRemoteNGTests\TestHelpers\ConnectionTreeModelBuilder.cs" Link="TestHelpers\ConnectionTreeModelBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <!-- The confCons.xml fixtures of mRemoteNGTests, embedded as plain files (see TestHelpers/ConfConsFixtures.cs). -->
-    <EmbeddedResource Include="..\mRemoteNGTests\Resources\confCons_*.xml" Link="Resources\%(Filename)%(Extension)" LogicalName="ConfConsFixtures.%(Filename)%(Extension)" />
+    <!-- Fixtures of mRemoteNGTests, embedded as plain files (see TestHelpers/TestFixtures.cs). -->
+    <EmbeddedResource Include="..\mRemoteNGTests\Resources\confCons_*.xml" Link="Resources\%(Filename)%(Extension)" LogicalName="Fixtures.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\mRemoteNGTests\Resources\test_rdcman_*.rdg;..\mRemoteNGTests\Resources\test_puttyConnectionManager_database.dat;..\mRemoteNGTests\Resources\test_remotedesktopconnection.rdp;..\mRemoteNGTests\Resources\test_securecrt.xml"
+                      Link="Resources\%(Filename)%(Extension)" LogicalName="Fixtures.%(Filename)%(Extension)" />
   </ItemGroup>
 </Project>

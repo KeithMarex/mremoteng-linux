@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using mRemoteNG.Config.Serializers;
 using mRemoteNG.Config.Serializers.MiscSerializers;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Connection.Protocol.RDP;
@@ -307,21 +308,21 @@ public class RemoteDesktopConnectionManagerDeserializerTests
     public void ExceptionThrownOnBadSchemaVersion()
     {
         var badFileContents = Resources.test_rdcman_v2_2_badschemaversion;
-        Assert.That(() => _deserializer.Deserialize(badFileContents), Throws.TypeOf<FileFormatException>());
+        Assert.That(() => _deserializer.Deserialize(badFileContents), Throws.TypeOf<ConnectionFileFormatException>());
     }
 
     [Test]
     public void ExceptionThrownOnUnsupportedVersion()
     {
         var badFileContents = Resources.test_rdcman_badVersionNumber;
-        Assert.That(() => _deserializer.Deserialize(badFileContents), Throws.TypeOf<FileFormatException>());
+        Assert.That(() => _deserializer.Deserialize(badFileContents), Throws.TypeOf<ConnectionFileFormatException>());
     }
 
     [Test]
     public void ExceptionThrownOnNoVersion()
     {
         var badFileContents = Resources.test_rdcman_noversion;
-        Assert.That(() => _deserializer.Deserialize(badFileContents), Throws.TypeOf<FileFormatException>());
+        Assert.That(() => _deserializer.Deserialize(badFileContents), Throws.TypeOf<ConnectionFileFormatException>());
     }
 
     [Test]

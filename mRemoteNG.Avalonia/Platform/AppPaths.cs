@@ -1,7 +1,7 @@
 namespace mRemoteNG.Avalonia.Platform;
 
 /// <summary>Where the Linux app keeps its files, following the XDG base directory specification.</summary>
-public sealed class AppPaths(string configDirectory, string dataDirectory)
+public sealed class AppPaths(string configDirectory, string dataDirectory, string? stateDirectory = null)
 {
     private const string AppDirectoryName = "mRemoteNG";
 
@@ -11,7 +11,12 @@ public sealed class AppPaths(string configDirectory, string dataDirectory)
     /// <summary>Connection files and backups: <c>$XDG_DATA_HOME/mRemoteNG</c>, by default <c>~/.local/share/mRemoteNG</c>.</summary>
     public string DataDirectory { get; } = dataDirectory;
 
+    /// <summary>Logs: <c>$XDG_STATE_HOME/mRemoteNG</c>, by default <c>~/.local/state/mRemoteNG</c>.</summary>
+    public string StateDirectory { get; } = stateDirectory ?? dataDirectory;
+
     public string SettingsFile => Path.Combine(ConfigDirectory, "settings.json");
+
+    public string LogFile => Path.Combine(StateDirectory, "mRemoteNG.log");
 
     public string DefaultConnectionFile => Path.Combine(DataDirectory, "confCons.xml");
 
@@ -22,7 +27,9 @@ public sealed class AppPaths(string configDirectory, string dataDirectory)
                       ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         string configHome = AbsoluteOrNull(getEnvironmentVariable("XDG_CONFIG_HOME")) ?? Path.Combine(home, ".config");
         string dataHome = AbsoluteOrNull(getEnvironmentVariable("XDG_DATA_HOME")) ?? Path.Combine(home, ".local", "share");
-        return new AppPaths(Path.Combine(configHome, AppDirectoryName), Path.Combine(dataHome, AppDirectoryName));
+        string stateHome = AbsoluteOrNull(getEnvironmentVariable("XDG_STATE_HOME")) ?? Path.Combine(home, ".local", "state");
+        return new AppPaths(Path.Combine(configHome, AppDirectoryName), Path.Combine(dataHome, AppDirectoryName),
+                            Path.Combine(stateHome, AppDirectoryName));
     }
 
     // The XDG spec says relative paths in these variables are invalid and must be ignored.

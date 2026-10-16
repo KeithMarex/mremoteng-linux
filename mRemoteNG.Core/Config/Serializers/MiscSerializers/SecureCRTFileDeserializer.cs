@@ -7,12 +7,10 @@ using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using System;
 using System.IO;
-using System.Runtime.Versioning;
 using System.Xml;
 
 namespace mRemoteNG.Config.Serializers.MiscSerializers
 {
-    [SupportedOSPlatform("windows")]
     public class SecureCRTFileDeserializer
     {
         enum SecureCRTNodeType { folder, session };
@@ -96,9 +94,9 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
                 connectionInfo.Username = GetUsernameFromNode(xmlNode);
                 connectionInfo.Description = GetDescriptionFromNode(xmlNode);
             }
-            catch (FileFormatException e)
+            catch (ConnectionFileFormatException e)
             {
-                Runtime.MessageCollector.AddExceptionMessage("Error when parsing SecureCRT node: ", e);
+                CoreRuntime.MessageCollector.AddExceptionMessage("Error when parsing SecureCRT node: ", e);
                 return null;
             }
 
@@ -133,7 +131,7 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
         {
             XmlNode protocolNode = xmlNode.SelectSingleNode("string[@name=\"Protocol Name\"]");
             if (protocolNode == null)
-                throw new FileFormatException($"Protocol node not found");
+                throw new ConnectionFileFormatException($"Protocol node not found");
 
             string protocolText = protocolNode.InnerText.ToUpper();
             switch (protocolText)
@@ -151,7 +149,7 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
                 case "TELNET":
                     return ProtocolType.Telnet;
                 default:
-                    throw new FileFormatException($"Unrecognized protocol ({protocolText}).");
+                    throw new ConnectionFileFormatException($"Unrecognized protocol ({protocolText}).");
             }
         }
 
