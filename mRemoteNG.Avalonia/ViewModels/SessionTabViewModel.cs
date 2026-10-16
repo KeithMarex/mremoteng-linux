@@ -1,7 +1,9 @@
 using System.ComponentModel;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using mRemoteNG.Avalonia.Views;
 using mRemoteNG.Connection;
 
 namespace mRemoteNG.Avalonia.ViewModels;
@@ -18,6 +20,9 @@ public abstract partial class SessionTabViewModel : ObservableObject, IDisposabl
     public ConnectionInfo Connection { get; }
 
     public string Title => Connection.Name;
+
+    /// <summary>The connection's icon, shown in its tab as on Windows.</summary>
+    public Bitmap? Icon => AppImages.ConnectionIcon(Connection.Icon);
 
     /// <summary>The connection's tab colour, when it has a valid one.</summary>
     public IBrush? TabBrush => Color.TryParse(Connection.TabColor, out Color color) ? new SolidColorBrush(color) : null;
@@ -73,5 +78,7 @@ public abstract partial class SessionTabViewModel : ObservableObject, IDisposabl
             OnPropertyChanged(nameof(Title));
         else if (e.PropertyName == nameof(ConnectionInfo.TabColor))
             OnPropertyChanged(nameof(TabBrush));
+        else if (e.PropertyName == nameof(ConnectionInfo.Icon))
+            OnPropertyChanged(nameof(Icon));
     }
 }

@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:mRemoteNG.Avalonia.ViewModels"
+             x:Class="mRemoteNG.Avalonia.Views.NotificationsView"
+             x:DataType="vm:MessagesViewModel">
+    <!-- Windows mRemoteNG's Notifications panel: the selected (or newest) message in full, beside the list. -->
+    <Grid ColumnDefinitions="230,4,*">
+        <Grid ColumnDefinitions="Auto,*" Margin="6,4" IsVisible="{Binding Selected, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <Image Source="{Binding Selected.Icon}" Width="32" Height="32" VerticalAlignment="Top" />
+            <StackPanel Grid.Column="1" Margin="8,0,0,0" Spacing="2">
+                <TextBlock Text="{Binding Selected.DateText}" FontStyle="Italic" />
+                <SelectableTextBlock Text="{Binding Selected.Text}" TextWrapping="Wrap" />
+            </StackPanel>
+        </Grid>
+        <GridSplitter Grid.Column="1" ResizeDirection="Columns" Background="{DynamicResource MrPanelBorder}" Width="1" />
+        <ListBox Grid.Column="2" Classes="compact" ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:MessageItem">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <Image Source="{Binding Icon}" Width="16" Height="16" />
+                        <TextBlock Text="{Binding Text}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

@@ -1,0 +1,138 @@
+<!--
+    The colours of Windows mRemoteNG's default themes, vs2015light and vs2015dark (mRemoteNG/Themes/*.vstheme,
+    resolved through ColorMapTheme.resx), as brushes for this app's own controls (Mr*) and as the Fluent theme's
+    resources for the standard ones.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="MrEnvironmentBackground" Color="#EEEEF2" />
+            <SolidColorBrush x:Key="MrPanelBackground" Color="#F5F5F5" />
+            <SolidColorBrush x:Key="MrPanelBorder" Color="#CCCEDB" />
+            <SolidColorBrush x:Key="MrCaptionActiveBackground" Color="#007ACC" />
+            <SolidColorBrush x:Key="MrCaptionActiveForeground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="MrCaptionActiveGrip" Color="#59A8DE" />
+            <SolidColorBrush x:Key="MrCaptionInactiveBackground" Color="#EEEEF2" />
+            <SolidColorBrush x:Key="MrCaptionInactiveForeground" Color="#444444" />
+            <SolidColorBrush x:Key="MrCaptionInactiveGrip" Color="#999999" />
+            <SolidColorBrush x:Key="MrForeground" Color="#1E1E1E" />
+            <SolidColorBrush x:Key="MrSecondaryForeground" Color="#717171" />
+            <SolidColorBrush x:Key="MrSelection" Color="#3399FF" />
+            <SolidColorBrush x:Key="MrSelectionForeground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="MrSelectionInactive" Color="#CCCEDB" />
+            <SolidColorBrush x:Key="MrSelectionInactiveForeground" Color="#1E1E1E" />
+            <SolidColorBrush x:Key="MrHover" Color="#C9DEF5" />
+            <SolidColorBrush x:Key="MrHoverBorder" Color="#3399FF" />
+            <SolidColorBrush x:Key="MrGridCategory" Color="#E7E8EC" />
+            <SolidColorBrush x:Key="MrGridLine" Color="#E7E8EC" />
+            <SolidColorBrush x:Key="MrTextBoxBackground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="MrTextBoxBorder" Color="#CCCEDB" />
+            <SolidColorBrush x:Key="MrAccent" Color="#007ACC" />
+            <SolidColorBrush x:Key="MrTabHover" Color="#1C97EA" />
+            <SolidColorBrush x:Key="MrExpanderBorder" Color="#A0A0A0" />
+            <SolidColorBrush x:Key="MrExpanderGlyph" Color="#1E1E1E" />
+            <SolidColorBrush x:Key="MrWarningForeground" Color="#C0392B" />
+
+            <!-- Fluent theme resources -->
+            <SolidColorBrush x:Key="TreeViewItemBackgroundPointerOver" Color="#C9DEF5" />
+            <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="#3399FF" />
+            <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPointerOver" Color="#3399FF" />
+            <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPressed" Color="#3399FF" />
+            <SolidColorBrush x:Key="TreeViewItemForegroundSelected" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPointerOver" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPressed" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TextControlBackground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TextControlBorderBrush" Color="#CCCEDB" />
+            <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="#007ACC" />
+            <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="#007ACC" />
+            <SolidColorBrush x:Key="ComboBoxBackground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="ComboBoxBorderBrush" Color="#CCCEDB" />
+            <SolidColorBrush x:Key="ComboBoxBorderBrushPointerOver" Color="#007ACC" />
+            <SolidColorBrush x:Key="ComboBoxDropDownBackground" Color="#F6F6F6" />
+            <SolidColorBrush x:Key="ButtonBackground" Color="#ECECF0" />
+            <SolidColorBrush x:Key="ButtonBorderBrush" Color="#ACACAC" />
+            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#C9DEF5" />
+            <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="#3399FF" />
+            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#007ACC" />
+            <SolidColorBrush x:Key="ButtonForegroundPressed" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="MenuFlyoutPresenterBackground" Color="#F6F6F6" />
+            <SolidColorBrush x:Key="MenuFlyoutPresenterBorderBrush" Color="#CCCEDB" />
+            <SolidColorBrush x:Key="MenuFlyoutItemBackgroundPointerOver" Color="#C9DEF5" />
+            <SolidColorBrush x:Key="MenuFlyoutItemBackgroundPressed" Color="#C9DEF5" />
+        </ResourceDictionary>
+
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="MrEnvironmentBackground" Color="#2D2D30" />
+            <SolidColorBrush x:Key="MrPanelBackground" Color="#252526" />
+            <SolidColorBrush x:Key="MrPanelBorder" Color="#3F3F46" />
+            <SolidColorBrush x:Key="MrCaptionActiveBackground" Color="#007ACC" />
+            <SolidColorBrush x:Key="MrCaptionActiveForeground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="MrCaptionActiveGrip" Color="#59A8DE" />
+            <SolidColorBrush x:Key="MrCaptionInactiveBackground" Color="#2D2D30" />
+            <SolidColorBrush x:Key="MrCaptionInactiveForeground" Color="#D0D0D0" />
+            <SolidColorBrush x:Key="MrCaptionInactiveGrip" Color="#46464A" />
+            <SolidColorBrush x:Key="MrForeground" Color="#F1F1F1" />
+            <SolidColorBrush x:Key="MrSecondaryForeground" Color="#999999" />
+            <SolidColorBrush x:Key="MrSelection" Color="#3399FF" />
+            <SolidColorBrush x:Key="MrSelectionForeground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="MrSelectionInactive" Color="#3F3F46" />
+            <SolidColorBrush x:Key="MrSelectionInactiveForeground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="MrHover" Color="#3E3E40" />
+            <SolidColorBrush x:Key="MrHoverBorder" Color="#3399FF" />
+            <SolidColorBrush x:Key="MrGridCategory" Color="#2D2D30" />
+            <SolidColorBrush x:Key="MrGridLine" Color="#2D2D30" />
+            <SolidColorBrush x:Key="MrTextBoxBackground" Color="#333337" />
+            <SolidColorBrush x:Key="MrTextBoxBorder" Color="#434346" />
+            <SolidColorBrush x:Key="MrAccent" Color="#007ACC" />
+            <SolidColorBrush x:Key="MrTabHover" Color="#1C97EA" />
+            <SolidColorBrush x:Key="MrExpanderBorder" Color="#717171" />
+            <SolidColorBrush x:Key="MrExpanderGlyph" Color="#F1F1F1" />
+            <SolidColorBrush x:Key="MrWarningForeground" Color="#FF8A80" />
+
+            <SolidColorBrush x:Key="TreeViewItemBackgroundPointerOver" Color="#3E3E40" />
+            <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="#3399FF" />
+            <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPointerOver" Color="#3399FF" />
+            <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPressed" Color="#3399FF" />
+            <SolidColorBrush x:Key="TreeViewItemForegroundSelected" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPointerOver" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPressed" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TextControlBackground" Color="#333337" />
+            <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="#333337" />
+            <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="#3F3F46" />
+            <SolidColorBrush x:Key="TextControlBorderBrush" Color="#434346" />
+            <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="#007ACC" />
+            <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="#007ACC" />
+            <SolidColorBrush x:Key="ComboBoxBackground" Color="#333337" />
+            <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver" Color="#3F3F46" />
+            <SolidColorBrush x:Key="ComboBoxBorderBrush" Color="#434346" />
+            <SolidColorBrush x:Key="ComboBoxBorderBrushPointerOver" Color="#007ACC" />
+            <SolidColorBrush x:Key="ComboBoxDropDownBackground" Color="#1B1B1C" />
+            <SolidColorBrush x:Key="ButtonBackground" Color="#3F3F46" />
+            <SolidColorBrush x:Key="ButtonBorderBrush" Color="#555555" />
+            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#585862" />
+            <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="#3399FF" />
+            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#007ACC" />
+            <SolidColorBrush x:Key="ButtonForegroundPressed" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="MenuFlyoutPresenterBackground" Color="#1B1B1C" />
+            <SolidColorBrush x:Key="MenuFlyoutPresenterBorderBrush" Color="#333337" />
+            <SolidColorBrush x:Key="MenuFlyoutItemBackgroundPointerOver" Color="#3E3E40" />
+            <SolidColorBrush x:Key="MenuFlyoutItemBackgroundPressed" Color="#3E3E40" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <!-- The same in both themes; for bindings that need a fixed fallback. -->
+    <SolidColorBrush x:Key="MrAccentStatic" Color="#007ACC" />
+
+    <!-- Windows' look: square corners, 1px borders, 9pt text, compact rows. -->
+    <CornerRadius x:Key="ControlCornerRadius">0</CornerRadius>
+    <CornerRadius x:Key="OverlayCornerRadius">0</CornerRadius>
+    <Thickness x:Key="TextControlBorderThemeThickness">1</Thickness>
+    <Thickness x:Key="TextControlBorderThemeThicknessFocused">1</Thickness>
+    <x:Double x:Key="ControlContentThemeFontSize">12</x:Double>
+    <x:Double x:Key="TreeViewItemMinHeight">20</x:Double>
+    <x:Double x:Key="TreeViewItemIndent">16</x:Double>
+</ResourceDictionary>

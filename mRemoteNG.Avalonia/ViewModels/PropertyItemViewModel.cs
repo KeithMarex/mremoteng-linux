@@ -1,8 +1,8 @@
 using System.ComponentModel;
 using System.Globalization;
-using System.Reflection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using mRemoteNG.Connection;
+using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.Avalonia.ViewModels;
 
@@ -15,34 +15,41 @@ public enum PropertyEditorKind
     Number
 }
 
-/// <summary>A value an enum property can take, with the (localized) text to show for it.</summary>
+/// <summary>A value a property can take, with the (localized) text to show for it.</summary>
 public sealed record PropertyChoice(object Value, string DisplayText)
 {
     public override string ToString() => DisplayText;
 }
 
-/// <summary>One editable property of a connection in the property panel.</summary>
-public sealed class PropertyItemViewModel : ObservableObject
+/// <summary>
+/// One row of the property grid: a property of a connection, or (in the Inheritance view) one of its inheritance
+/// settings. As in the Windows property grid, booleans are Yes/No choices and values set on purpose are bold.
+/// </summary>
+public sealed partial class PropertyItemViewModel : ObservableObject
 {
-    private readonly ConnectionInfo _connection;
+    private readonly object _component;
     private readonly PropertyDescriptor _property;
-    private readonly PropertyInfo? _inheritanceFlag;
     private readonly Action<PropertyItemViewModel> _changed;
 
-    public PropertyItemViewModel(ConnectionInfo connection, PropertyDescriptor property, Action<PropertyItemViewModel> changed)
+    /// <param name="component">The connection, or its <see cref="ConnectionInfoInheritance"/> in the Inheritance view.</param>
+    /// <param name="iconNames">The connection icons to offer for the Icon property.</param>
+    public PropertyItemViewModel(object component, PropertyDescriptor property, Action<PropertyItemViewModel> changed,
+                                 IReadOnlyList<string>? iconNames = null)
     {
-        _connection = connection;
+        _component = component;
         _property = property;
         _changed = changed;
-        _inheritanceFlag = connection.Inheritance.InheritanceActive
-            ? connection.Inheritance.GetType().GetProperty(property.Name, typeof(bool))
-            : null;
-        Kind = KindOf(property);
-        Choices = Kind == PropertyEditorKind.Choice
-            ? Enum.GetValues(property.PropertyType).Cast<object>()
-                  .Select(value => new PropertyChoice(value, property.Converter.ConvertToString(value) ?? value.ToString()!))
-                  .ToArray()
-            : [];
+        bool isIcon = component is ConnectionInfo && property.Name == nameof(ConnectionInfo.Icon) && iconNames is { Count: > 0 };
+        Kind = isIcon ? PropertyEditorKind.Choice : KindOf(property);
+        Choices = Kind switch
+        {
+            PropertyEditorKind.Boolean => [new PropertyChoice(true, Language.Yes), new PropertyChoice(false, Language.No)],
+            PropertyEditorKind.Choice when isIcon => IconChoices(iconNames!, property.GetValue(component) as string),
+            PropertyEditorKind.Choice => Enum.GetValues(property.PropertyType).Cast<object>()
+                                             .Select(value => new PropertyChoice(value, property.Converter.ConvertToString(value) ?? value.ToString()!))
+                                             .ToArray(),
+            _ => []
+        };
     }
 
     public string Name => _property.Name;
@@ -53,36 +60,30 @@ public sealed class PropertyItemViewModel : ObservableObject
     public string Category => _property.Category.Trim();
     public string CategorySortKey => _property.Category;
 
+    /// <summary>Whether this row is an inheritance setting (the Inheritance view).</summary>
+    public bool IsInheritanceSetting => _component is ConnectionInfoInheritance;
+
     public PropertyEditorKind Kind { get; }
     public bool IsText => Kind is PropertyEditorKind.Text or PropertyEditorKind.Number;
     public bool IsPassword => Kind == PropertyEditorKind.Password;
-    public bool IsBoolean => Kind == PropertyEditorKind.Boolean;
-    public bool IsChoice => Kind == PropertyEditorKind.Choice;
+    public bool IsChoice => Kind is PropertyEditorKind.Choice or PropertyEditorKind.Boolean;
     public IReadOnlyList<PropertyChoice> Choices { get; }
 
-    public bool CanInherit => _inheritanceFlag != null;
+    public bool IsEditable => !_property.IsReadOnly;
 
-    public bool IsInherited
-    {
-        get => _inheritanceFlag?.GetValue(_connection.Inheritance) is true;
-        set
-        {
-            if (_inheritanceFlag == null || IsInherited == value)
-                return;
-            _inheritanceFlag.SetValue(_connection.Inheritance, value);
-            RefreshValue();
-            _changed(this);
-        }
-    }
+    /// <summary>Whether the value is set rather than the default; the Windows property grid shows those in bold.</summary>
+    public bool IsModified => _property.ShouldSerializeValue(_component);
 
-    public bool IsEditable => !IsInherited && !_property.IsReadOnly;
+    /// <summary>The row the user is on; its description is shown under the grid.</summary>
+    [ObservableProperty]
+    private bool _isSelected;
 
     /// <summary>The value for text, password and number editors. Unparseable numbers are ignored.</summary>
     public string? Text
     {
         get => Kind == PropertyEditorKind.Number
-            ? Convert.ToString(_property.GetValue(_connection), CultureInfo.CurrentCulture)
-            : _property.GetValue(_connection) as string;
+            ? Convert.ToString(_property.GetValue(_component), CultureInfo.CurrentCulture)
+            : _property.GetValue(_component) as string;
         set
         {
             if (value == Text)
@@ -105,7 +106,7 @@ public sealed class PropertyItemViewModel : ObservableObject
 
     public bool BooleanValue
     {
-        get => _property.GetValue(_connection) is true;
+        get => _property.GetValue(_component) is true;
         set
         {
             if (value != BooleanValue)
@@ -115,10 +116,10 @@ public sealed class PropertyItemViewModel : ObservableObject
 
     public PropertyChoice? SelectedChoice
     {
-        get => Choices.FirstOrDefault(choice => Equals(choice.Value, _property.GetValue(_connection)));
+        get => Choices.FirstOrDefault(choice => Equals(choice.Value, _property.GetValue(_component)));
         set
         {
-            if (value != null && !Equals(value.Value, _property.GetValue(_connection)))
+            if (value != null && !Equals(value.Value, _property.GetValue(_component)))
                 SetValue(value.Value);
         }
     }
@@ -129,16 +130,21 @@ public sealed class PropertyItemViewModel : ObservableObject
         OnPropertyChanged(nameof(Text));
         OnPropertyChanged(nameof(BooleanValue));
         OnPropertyChanged(nameof(SelectedChoice));
-        OnPropertyChanged(nameof(IsInherited));
-        OnPropertyChanged(nameof(IsEditable));
+        OnPropertyChanged(nameof(IsModified));
     }
 
     private void SetValue(object value)
     {
-        _property.SetValue(_connection, value);
+        _property.SetValue(_component, value);
         RefreshValue();
         _changed(this);
     }
+
+    // The icons there are, plus the connection's own if it names one this app does not have.
+    private static PropertyChoice[] IconChoices(IReadOnlyList<string> names, string? current) =>
+        names.Concat(string.IsNullOrEmpty(current) || names.Contains(current) ? [] : [current])
+             .Select(name => new PropertyChoice(name, name))
+             .ToArray();
 
     private static PropertyEditorKind KindOf(PropertyDescriptor property)
     {

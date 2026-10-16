@@ -152,6 +152,34 @@ public class MainWindowViewModelTests
         Assert.That(ReopenDefaultFile().GetRecursiveChildList(), Has.Count.EqualTo(1), "the current file must still save");
     }
 
+    [Test]
+    public async Task InheritanceEditsAreSaved()
+    {
+        await _viewModel.InitializeAsync();
+        _viewModel.AddFolderCommand.Execute(null);
+        _viewModel.AddConnectionCommand.Execute(null);
+        _viewModel.PropertyPanel.ShowInheritanceCommand.Execute(null);
+
+        PropertyItemViewModel username = _viewModel.PropertyPanel.Groups.SelectMany(group => group.Items)
+                                                   .Single(item => item.Name == nameof(ConnectionInfoInheritance.Username));
+        username.SelectedChoice = username.Choices.Single(choice => Equals(choice.Value, true));
+
+        ConnectionInfo saved = ReopenDefaultFile().GetRecursiveChildList().Single(node => node.GetTreeNodeType() == Tree.TreeNodeType.Connection);
+        Assert.That(saved.Inheritance.Username, Is.True);
+        Assert.That(_viewModel.IsDirty, Is.False);
+    }
+
+    [Test]
+    public async Task TheNewestNotificationIsShownInFull()
+    {
+        await _viewModel.InitializeAsync();
+
+        CoreRuntime.MessageCollector.AddMessage(Messages.MessageClass.WarningMsg, "first");
+        CoreRuntime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg, "second");
+
+        Assert.That(_viewModel.Messages.Selected?.Text, Is.EqualTo("second"));
+    }
+
     private PropertyItemViewModel RootPasswordItem()
     {
         _viewModel.SelectedNode = _viewModel.RootNodes.Single();

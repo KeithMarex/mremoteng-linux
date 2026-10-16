@@ -42,6 +42,13 @@ public static class UiText
     public static string EncryptCompleteConnectionFile => Language.EncryptCompleteConnectionFile;
     public static string SaveConnectionsAfterEveryEdit => Language.SaveConnectionsAfterEveryEdit;
     public static string Connect => Language.Connect;
+    public static string Config => Language.Config;
+    public static string PropertiesView => Language.Properties;
+    public static string InheritanceView => Language.Inheritance;
+    public static string ExpandAllFolders => Language.ExpandAllFolders;
+    public static string CollapseAllFolders => Language.CollapseAllFolders;
+    public static string Sort => Language.Sort;
+    public static string Favorites => Language.Favorites;
     public static string Reconnect => Language.Reconnect;
     public static string CloseTab => Language._Close.Replace("&", string.Empty);
     public static string ConfirmCloseSessions => Language.ConfirmExitMainInstruction;
@@ -56,7 +63,6 @@ public static class UiText
     public const string FileFormatHelp =
         "Use the version every Windows mRemoteNG in your team can read. Older versions store fewer settings " +
         "(2.7 lacks e.g. tab colours); the change applies the next time the file is saved.";
-    public const string Inherit = "Inherit";
     public const string Ok = "OK";
     public const string Cancel = "Cancel";
     public const string Yes = "Yes";
@@ -64,8 +70,11 @@ public static class UiText
     public const string ConfirmPassword = "Confirm password";
     public const string PasswordsDoNotMatch = "The passwords do not match.";
     public const string NoSessionsYet =
-        "Double-click a connection to open it here. SSH, Telnet, Raw and local Terminal connections are supported; SFTP and FTP follow in a later version.";
+        "Double-click a connection to open it here. SSH, Telnet, Raw, local Terminal, SFTP and FTP connections are supported.";
     public const string Disconnected = "Disconnected.";
+    public const string NoFavorites = "No favorites yet: set Favorite to Yes in a connection's properties.";
+    public const string Categorized = "Categorized";
+    public const string Alphabetical = "Alphabetical";
 
     // File transfer
     public const string OpenFileTransfer = "Open SFTP";

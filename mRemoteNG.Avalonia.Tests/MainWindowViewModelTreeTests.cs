@@ -10,7 +10,7 @@ using NUnit.Framework;
 
 namespace mRemoteNG.Avalonia.Tests;
 
-/// <summary>Moving nodes in the tree (drag and drop, move up/down) through the main view model.</summary>
+/// <summary>Moving nodes in the tree (drag and drop, move up/down) and the Connections toolbar, through the main view model.</summary>
 public class MainWindowViewModelTreeTests
 {
     private TempDirectory _directory = null!;
@@ -84,5 +84,46 @@ public class MainWindowViewModelTreeTests
         _viewModel.SearchText = "unique";
 
         Assert.That(_root.Children.Where(node => node.IsVisible).Select(node => node.Name), Is.EqualTo(new[] { "unique-name" }));
+    }
+
+    [Test]
+    public void CollapseAllClosesTheFoldersButNotTheRoot()
+    {
+        ConnectionNodeViewModel folder = _root.Children[0];
+        folder.IsExpanded = true;
+
+        _viewModel.CollapseAllCommand.Execute(null);
+        Assert.That(folder.IsExpanded, Is.False);
+        Assert.That(_root.IsExpanded, Is.True);
+
+        _viewModel.ExpandAllCommand.Execute(null);
+        Assert.That(folder.IsExpanded, Is.True);
+    }
+
+    [Test]
+    public void SortSortsByNameAndThenTheOtherWayAround()
+    {
+        string[] names = ["b", "c", "a"];
+        for (int i = 0; i < names.Length; i++)
+            _root.Children[i].Connection.Name = names[i];
+
+        _viewModel.SortCommand.Execute(null);
+        Assert.That(_root.Children.Select(node => node.Name), Is.EqualTo(new[] { "a", "b", "c" }));
+        Assert.That(_viewModel.IsNextSortAscending, Is.False);
+
+        _viewModel.SortCommand.Execute(null);
+        Assert.That(_root.Children.Select(node => node.Name), Is.EqualTo(new[] { "c", "b", "a" }));
+    }
+
+    [Test]
+    public void FavoritesAreTheConnectionsMarkedFavorite()
+    {
+        ConnectionInfo favorite = _root.Children[2].Connection;
+        favorite.Favorite = true;
+        _root.Children[0].Connection.Favorite = true; // a folder is never a favorite
+
+        _viewModel.RefreshFavorites();
+
+        Assert.That(_viewModel.Favorites.Select(node => node.Connection), Is.EqualTo(new[] { favorite }));
     }
 }

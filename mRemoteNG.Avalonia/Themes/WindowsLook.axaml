@@ -1,0 +1,144 @@
+<!--
+    The look of Windows mRemoteNG (its vs2015 themes): tool panels with a caption that turns blue when the panel has the
+    focus, flat icon toolbars, a tree with boxed +/- expanders, blue document tabs and compact lists.
+-->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Window">
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <!-- Tool panels (Connections, Config, Notifications) -->
+    <Style Selector="Border.toolPanel">
+        <Setter Property="Background" Value="{DynamicResource MrPanelBackground}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MrPanelBorder}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="Border.caption">
+        <Setter Property="Background" Value="{DynamicResource MrCaptionInactiveBackground}" />
+        <Setter Property="Height" Value="21" />
+        <Setter Property="Padding" Value="5,0" />
+    </Style>
+    <Style Selector="Border.caption TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource MrCaptionInactiveForeground}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,6,0" />
+    </Style>
+    <!-- The dotted grip after the title. -->
+    <Style Selector="Border.caption Rectangle.grip">
+        <Setter Property="Height" Value="5" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Stroke" Value="{DynamicResource MrCaptionInactiveGrip}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeDashArray" Value="1,2" />
+    </Style>
+    <Style Selector="Border.toolPanel:focus-within Border.caption">
+        <Setter Property="Background" Value="{DynamicResource MrCaptionActiveBackground}" />
+    </Style>
+    <Style Selector="Border.toolPanel:focus-within Border.caption TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource MrCaptionActiveForeground}" />
+    </Style>
+    <Style Selector="Border.toolPanel:focus-within Border.caption Rectangle.grip">
+        <Setter Property="Stroke" Value="{DynamicResource MrCaptionActiveGrip}" />
+    </Style>
+
+    <!-- Toolbars: flat 16px icon buttons -->
+    <Style Selector="Border.toolbar">
+        <Setter Property="Padding" Value="2,2" />
+        <Setter Property="Background" Value="{DynamicResource MrPanelBackground}" />
+    </Style>
+    <Style Selector="Border.toolbar Button, Border.toolbar ToggleButton">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="3" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Margin" Value="0,0,1,0" />
+    </Style>
+    <Style Selector="Border.toolbar Button:pointerover /template/ ContentPresenter#PART_ContentPresenter, Border.toolbar ToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource MrHover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MrHoverBorder}" />
+    </Style>
+    <Style Selector="Border.toolbar Button:pressed /template/ ContentPresenter#PART_ContentPresenter, Border.toolbar ToggleButton:checked /template/ ContentPresenter#PART_ContentPresenter, Border.toolbar Button.checked /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource MrHover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MrHoverBorder}" />
+    </Style>
+    <Style Selector="Border.toolbar Button:disabled Image, Border.toolbar ToggleButton:disabled Image">
+        <Setter Property="Opacity" Value="0.35" />
+    </Style>
+    <Style Selector="Border.toolbar Image">
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+    </Style>
+    <Style Selector="Border.toolbar Rectangle.separator">
+        <Setter Property="Width" Value="1" />
+        <Setter Property="Margin" Value="3,2" />
+        <Setter Property="Fill" Value="{DynamicResource MrPanelBorder}" />
+    </Style>
+
+    <!-- The connection tree: Windows' boxed +/- expanders -->
+    <Style Selector="TreeView.connections">
+        <Setter Property="Background" Value="{DynamicResource MrPanelBackground}" />
+    </Style>
+    <Style Selector="TreeView.connections TreeViewItem">
+        <Setter Property="Padding" Value="0" />
+    </Style>
+    <Style Selector="TreeViewItem /template/ ToggleButton#PART_ExpandCollapseChevron">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="ToggleButton">
+                <Border Width="9" Height="9" Background="{DynamicResource MrTextBoxBackground}"
+                        BorderBrush="{DynamicResource MrExpanderBorder}" BorderThickness="1"
+                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Panel>
+                        <Rectangle Width="5" Height="1" Fill="{DynamicResource MrExpanderGlyph}" />
+                        <Rectangle Width="1" Height="5" Fill="{DynamicResource MrExpanderGlyph}"
+                                   IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}" />
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- Document tabs (the sessions) -->
+    <Style Selector="TabStrip.documents">
+        <Setter Property="Background" Value="{DynamicResource MrEnvironmentBackground}" />
+    </Style>
+    <Style Selector="TabStrip.documents TabStripItem">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="MinHeight" Value="22" />
+        <Setter Property="Padding" Value="6,1" />
+        <Setter Property="Margin" Value="0,0,1,0" />
+    </Style>
+    <Style Selector="TabStrip.documents TabStripItem /template/ Border#PART_SelectedPipe">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="TabStrip.documents TabStripItem:pointerover /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="{DynamicResource MrTabHover}" />
+    </Style>
+    <Style Selector="TabStrip.documents TabStripItem:selected /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="{DynamicResource MrAccent}" />
+    </Style>
+    <Style Selector="TabStrip.documents TabStripItem:pointerover, TabStrip.documents TabStripItem:selected">
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="TabStrip.documents TabStripItem:pointerover /template/ ContentPresenter, TabStrip.documents TabStripItem:selected /template/ ContentPresenter">
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <!-- Compact lists with Windows' selection colours -->
+    <Style Selector="ListBox.compact">
+        <Setter Property="Background" Value="{DynamicResource MrPanelBackground}" />
+    </Style>
+    <Style Selector="ListBox.compact ListBoxItem">
+        <Setter Property="Padding" Value="4,1" />
+        <Setter Property="MinHeight" Value="0" />
+    </Style>
+    <Style Selector="ListBox.compact ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource MrHover}" />
+    </Style>
+    <Style Selector="ListBox.compact ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource MrSelection}" />
+        <Setter Property="Foreground" Value="{DynamicResource MrSelectionForeground}" />
+    </Style>
+</Styles>

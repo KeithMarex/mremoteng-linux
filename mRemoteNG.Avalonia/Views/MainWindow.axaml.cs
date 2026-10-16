@@ -53,6 +53,30 @@ public partial class MainWindow : Window
 
     private void OnExitClick(object? sender, RoutedEventArgs e) => Close();
 
+    // The favorite connections, as the dropdown of Windows' Favorites button; choosing one opens it.
+    private void OnFavoritesClick(object? sender, RoutedEventArgs e)
+    {
+        if (ViewModel is not { } viewModel)
+            return;
+
+        viewModel.RefreshFavorites();
+        MenuFlyout menu = new();
+        foreach (ConnectionNodeViewModel favorite in viewModel.Favorites)
+        {
+            menu.Items.Add(new MenuItem
+            {
+                Header = favorite.Name,
+                Icon = new Image { Source = favorite.Icon, Width = 16, Height = 16 },
+                Command = viewModel.OpenFavoriteCommand,
+                CommandParameter = favorite
+            });
+        }
+
+        if (menu.Items.Count == 0)
+            menu.Items.Add(new MenuItem { Header = UiText.NoFavorites, IsEnabled = false });
+        menu.ShowAt(FavoritesButton);
+    }
+
     /// <summary>
     /// Runs the menu item whose shortcut (with Ctrl or Alt) was pressed. Avalonia applies HotKeys before the focused
     /// control sees the key, so a terminal could not keep Ctrl+Q (XON), Ctrl+S (XOFF) or Ctrl+D (end of input) for

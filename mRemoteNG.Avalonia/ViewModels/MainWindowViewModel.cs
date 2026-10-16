@@ -361,6 +361,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
         SaveCommand.NotifyCanExecuteChanged();
         SaveAsCommand.NotifyCanExecuteChanged();
         ImportCommand.NotifyCanExecuteChanged();
+        NotifyTreeCommands();
         AddConnectionCommand.NotifyCanExecuteChanged();
         AddFolderCommand.NotifyCanExecuteChanged();
     }
@@ -428,6 +429,13 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
     private async void OnPropertyEdited(object? sender, PropertyItemViewModel item)
     {
+        // Inheritance settings raise no change events of their own.
+        if (item.IsInheritanceSetting)
+        {
+            MarkChanged();
+            return;
+        }
+
         if (item.Name != nameof(RootNodeInfo.Password) || PropertyPanel.Connection is not RootNodeInfo rootNode)
             return;
 

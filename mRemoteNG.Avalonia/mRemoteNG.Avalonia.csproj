@@ -19,6 +19,11 @@
   <ItemGroup>
     <!-- The window icon; the packaging installs the same icon for the desktop. -->
     <AvaloniaResource Include="..\packaging\linux\icons\256.png" Link="Assets\mremoteng.png" />
+    <!-- Windows mRemoteNG's own images, shared rather than copied. -->
+    <AvaloniaResource Include="..\mRemoteNG\Resources\AddItem_16x.png;..\mRemoteNG\Resources\AddFolder_16x.png;..\mRemoteNG\Resources\ExpandAll_16x.png;..\mRemoteNG\Resources\CollapseAll_16x.png;..\mRemoteNG\Resources\SortAscending_16x.png;..\mRemoteNG\Resources\SortDescending_16x.png;..\mRemoteNG\Resources\Favorite_16x.png;..\mRemoteNG\Resources\ASPWebSite_16x.png;..\mRemoteNG\Resources\FolderClosed_16x.png;..\mRemoteNG\Resources\ConnectedOverlay.png;..\mRemoteNG\Resources\Search_16x.png;..\mRemoteNG\Resources\LogError_16x.png;..\mRemoteNG\Resources\LogWarning_16x.png;..\mRemoteNG\Resources\StatusInformation_16x.png;..\mRemoteNG\Resources\Property_16x.png;..\mRemoteNG\Resources\Schema_16x.png;..\mRemoteNG\Resources\Run_16x.png;..\mRemoteNG\Resources\Close_16x.png;..\mRemoteNG\Resources\Copy_16x.png;..\mRemoteNG\Resources\GlyphUp_16x.png;..\mRemoteNG\Resources\GlyphDown_16x.png;..\mRemoteNG\Resources\CloseSolution_16x.png;..\mRemoteNG\Resources\OpenFile_16x.png;..\mRemoteNG\Resources\NewFile_16x.png;..\mRemoteNG\Resources\Save_16x.png;..\mRemoteNG\Resources\Settings_16x.png;..\mRemoteNG\Resources\SyncArrow_16x.png"
+                      Link="Assets\Images\%(Filename)%(Extension)" />
+    <!-- The connection icons (mRemoteNG/Icons/*.ico), as 16 px PNG. -->
+    <AvaloniaResource Include="Assets\ConnectionIcons\*.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" />
