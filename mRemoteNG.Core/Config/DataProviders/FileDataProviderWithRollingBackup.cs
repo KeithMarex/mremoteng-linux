@@ -2,7 +2,6 @@
 
 namespace mRemoteNG.Config.DataProviders
 {
-    [SupportedOSPlatform("windows")]
     public class FileDataProviderWithRollingBackup(string filePath) : FileDataProvider(filePath)
     {
         private readonly FileBackupCreator _fileBackupCreator = new FileBackupCreator();

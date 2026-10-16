@@ -17,11 +17,9 @@ using mRemoteNG.Tools;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using mRemoteNG.Resources.Language;
-using System.Runtime.Versioning;
 
 namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
 {
-    [SupportedOSPlatform("windows")]
     public class XmlConnectionsDeserializer(Func<Optional<SecureString>>? authenticationRequestor = null) : IDeserializer<string, ConnectionTreeModel>
     {
         private XmlDocument _xmlDocument;

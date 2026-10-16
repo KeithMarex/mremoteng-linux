@@ -1,9 +1,7 @@
 ﻿using mRemoteNG.App;
-using System.Runtime.Versioning;
 
 namespace mRemoteNG.Security
 {
-    [SupportedOSPlatform("windows")]
     public class SaveFilter
     {
         public SaveFilter(bool disableEverything = false)

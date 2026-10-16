@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Versioning;
 using System.Security;
 using System.Xml.Linq;
 using mRemoteNG.App;
@@ -11,7 +10,6 @@ using mRemoteNG.Security;
 namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
 {
     // ReSharper disable once InconsistentNaming
-    [SupportedOSPlatform("windows")]
     public class XmlConnectionNodeSerializer27(ICryptographyProvider cryptographyProvider,
                                          SecureString encryptionKey,
                                          SaveFilter saveFilter) : ISerializer<ConnectionInfo, XElement>
@@ -45,7 +43,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             element.Add(new XAttribute("Panel", connectionInfo.Panel));
             element.Add(new XAttribute("Id", connectionInfo.ConstantID));
 
-            if (!Runtime.UseCredentialManager)
+            if (!CoreRuntime.UseCredentialManager)
             {
                 element.Add(_saveFilter.SaveUsername
                     ? new XAttribute("Username", connectionInfo.Username)
