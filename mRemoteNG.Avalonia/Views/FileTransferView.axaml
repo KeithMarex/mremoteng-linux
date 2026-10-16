@@ -21,10 +21,6 @@
         </DataTemplate>
     </UserControl.Resources>
     <UserControl.Styles>
-        <!-- Full scroll bars all the time, not thin ones that widen on hover. -->
-        <Style Selector="ListBox.files">
-            <Setter Property="ScrollViewer.AllowAutoHide" Value="False" />
-        </Style>
         <Style Selector="ListBox.files ListBoxItem">
             <Setter Property="Padding" Value="6,2" />
             <Setter Property="MinHeight" Value="0" />
