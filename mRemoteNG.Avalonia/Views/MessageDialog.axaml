@@ -1,0 +1,15 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="using:mRemoteNG.Avalonia"
+        x:Class="mRemoteNG.Avalonia.Views.MessageDialog"
+        Width="440" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <StackPanel Margin="16" Spacing="14">
+        <SelectableTextBlock x:Name="MessageText" TextWrapping="Wrap" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button x:Name="YesButton" Content="{x:Static app:UiText.Yes}" Click="OnYesClick" MinWidth="80" />
+            <Button x:Name="NoButton" Content="{x:Static app:UiText.No}" IsCancel="True" Click="OnNoClick" MinWidth="80" />
+            <Button x:Name="OkButton" Content="{x:Static app:UiText.Ok}" IsDefault="True" Click="OnYesClick" MinWidth="80" />
+        </StackPanel>
+    </StackPanel>
+</Window>

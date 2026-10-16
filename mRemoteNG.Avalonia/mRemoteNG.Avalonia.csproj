@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The Linux (Avalonia) app. Platform-neutral logic lives in mRemoteNG.Core, shared with the WinForms app. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>mRemoteNG.Avalonia</RootNamespace>
+    <AssemblyName>mRemoteNG.Avalonia</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Configurations>Debug;Release;Release Self-Contained;Deploy to github</Configurations>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <Version>0.1.0</Version>
+    <Product>mRemoteNG</Product>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="mRemoteNG.Avalonia.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\mRemoteNG.Core\mRemoteNG.Core.csproj" />
+  </ItemGroup>
+</Project>
