@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.keithmarex.mremoteng</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0-only</project_license>
+  <name>mRemoteNG</name>
+  <summary>Manage SSH, Telnet, SFTP and FTP connections in one window</summary>
+  <description>
+    <p>
+      mRemoteNG for Linux keeps your remote connections in a tree and opens them in tabs: SSH, Telnet,
+      raw TCP and local terminal sessions, and SFTP and FTP/FTPS file transfers.
+    </p>
+    <p>
+      Its connection files are those of mRemoteNG for Windows, so a team can share one file between
+      Windows and Linux, including its encrypted passwords. SSH uses OpenSSH, so your ssh_config, keys,
+      agent and known_hosts apply.
+    </p>
+    <p>
+      This is a community port of mRemoteNG to Linux; it is not made by the mRemoteNG project.
+    </p>
+  </description>
+  <launchable type="desktop-id">io.github.keithmarex.mremoteng.desktop</launchable>
+  <url type="homepage">https://github.com/KeithMarex/mremoteng-linux</url>
+  <url type="bugtracker">https://github.com/KeithMarex/mremoteng-linux/issues</url>
+  <developer id="io.github.keithmarex">
+    <name>mRemoteNG for Linux contributors</name>
+  </developer>
+  <provides>
+    <binary>mremoteng</binary>
+  </provides>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="0.1.0" date="2026-10-16">
+      <description>
+        <p>
+          First release: connection files shared with Windows mRemoteNG 1.77 and later; SSH, Telnet, raw TCP and
+          local terminal sessions; SFTP and FTP/FTPS file transfer.
+        </p>
+      </description>
+    </release>
+  </releases>
+</component>

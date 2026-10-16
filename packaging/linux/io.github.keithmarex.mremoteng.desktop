@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=mRemoteNG
+GenericName=Remote Connections Manager
+Comment=Open SSH, Telnet, SFTP and FTP connections in tabs
+Exec=mremoteng
+Icon=io.github.keithmarex.mremoteng
+Terminal=false
+Categories=Network;RemoteAccess;
+Keywords=SSH;SFTP;FTP;FTPS;Telnet;Terminal;Remote;Connection;
+StartupWMClass=mremoteng
+StartupNotify=true
