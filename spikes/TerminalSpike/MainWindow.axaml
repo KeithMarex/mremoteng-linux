@@ -1,0 +1,23 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="TerminalSpike.MainWindow"
+        Title="mRemoteNG terminal spike"
+        Width="1100" Height="700">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="8">
+            <ComboBox x:Name="ProtocolBox" SelectedIndex="0" Width="130">
+                <ComboBoxItem Content="SSH" />
+                <ComboBoxItem Content="Telnet" />
+                <ComboBoxItem Content="Local shell" />
+            </ComboBox>
+            <TextBox x:Name="HostBox" Width="260" PlaceholderText="user@host" />
+            <TextBox x:Name="PortBox" Width="80" PlaceholderText="port" />
+            <Button Content="Connect" IsDefault="True" Click="OnConnectClick" />
+            <TextBlock VerticalAlignment="Center" Opacity="0.7"
+                       Text="Ctrl+Shift+C/V copy/paste · Ctrl+Shift+W close tab" />
+        </StackPanel>
+        <TabStrip x:Name="Tabs" DockPanel.Dock="Top" SelectionChanged="OnTabChanged" />
+        <!-- Sessions stay in the visual tree; only the selected one is visible. -->
+        <Grid x:Name="Sessions" />
+    </DockPanel>
+</Window>
