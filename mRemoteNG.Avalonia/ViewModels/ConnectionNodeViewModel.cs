@@ -38,6 +38,9 @@ public sealed class ConnectionNodeViewModel : ObservableObject, IDisposable
 
     public bool IsRoot => Connection is RootNodeInfo;
 
+    /// <summary>Whether the connection has an open session (shown in bold).</summary>
+    public bool IsConnected => Connection.OpenConnections.Count > 0;
+
     /// <summary>The protocol shown next to a connection's name; empty for folders.</summary>
     public string Detail => IsFolder ? string.Empty : Connection.Protocol.ToString();
 
@@ -137,6 +140,9 @@ public sealed class ConnectionNodeViewModel : ObservableObject, IDisposable
                 break;
             case nameof(ConnectionInfo.Protocol):
                 OnPropertyChanged(nameof(Detail));
+                break;
+            case nameof(ConnectionInfo.OpenConnections):
+                OnPropertyChanged(nameof(IsConnected));
                 break;
         }
     }

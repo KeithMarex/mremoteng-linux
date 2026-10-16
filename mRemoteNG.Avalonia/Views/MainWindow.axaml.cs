@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 using mRemoteNG.Avalonia.ViewModels;
 using mRemoteNG.Tree;
@@ -27,6 +28,8 @@ public partial class MainWindow : Window
         ConnectionTree.AddHandler(PointerReleasedEvent, (_, _) => _dragStart = null, RoutingStrategies.Tunnel);
         DragDrop.AddDragOverHandler(ConnectionTree, OnTreeDragOver);
         DragDrop.AddDropHandler(ConnectionTree, OnTreeDrop);
+        ConnectionTree.DoubleTapped += OnTreeDoubleTapped;
+        AddHandler(KeyDownEvent, OnMenuShortcut, RoutingStrategies.Bubble);
     }
 
     private MainWindowViewModel? ViewModel => DataContext as MainWindowViewModel;
@@ -49,6 +52,43 @@ public partial class MainWindow : Window
     }
 
     private void OnExitClick(object? sender, RoutedEventArgs e) => Close();
+
+    /// <summary>
+    /// Runs the menu item whose shortcut (with Ctrl or Alt) was pressed. Avalonia applies HotKeys before the focused
+    /// control sees the key, so a terminal could not keep Ctrl+Q (XON), Ctrl+S (XOFF) or Ctrl+D (end of input) for
+    /// its program; here the focused control goes first, and a session's terminal claims every key typed in it.
+    /// </summary>
+    private void OnMenuShortcut(object? sender, KeyEventArgs e)
+    {
+        if (e.Handled || (e.KeyModifiers & (KeyModifiers.Control | KeyModifiers.Alt)) == 0)
+            return;
+
+        MenuItem? item = MainMenu.GetLogicalDescendants().OfType<MenuItem>()
+                                 .FirstOrDefault(menuItem => menuItem.InputGesture?.Matches(e) == true);
+        if (item is null)
+            return;
+
+        e.Handled = true;
+        if (item.Command is { } command)
+        {
+            if (command.CanExecute(item.CommandParameter))
+                command.Execute(item.CommandParameter);
+        }
+        else
+        {
+            item.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        }
+    }
+
+    // Double-clicking a connection opens it; on a folder it keeps toggling the folder.
+    private void OnTreeDoubleTapped(object? sender, TappedEventArgs e)
+    {
+        if (ItemAt(e.Source)?.DataContext is ConnectionNodeViewModel { IsFolder: false } node && ViewModel is { } viewModel)
+        {
+            viewModel.SelectedNode = node;
+            viewModel.ConnectCommand.Execute(null);
+        }
+    }
 
     private void OnTreePointerPressed(object? sender, PointerPressedEventArgs e)
     {
