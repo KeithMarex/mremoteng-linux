@@ -46,6 +46,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             element.Add(new XAttribute("Descr", connectionInfo.Description));
             element.Add(new XAttribute("Icon", connectionInfo.Icon));
             element.Add(new XAttribute("Panel", connectionInfo.Panel));
+            element.Add(new XAttribute("Color", connectionInfo.Color ?? string.Empty));
             element.Add(new XAttribute("TabColor", connectionInfo.TabColor));
             element.Add(new XAttribute("ConnectionFrameColor", connectionInfo.ConnectionFrameColor));
             element.Add(new XAttribute("Id", connectionInfo.ConstantID));
@@ -197,6 +198,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             AddInheritanceAttribute(element, inheritance.Domain, "InheritDomain");
             AddInheritanceAttribute(element, inheritance.Icon, "InheritIcon");
             AddInheritanceAttribute(element, inheritance.Panel, "InheritPanel");
+            AddInheritanceAttribute(element, inheritance.Color, "InheritColor");
             AddInheritanceAttribute(element, inheritance.TabColor, "InheritTabColor");
             AddInheritanceAttribute(element, inheritance.ConnectionFrameColor, "InheritConnectionFrameColor");
             AddInheritanceAttribute(element, inheritance.Password, "InheritPassword");
