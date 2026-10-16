@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- SFTP and FTP/FTPS without a UI, for mRemoteNG for Linux (and usable by the Windows app later). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>mRemoteNG.FileTransfer</RootNamespace>
+    <AssemblyName>mRemoteNG.FileTransfer</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Configurations>Debug;Release;Release Self-Contained;Deploy to github</Configurations>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="mRemoteNG.FileTransfer.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Both MIT. -->
+    <PackageReference Include="SSH.NET" />
+    <PackageReference Include="FluentFTP" />
+  </ItemGroup>
+</Project>
