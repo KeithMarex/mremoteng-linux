@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "mRemoteNG.sln",
+    "projects": [
+      "mRemoteNG.Core\\mRemoteNG.Core.csproj",
+      "mRemoteNG.Core.Tests\\mRemoteNG.Core.Tests.csproj"
+    ]
+  }
+}

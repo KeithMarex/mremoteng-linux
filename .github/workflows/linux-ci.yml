@@ -1,0 +1,52 @@
+name: Linux CI
+
+# Builds and tests the platform-neutral projects (mRemoteNG.Linux.slnf) on Linux.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - linux/main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: linux-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install .NET SDK (from global.json)
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('Directory.Packages.props', '**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Build
+        run: dotnet build mRemoteNG.Linux.slnf -c Release -nologo
+
+      - name: Test
+        run: >
+          dotnet test mRemoteNG.Linux.slnf -c Release --no-build -nologo
+          --logger "trx;LogFileName=linux-tests.trx" --results-directory TestResults
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-test-results
+          path: TestResults/

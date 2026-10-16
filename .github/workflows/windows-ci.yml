@@ -1,0 +1,82 @@
+name: Windows CI
+
+# Guards the WinForms app while code moves into mRemoteNG.Core:
+# builds it with full MSBuild (needed for the MSTSCLib COM reference) and runs mRemoteNGTests.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - linux/main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: windows-2025-vs2026
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install .NET SDK (from global.json)
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v3
+        with:
+          msbuild-architecture: x64
+
+      # Same SDK resolution fix as upstream's Build_mR-NB.yml: make VS MSBuild use the .NET 10 SDK.
+      - name: Resolve MSBuild environment
+        shell: pwsh
+        run: |
+          $msbuild = (Get-Command msbuild -ErrorAction Stop).Source
+          $dotnetRoot = Split-Path (Get-Command dotnet -ErrorAction Stop).Source -Parent
+          $sdkBasePathLine = & dotnet --info | Select-String -Pattern '^\s*Base Path:\s*(.+)$' | Select-Object -First 1
+          if ($null -eq $sdkBasePathLine) {
+            throw "Unable to determine active .NET SDK base path from 'dotnet --info'"
+          }
+          $msbuildSdksPath = Join-Path $sdkBasePathLine.Matches[0].Groups[1].Value.Trim() "Sdks"
+          "MSBUILD_EXE=$msbuild" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "MSBuildSDKsPath=$msbuildSdksPath" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "DOTNET_MSBUILD_SDK_RESOLVER_CLI_DIR=$dotnetRoot" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "DOTNET_ROOT=$dotnetRoot" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-x64-nuget-${{ hashFiles('Directory.Packages.props', '**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-x64-nuget-
+
+      - name: Restore
+        shell: pwsh
+        run: dotnet restore mRemoteNGTests\mRemoteNGTests.csproj -p:Configuration=Release -p:Platform=x64
+
+      - name: Build app and tests
+        shell: pwsh
+        run: >
+          & "$env:MSBUILD_EXE" mRemoteNGTests\mRemoteNGTests.csproj
+          /p:Configuration=Release /p:Platform=x64 /p:MSBuildEnableWorkloadResolver=false /verbosity:minimal
+
+      - name: Test
+        shell: pwsh
+        run: >
+          dotnet test mRemoteNGTests\mRemoteNGTests.csproj --no-build -c Release -p:Platform=x64
+          --logger "trx;LogFileName=windows-tests.trx" --results-directory TestResults
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-test-results
+          path: TestResults/

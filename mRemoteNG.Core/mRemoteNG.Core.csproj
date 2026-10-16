@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Platform-neutral core shared by the Windows (WinForms) and Linux (Avalonia) apps. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>mRemoteNG</RootNamespace>
+    <AssemblyName>mRemoteNG.Core</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <Configurations>Debug;Release;Release Self-Contained;Deploy to github</Configurations>
+    <!-- Calling a Windows-only API from Core is a build error, not a warning. -->
+    <WarningsAsErrors>$(WarningsAsErrors);CA1416</WarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="mRemoteNG.Core.Tests" />
+  </ItemGroup>
+</Project>

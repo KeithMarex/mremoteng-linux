@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomActions", "mRemoteNGI
 EndProject
 Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "Installer", "mRemoteNGInstaller\Installer\Installer.wixproj", "{2AB84485-7F86-4F0A-905A-5B0D32FEA17F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mRemoteNG.Core", "mRemoteNG.Core\mRemoteNG.Core.csproj", "{0C53A6EF-431D-498F-8AA4-5C58964DB027}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mRemoteNG.Core.Tests", "mRemoteNG.Core.Tests\mRemoteNG.Core.Tests.csproj", "{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|arm64 = Debug|arm64
@@ -105,6 +109,30 @@ Global
 		{2AB84485-7F86-4F0A-905A-5B0D32FEA17F}.Release|arm64.ActiveCfg = Release|x64
 		{2AB84485-7F86-4F0A-905A-5B0D32FEA17F}.Release|x64.ActiveCfg = Release|x64
 		{2AB84485-7F86-4F0A-905A-5B0D32FEA17F}.Release|x64.Build.0 = Release|x64
+		{0C53A6EF-431D-498F-8AA4-5C58964DB027}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{0C53A6EF-431D-498F-8AA4-5C58964DB027}.Debug|arm64.Build.0 = Debug|Any CPU
+		{0C53A6EF-431D-498F-8AA4-5C58964DB027}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0C53A6EF-431D-498F-8AA4-5C58964DB027}.Debug|x64.Build.0 = Debug|Any CPU
+		{0C53A6EF-431D-498F-8AA4-5C58964DB027}.Release Self-Contained|arm64.ActiveCfg = Release Self-Contained|Any CPU
+		{0C53A6EF-431D-498F-8AA4-5C58964DB027}.Release Self-Contained|arm64.Build.0 = Release Self-Contained|Any CPU
+		{0C53A6EF-431D-498F-8AA4-5C58964DB027}.Release Self-Contained|x64.ActiveCfg = Release Self-Contained|Any CPU
+		{0C53A6EF-431D-498F-8AA4-5C58964DB027}.Release Self-Contained|x64.Build.0 = Release Self-Contained|Any CPU
+		{0C53A6EF-431D-498F-8AA4-5C58964DB027}.Release|arm64.ActiveCfg = Release|Any CPU
+		{0C53A6EF-431D-498F-8AA4-5C58964DB027}.Release|arm64.Build.0 = Release|Any CPU
+		{0C53A6EF-431D-498F-8AA4-5C58964DB027}.Release|x64.ActiveCfg = Release|Any CPU
+		{0C53A6EF-431D-498F-8AA4-5C58964DB027}.Release|x64.Build.0 = Release|Any CPU
+		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Debug|arm64.Build.0 = Debug|Any CPU
+		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Debug|x64.Build.0 = Debug|Any CPU
+		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Release Self-Contained|arm64.ActiveCfg = Release Self-Contained|Any CPU
+		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Release Self-Contained|arm64.Build.0 = Release Self-Contained|Any CPU
+		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Release Self-Contained|x64.ActiveCfg = Release Self-Contained|Any CPU
+		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Release Self-Contained|x64.Build.0 = Release Self-Contained|Any CPU
+		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Release|arm64.ActiveCfg = Release|Any CPU
+		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Release|arm64.Build.0 = Release|Any CPU
+		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Release|x64.ActiveCfg = Release|Any CPU
+		{B3704ADE-0D15-4D70-B9F7-6D1672CCD197}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
