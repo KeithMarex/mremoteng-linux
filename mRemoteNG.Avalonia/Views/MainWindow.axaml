@@ -50,7 +50,7 @@
             </DockPanel>
         </Border>
 
-        <Grid ColumnDefinitions="360,4,*">
+        <Grid ColumnDefinitions="420,4,*">
             <Grid RowDefinitions="Auto,*,4,Auto,*">
                 <TextBlock Classes="panelHeader" Text="{x:Static app:UiText.Connections}" />
                 <TreeView Grid.Row="1" x:Name="ConnectionTree" ItemsSource="{Binding RootNodes}" SelectedItem="{Binding SelectedNode}">
@@ -93,7 +93,7 @@
                                     <ItemsControl ItemsSource="{Binding Items}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="vm:PropertyItemViewModel">
-                                                <Grid ColumnDefinitions="140,*,Auto" Margin="0,2" ToolTip.Tip="{Binding Description}">
+                                                <Grid ColumnDefinitions="160,*,Auto" Margin="0,2" ToolTip.Tip="{Binding Description}">
                                                     <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                                                     <TextBox Grid.Column="1" IsVisible="{Binding IsText}" IsEnabled="{Binding IsEditable}"
                                                              Text="{Binding Text, UpdateSourceTrigger=LostFocus}" />
