@@ -132,6 +132,8 @@ the mRemoteNG project, not to this fork.
 These two protocols are new in this fork; Windows mRemoteNG does not have them.
 
 - Two panes: this computer and the server.
+- Click a column header (name, size, modified, permissions) to sort by it, and again for the other way round; folders
+  stay on top. Drag a header's edge to make a column wider or narrower. Each pane remembers its order and widths.
 - Upload and download with the buttons, by dragging between the panes, or by dragging files in from the file
   manager.
 - On the server: new folder, rename, delete, and moving items by dragging them onto a folder or "..".
@@ -198,8 +200,9 @@ These two protocols are new in this fork; Windows mRemoteNG does not have them.
 3. Start **mRemoteNG** from the applications menu, or run `mremoteng`.
 
 The package contains everything .NET needs (it is self-contained), so you do not have to install .NET. It
-depends on `openssh-client`, recommends `inetutils-telnet`, `xdg-utils` and `freerdp3-x11`, and suggests `rsh-redone-client` (for
-rlogin) and `virt-viewer` (for SPICE). PowerShell (`pwsh`) and AnyDesk come from Microsoft and AnyDesk.
+depends on `openssh-client`, recommends `inetutils-telnet`, `xdg-utils` and `freerdp3-x11`, and suggests
+`rsh-redone-client` (for rlogin) and `virt-viewer` (for SPICE). PowerShell (`pwsh`) and AnyDesk come from Microsoft
+and AnyDesk.
 
 To remove the app, run `sudo apt remove mremoteng`. Your connection files and settings are left in place.
 
@@ -227,7 +230,9 @@ The Linux app writes connection files that Windows mRemoteNG can open.
 |---|---|
 | Connection file | `~/.local/share/mRemoteNG/confCons.xml`. You can open another one with File > Open. |
 | Backups | Next to the connection file, as `<file>.<date-time>.backup`. The last 10 are kept. |
+| SFTP, FTP and SPICE details for older Windows versions | Next to the connection file, as `<file>.linux.json`. |
 | Settings | `~/.config/mRemoteNG/settings.json` |
+| External tools | `~/.config/mRemoteNG/extApps.xml` |
 | Log | `~/.local/state/mRemoteNG/mRemoteNG.log` |
 
 These follow `XDG_DATA_HOME`, `XDG_CONFIG_HOME` and `XDG_STATE_HOME` when those are set.
@@ -266,6 +271,7 @@ publishes the release.
 | `mRemoteNG.Core` | The platform-neutral parts of mRemoteNG (connections, files, encryption, importers), moved out of the Windows app. Both apps use it. |
 | `mRemoteNG.Avalonia` | The Linux app. |
 | `mRemoteNG.FileTransfer` | The SFTP and FTP/FTPS engine. |
+| `mRemoteNG.Vnc` | The VNC client (with Apple Remote Desktop logins) behind the VNC tabs. |
 | `*.Tests` | Tests for the projects above. |
 | `mRemoteNG` | The Windows app, as in mRemoteNG, except that it uses `mRemoteNG.Core`. |
 | `packaging/`, `scripts/linux/` | The Debian package. |
