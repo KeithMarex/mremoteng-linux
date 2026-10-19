@@ -83,6 +83,8 @@ public static class UiText
     // File transfer
     public const string OpenFileTransfer = "Open SFTP";
     public const string ThisComputer = "This computer";
+    public static string WakeOnLan => Language.WakeOnLan;
+    public static string WakeOnLanDescription => Language.PropertyDescriptionWakeOnLan;
     public static string ColumnName => Language.Name;
     public const string ColumnSize = "Size";
     public const string ColumnModified = "Modified";
@@ -182,6 +184,8 @@ public static class UiText
     public static string CouldNotImport(string path) => $"Could not import {path}";
     public static string ProtocolNotSupported(string protocol) => $"{protocol} connections cannot be opened in mRemoteNG for Linux yet.";
     public static string InvalidPort(int port) => $"{port} is not a valid port number.";
+    public static string InvalidMacAddresses(IEnumerable<string> connections) =>
+        $"Not a valid MAC address (12 hexadecimal digits, such as 00:11:22:AA:BB:CC):\n{string.Join('\n', connections)}";
     public static string ProgramNotFound(string program, string? package) =>
         package is null ? $"{program} was not found." : $"{program} was not found; install the {package} package.";
     public static string SshOptionIgnored(string option) => $"The SSH option {option} has no OpenSSH equivalent here and was left out.";
