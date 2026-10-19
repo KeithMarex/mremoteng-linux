@@ -94,8 +94,24 @@ public sealed partial class MainWindowViewModel
             await ReportConnectErrorAsync(connection, UiText.ExternalToolNotSet);
         else if (FindTool(connection.ExtApp) is not { } tool)
             await ReportConnectErrorAsync(connection, UiText.ExternalToolNotFound(connection.ExtApp.Trim()));
-        else
+        else if (!SshTunnels.Uses(connection))
             await RunToolAsync(tool, connection, waitForExit: false, message => ReportConnectErrorAsync(connection, message));
+        else
+        {
+            // As on Windows, %HOSTNAME% and %PORT% are then the tunnel's local end.
+            TunnelLease tunnel;
+            try
+            {
+                tunnel = await Tunnels.OpenAsync(connection, CancellationToken.None);
+            }
+            catch (SessionException ex)
+            {
+                await ReportConnectErrorAsync(connection, ex.Message);
+                return;
+            }
+
+            await RunToolAsync(tool, connection, waitForExit: false, message => ReportConnectErrorAsync(connection, message), tunnel);
+        }
     }
 
     /// <summary>The connection's PreExtApp, before it connects; waited for when the tool says so.</summary>
@@ -137,17 +153,20 @@ public sealed partial class MainWindowViewModel
 
     /// <summary>
     /// Runs <paramref name="tool"/> for <paramref name="connection"/>: in a terminal tab when it is integrated, else as
-    /// a program of its own, waited for when <paramref name="waitForExit"/> and the tool both say so.
+    /// a program of its own, waited for when <paramref name="waitForExit"/> and the tool both say so. Through
+    /// <paramref name="tunnel"/>, the tool gets the tunnel's local end, and the tunnel closes when it is done.
     /// </summary>
-    private async Task RunToolAsync(ExternalToolDefinition tool, ConnectionInfo connection, bool waitForExit, Func<string, Task> reportError)
+    private async Task RunToolAsync(ExternalToolDefinition tool, ConnectionInfo connection, bool waitForExit, Func<string, Task> reportError,
+                                    TunnelLease? tunnel = null)
     {
         SessionPlan plan;
         try
         {
-            plan = _tools.Plan(tool, connection);
+            plan = _tools.Plan(tool, tunnel?.Target ?? connection);
         }
         catch (SessionException ex)
         {
+            tunnel?.Dispose();
             await reportError(ex.Message);
             return;
         }
@@ -157,7 +176,9 @@ public sealed partial class MainWindowViewModel
         CoreRuntime.MessageCollector.AddMessage(MessageClass.InformationMsg, UiText.RunningTool(tool.DisplayName, connection.Name, plan.ToString()));
         if (tool.TryIntegrate)
         {
-            Sessions.OpenProgram(connection, plan);
+            SessionViewModel session = Sessions.OpenProgram(connection, plan);
+            if (tunnel is not null)
+                session.AdoptTunnel(tunnel);
             return;
         }
 
@@ -168,18 +189,28 @@ public sealed partial class MainWindowViewModel
         }
         catch (SessionException ex)
         {
+            tunnel?.Dispose();
             await reportError(ex.Message);
             return;
         }
 
-        Task logged = LogExitAsync(tool, connection, exited);
+        Task logged = LogExitAsync(tool, connection, exited, tunnel);
         if (waitForExit && tool.WaitForExit)
             await logged;
     }
 
-    private static async Task LogExitAsync(ExternalToolDefinition tool, ConnectionInfo connection, Task<int> exited)
+    private static async Task LogExitAsync(ExternalToolDefinition tool, ConnectionInfo connection, Task<int> exited, TunnelLease? tunnel)
     {
-        int exitCode = await exited;
+        int exitCode;
+        try
+        {
+            exitCode = await exited;
+        }
+        finally
+        {
+            tunnel?.Dispose();
+        }
+
         if (exitCode != 0)
             CoreRuntime.MessageCollector.AddMessage(MessageClass.WarningMsg, $"{connection.Name}: {UiText.ProgramEnded(tool.DisplayName, exitCode)}");
     }

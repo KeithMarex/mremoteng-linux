@@ -25,8 +25,8 @@ public sealed class VncConnector(IDialogService dialogs)
             // A new connection's password is null until one is set.
             Password = connection.Password ?? string.Empty,
             PreferUserLogin = apple,
-            // Called on the connection's worker thread, which waits for the answer.
-            Ask = needsUsername => Ask(host, needsUsername, connection)
+            // Called on the connection's worker thread, which waits for the answer. Through an SSH tunnel, the server's name.
+            Ask = needsUsername => Ask(TunnelLease.ServerOf(connection)?.Host ?? host, needsUsername, connection)
         };
 
         try

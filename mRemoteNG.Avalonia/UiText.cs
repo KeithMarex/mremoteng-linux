@@ -85,6 +85,9 @@ public static class UiText
     public const string ThisComputer = "This computer";
     public const string HostStatus = "Host Status";
     public const string HostOnline = "Online";
+    public const string NoSshTunnel = "(none)";
+    public const string FtpThroughSshTunnel =
+        "FTP cannot go through an SSH tunnel, since its transfers open connections of their own. Use SFTP, or no SSH tunnel.";
     public static string WakeOnLan => Language.WakeOnLan;
     public static string WakeOnLanDescription => Language.PropertyDescriptionWakeOnLan;
     public static string ColumnName => Language.Name;
@@ -186,6 +189,12 @@ public static class UiText
     public static string CouldNotImport(string path) => $"Could not import {path}";
     public static string ProtocolNotSupported(string protocol) => $"{protocol} connections cannot be opened in mRemoteNG for Linux yet.";
     public static string InvalidPort(int port) => $"{port} is not a valid port number.";
+    public static string SshTunnelTitle(string tunnel) => $"SSH tunnel {tunnel}";
+    public static string OpeningSshTunnelStatus(string tunnel) => $"Opening the SSH tunnel through {tunnel}…";
+    public static string OpeningSshTunnel(string name, string tunnel, string commandLine) =>
+        $"{name}: opening the SSH tunnel through {tunnel}: {commandLine}";
+    public static string SshTunnelEnded(string name, string tunnel, string? reason) =>
+        $"{name}: the SSH tunnel through {tunnel} ended{(reason is null ? "." : $": {reason}")}";
     public static string HostOffline(string? problem) => problem is null ? "Offline" : $"Offline: {problem}";
     public static string NoAnswerWithin(TimeSpan timeout) => $"no answer within {timeout.TotalSeconds:0} s";
     public static string InvalidMacAddresses(IEnumerable<string> connections) =>

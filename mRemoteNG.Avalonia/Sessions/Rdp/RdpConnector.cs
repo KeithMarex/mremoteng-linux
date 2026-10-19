@@ -40,9 +40,12 @@ public sealed class RdpConnector(
         string program = FreeRdpProgram.Locate(programs);
         string host = SessionPlanner.Host(connection);
         int port = SessionPlanner.Port(connection);
-        LoginCredentials login = await LoginAsync(connection, host);
+        // Through an SSH tunnel the session connects to the tunnel's local end, but the login, the certificate's name
+        // and the certificate the user trusted are the server's.
+        TunnelledServer? server = TunnelLease.ServerOf(connection);
+        LoginCredentials login = await LoginAsync(connection, server?.Host ?? host);
         List<string> warnings = [];
-        string certificate = await CertificateOptionAsync(connection, host, port, warnings, cancellation);
+        string certificate = await CertificateOptionAsync(connection, host, port, server, warnings, cancellation);
 
         FreeRdpPlan plan = FreeRdpCommand.Build(connection, display, login, certificate, program);
         plan = plan with { Warnings = [.. warnings, .. plan.Warnings] };
@@ -62,8 +65,8 @@ public sealed class RdpConnector(
 
     // Like the Windows app's AuthenticationLevel: NoAuth connects whatever the certificate, AuthRequired only with a
     // certificate this computer trusts, and WarnOnFailedAuth asks about any other certificate.
-    private async Task<string> CertificateOptionAsync(ConnectionInfo connection, string host, int port, List<string> warnings,
-                                                      CancellationToken cancellation)
+    private async Task<string> CertificateOptionAsync(ConnectionInfo connection, string host, int port, TunnelledServer? server,
+                                                      List<string> warnings, CancellationToken cancellation)
     {
         switch (connection.RDPAuthenticationLevel)
         {
@@ -87,7 +90,9 @@ public sealed class RdpConnector(
         ServerCertificate? serverCertificate = connection.UseVmId
             ? null
             : await TryReadAsync(() => readCertificate(host, port, cancellation), host, viaGateway ? null : warnings);
-        if (serverCertificate is not null)
+        if (serverCertificate is not null && server is not null)
+            accepted.Add(await AcceptAsync(AsServer(serverCertificate, server.Host), server.Host, server.Port));
+        else if (serverCertificate is not null)
             accepted.Add(await AcceptAsync(serverCertificate, host, port));
         else if (viaGateway)
             accepted.Add("tofu");
@@ -124,6 +129,15 @@ public sealed class RdpConnector(
         }
 
         return "fingerprint:sha256:" + fingerprint;
+    }
+
+    // Read through a tunnel, the certificate was checked against 127.0.0.1: check its name against the server's.
+    private static ServerCertificate AsServer(ServerCertificate read, string serverHost)
+    {
+        SslPolicyErrors errors = read.Errors & ~SslPolicyErrors.RemoteCertificateNameMismatch;
+        if (!read.Certificate.MatchesHostname(serverHost))
+            errors |= SslPolicyErrors.RemoteCertificateNameMismatch;
+        return read with { Errors = errors };
     }
 
     private static string Problems(SslPolicyErrors errors)

@@ -28,6 +28,7 @@ public sealed partial class SessionViewModel : SessionTabViewModel, IProtocolSes
     private ITerminalHost? _host;
     private PreparedSession? _prepared;
     private bool _disconnecting;
+    private bool _connecting;
 
     /// <param name="plan">What to run instead of the connection's protocol, such as an external tool.</param>
     public SessionViewModel(ConnectionInfo connection, SessionLauncher launcher, SessionPlan? plan = null) : base(connection)
@@ -83,20 +84,32 @@ public sealed partial class SessionViewModel : SessionTabViewModel, IProtocolSes
 
     private async Task ConnectAsync()
     {
-        if (_host is null || IsLive || IsDisposed)
+        if (_host is null || IsLive || IsDisposed || _connecting)
             return;
 
         _prepared?.Dispose();
         _prepared = null;
         PreparedSession prepared;
+        _connecting = true;
         try
         {
-            prepared = _plan is null ? _launcher.Prepare(Connection) : _launcher.Prepare(_plan);
+            // An external tool's command line was made for the connection already (with its tunnel, if any).
+            prepared = _plan is null ? _launcher.Prepare(await OpenTunnelAsync(CancellationToken.None)) : _launcher.Prepare(_plan);
         }
         catch (SessionException ex)
         {
+            if (_plan is null)
+                CloseTunnel();
             Fail(ex.Message);
             return;
+        }
+        catch (OperationCanceledException)
+        {
+            return; // the tab was closed
+        }
+        finally
+        {
+            _connecting = false;
         }
 
         foreach (string warning in prepared.Warnings)
@@ -109,6 +122,8 @@ public sealed partial class SessionViewModel : SessionTabViewModel, IProtocolSes
         catch (Exception ex)
         {
             prepared.Dispose();
+            if (_plan is null)
+                CloseTunnel();
             Fail(ex.Message);
             return;
         }
@@ -130,6 +145,8 @@ public sealed partial class SessionViewModel : SessionTabViewModel, IProtocolSes
         Connection.OpenConnections.Remove(this);
         _prepared?.Dispose();
         _prepared = null;
+        if (_plan is null)
+            CloseTunnel();
         State = SessionState.Ended;
         StatusText = disconnected ? UiText.Disconnected : UiText.SessionEnded(exitCode);
         CoreRuntime.MessageCollector.AddMessage(MessageClass.InformationMsg, $"{Title}: {StatusText}");

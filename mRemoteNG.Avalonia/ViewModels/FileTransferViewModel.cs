@@ -92,7 +92,7 @@ public sealed partial class FileTransferViewModel : SessionTabViewModel, IProtoc
         CancellationTokenSource connecting = _connecting = new CancellationTokenSource();
         try
         {
-            FileTransferTarget target = await _prepare(Connection, connecting.Token);
+            FileTransferTarget target = await _prepare(await OpenTunnelAsync(connecting.Token), connecting.Token);
             foreach (string warning in target.Warnings)
                 CoreRuntime.MessageCollector.AddMessage(MessageClass.WarningMsg, $"{Title}: {warning}");
 
@@ -150,6 +150,7 @@ public sealed partial class FileTransferViewModel : SessionTabViewModel, IProtoc
         }
 
         Remote.Attach(null);
+        CloseTunnel();
         Connection.OpenConnections.Remove(this);
         if (State is FileTransferState.Connected or FileTransferState.Connecting)
         {

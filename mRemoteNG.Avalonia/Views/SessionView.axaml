@@ -12,6 +12,8 @@
             <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" Opacity="0.7" TextTrimming="CharacterEllipsis"
                        ToolTip.Tip="{x:Static app:UiText.TerminalShortcuts}" />
         </DockPanel>
-        <terminal:TerminalControl x:Name="Terminal" BufferSize="5000" />
+        <!-- No Process: the control would start a shell of its own when it is shown, before the session (which may
+             first open its SSH tunnel) starts its program. -->
+        <terminal:TerminalControl x:Name="Terminal" BufferSize="5000" Process="" />
     </DockPanel>
 </UserControl>

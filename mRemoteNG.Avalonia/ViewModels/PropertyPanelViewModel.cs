@@ -85,6 +85,9 @@ public sealed partial class PropertyPanelViewModel : ObservableObject
     /// <summary>The external tools' names, offered for ExtApp, PreExtApp and PostExtApp; set by the main window.</summary>
     public Func<IReadOnlyList<string>> ExternalToolNames { get; set; } = () => [];
 
+    /// <summary>The SSH connections' names, offered for the SSH Tunnel; set by the main window.</summary>
+    public Func<IReadOnlyList<string>> SshTunnelNames { get; set; } = () => [];
+
     partial void OnConnectionChanged(ConnectionInfo? value)
     {
         if (Mode == PropertyPanelMode.Inheritance && !CanShowInheritance)
@@ -131,7 +134,7 @@ public sealed partial class PropertyPanelViewModel : ObservableObject
         object component = Mode == PropertyPanelMode.Inheritance ? connection.Inheritance : connection;
         List<PropertyItemViewModel> items = VisibleProperties(connection)
             .Select(property => new PropertyItemViewModel(component, property, OnItemChanged, AppImages.ConnectionIconNames,
-                                                          ExternalToolNames()))
+                                                          ExternalToolNames(), SshTunnelNames()))
             .ToList();
         _shownProperties = items.Select(item => item.Name).ToHashSet();
 

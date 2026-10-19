@@ -35,12 +35,26 @@ internal static partial class OpenSshCommand
             arguments.AddRange(["-l", username]);
         }
 
-        // A PuTTY session name stands for a Host entry in ~/.ssh/config; the connection's host name still decides
-        // where to connect ("%" is ssh_config's token character).
-        if (alias is not null && hostname.Length > 0)
+        string destination = alias ?? hostname;
+        string? passwordHost = hostname.Length > 0 ? hostname[(hostname.LastIndexOf('@') + 1)..] : null;
+        if (TunnelLease.ServerOf(connection) is { } server)
+        {
+            // Through an SSH tunnel: to its local end, but as the server, so that its Host entries in ~/.ssh/config and
+            // its known_hosts entry still apply (with a port other than 22, known_hosts names it "[host]:port").
+            string keyAlias = server.Port == DefaultPorts.Ssh ? server.Host : $"[{server.Host}]:{server.Port}";
+            arguments.AddRange(["-o", "HostName=" + hostname.Replace("%", "%%"), "-o", "HostKeyAlias=" + keyAlias]);
+            destination = alias ?? server.Host;
+            passwordHost = keyAlias; // ssh names the alias in its password prompt
+        }
+        else if (alias is not null && hostname.Length > 0)
+        {
+            // A PuTTY session name stands for a Host entry in ~/.ssh/config; the connection's host name still decides
+            // where to connect ("%" is ssh_config's token character).
             arguments.AddRange(["-o", "HostName=" + hostname.Replace("%", "%%")]);
+        }
+
         arguments.Add("--");
-        arguments.Add(alias ?? hostname);
+        arguments.Add(destination);
 
         if (!string.IsNullOrWhiteSpace(connection.OpeningCommand))
             warnings.Add(UiText.OpeningCommandNotSupported);
@@ -49,7 +63,7 @@ internal static partial class OpenSshCommand
         {
             Warnings = warnings,
             Password = string.IsNullOrEmpty(connection.Password) ? null : connection.Password,
-            PasswordHost = hostname.Length > 0 ? hostname[(hostname.LastIndexOf('@') + 1)..] : null
+            PasswordHost = passwordHost
         };
     }
 

@@ -10,7 +10,8 @@ namespace mRemoteNG.Avalonia.Sessions.Askpass;
 /// Linux counterpart of the named pipe the Windows app gives PuTTY (-pwfile). ssh runs this app as its SSH_ASKPASS
 /// program; that helper asks this server over a Unix socket only the user can open, proving with a per-session token
 /// that it belongs to this session. The password is given once, for the connection's own password prompt. Every other
-/// prompt (a host key to confirm, a key passphrase, another password attempt) is answered by the user in the terminal.
+/// prompt (a host key to confirm, a key passphrase, another password attempt) is answered by the user in the terminal,
+/// or, for an ssh without one (an SSH tunnel), in a dialog.
 /// </summary>
 public sealed class AskpassServer : IDisposable
 {
@@ -25,13 +26,16 @@ public sealed class AskpassServer : IDisposable
     private readonly string? _host;
     private readonly CancellationTokenSource _stop = new();
     private readonly Lock _lock = new();
+    private readonly Func<string, Task<string?>>? _askUser;
     private string? _password;
 
-    private AskpassServer(Socket listener, string socketPath, string helperProgram, string password, string? host)
+    private AskpassServer(Socket listener, string socketPath, string helperProgram, string? password, string? host,
+                          Func<string, Task<string?>>? askUser)
     {
         _listener = listener;
         _password = password;
         _host = host;
+        _askUser = askUser;
         SocketPath = socketPath;
         Environment = new Dictionary<string, string>
         {
@@ -50,9 +54,14 @@ public sealed class AskpassServer : IDisposable
 
     /// <param name="directory">Where the socket goes; created readable by the user only.</param>
     /// <param name="helperProgram">This app's executable, which acts as the helper when ssh starts it.</param>
-    /// <param name="password">The stored password.</param>
+    /// <param name="password">The stored password, if any.</param>
     /// <param name="host">The host the password belongs to, when known.</param>
-    public static AskpassServer Start(string directory, string helperProgram, string password, string? host)
+    /// <param name="askUser">
+    /// Answers the other prompts (null when the user cancels), for an ssh that has no terminal to ask in; without it,
+    /// they are asked in the terminal.
+    /// </param>
+    public static AskpassServer Start(string directory, string helperProgram, string? password, string? host,
+                                      Func<string, Task<string?>>? askUser = null)
     {
         if (OperatingSystem.IsWindows())
             throw new PlatformNotSupportedException("The askpass helper needs Unix permissions on its socket.");
@@ -75,23 +84,30 @@ public sealed class AskpassServer : IDisposable
             throw;
         }
 
-        return new AskpassServer(listener, socketPath, helperProgram, password, host);
+        return new AskpassServer(listener, socketPath, helperProgram, password, host, askUser);
     }
 
-    /// <summary>Decides the answer to one helper request.</summary>
+    /// <summary>Decides the answer to one helper request: the stored password, or that the terminal asks.</summary>
     internal AskpassReply Answer(AskpassRequest request)
     {
-        bool tokenMatches = CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(request.Token ?? string.Empty),
-                                                                    Encoding.UTF8.GetBytes(_token));
         lock (_lock)
         {
-            if (!tokenMatches || _password is null || !OpenSshCommand.IsPasswordPromptFor(request.Prompt ?? string.Empty, _host))
+            if (!TokenMatches(request) || _password is null || !OpenSshCommand.IsPasswordPromptFor(request.Prompt ?? string.Empty, _host))
                 return AskpassReply.UseTerminal;
 
             string password = _password;
             _password = null; // once: a second prompt means the stored password was wrong
             return new AskpassReply(password, false);
         }
+    }
+
+    /// <summary>Like <see cref="Answer"/>, but asks the user, when there is no terminal, what the terminal would.</summary>
+    internal async Task<AskpassReply> AnswerAsync(AskpassRequest request, CancellationToken cancellation)
+    {
+        AskpassReply reply = Answer(request);
+        if (!reply.AskInTerminal || _askUser is null || !TokenMatches(request))
+            return reply;
+        return new AskpassReply(await _askUser(request.Prompt ?? string.Empty).WaitAsync(cancellation), false);
     }
 
     public void Dispose()
@@ -125,19 +141,27 @@ public sealed class AskpassServer : IDisposable
         }
     }
 
+    private bool TokenMatches(AskpassRequest request) =>
+        CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(request.Token ?? string.Empty), Encoding.UTF8.GetBytes(_token));
+
     private async Task HandleAsync(Socket client)
     {
         using (client)
-        using (CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(_stop.Token))
         {
-            timeout.CancelAfter(RequestTimeout);
             try
             {
                 await using NetworkStream stream = new(client);
-                string? line = await AskpassProtocol.ReadLineAsync(stream, timeout.Token);
-                AskpassRequest? request = line is null ? null : JsonSerializer.Deserialize<AskpassRequest>(line);
-                AskpassReply reply = request is null ? AskpassReply.UseTerminal : Answer(request);
-                await AskpassProtocol.WriteLineAsync(stream, JsonSerializer.Serialize(reply), timeout.Token);
+                AskpassRequest? request;
+                using (CancellationTokenSource timeout = Timeout())
+                {
+                    string? line = await AskpassProtocol.ReadLineAsync(stream, timeout.Token);
+                    request = line is null ? null : JsonSerializer.Deserialize<AskpassRequest>(line);
+                }
+
+                // The user takes the time they need to answer; the helper waits.
+                AskpassReply reply = request is null ? AskpassReply.UseTerminal : await AnswerAsync(request, _stop.Token);
+                using (CancellationTokenSource timeout = Timeout())
+                    await AskpassProtocol.WriteLineAsync(stream, JsonSerializer.Serialize(reply), timeout.Token);
             }
             catch (Exception ex) when (ex is IOException or JsonException or OperationCanceledException or SocketException
                                            or InvalidDataException)
@@ -146,12 +170,22 @@ public sealed class AskpassServer : IDisposable
             }
         }
     }
+
+    private CancellationTokenSource Timeout()
+    {
+        CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(_stop.Token);
+        timeout.CancelAfter(RequestTimeout);
+        return timeout;
+    }
 }
 
 /// <summary>What the helper sends: its token and ssh's prompt.</summary>
 internal sealed record AskpassRequest(string? Token, string? Prompt);
 
-/// <summary>The answer: the password, or that the user answers the prompt in the terminal.</summary>
+/// <summary>
+/// The answer: the password (or what the user answered in a dialog), or that the user answers the prompt in the
+/// terminal. No password and no terminal means the user cancelled.
+/// </summary>
 internal sealed record AskpassReply(string? Password, bool AskInTerminal)
 {
     public static AskpassReply UseTerminal { get; } = new(null, true);

@@ -34,15 +34,18 @@ public sealed partial class PropertyItemViewModel : ObservableObject
     /// <param name="component">The connection, or its <see cref="ConnectionInfoInheritance"/> in the Inheritance view.</param>
     /// <param name="iconNames">The connection icons to offer for the Icon property.</param>
     /// <param name="toolNames">The external tools to offer for the external tool properties.</param>
+    /// <param name="sshTunnelNames">The SSH connections to offer for the SSH Tunnel, as the Windows app does.</param>
     public PropertyItemViewModel(object component, PropertyDescriptor property, Action<PropertyItemViewModel> changed,
-                                 IReadOnlyList<string>? iconNames = null, IReadOnlyList<string>? toolNames = null)
+                                 IReadOnlyList<string>? iconNames = null, IReadOnlyList<string>? toolNames = null,
+                                 IReadOnlyList<string>? sshTunnelNames = null)
     {
         _component = component;
         _property = property;
         _changed = changed;
         bool isIcon = component is ConnectionInfo && property.Name == nameof(ConnectionInfo.Icon) && iconNames is { Count: > 0 };
         bool isTool = component is ConnectionInfo && ToolProperties.Contains(property.Name) && toolNames is not null;
-        Kind = isIcon || isTool ? PropertyEditorKind.Choice : KindOf(property);
+        bool isTunnel = component is ConnectionInfo && property.Name == nameof(ConnectionInfo.SSHTunnelConnectionName) && sshTunnelNames is not null;
+        Kind = isIcon || isTool || isTunnel ? PropertyEditorKind.Choice : KindOf(property);
         Choices = Kind switch
         {
             PropertyEditorKind.Boolean => [new PropertyChoice(true, Language.Yes), new PropertyChoice(false, Language.No)],
@@ -50,6 +53,9 @@ public sealed partial class PropertyItemViewModel : ObservableObject
             // As on Windows, an external tool property can also be empty: no tool.
             PropertyEditorKind.Choice when isTool =>
                 [new PropertyChoice(string.Empty, UiText.NoExternalTool), .. NameChoices(toolNames!, property.GetValue(component) as string)],
+            // Empty: no tunnel.
+            PropertyEditorKind.Choice when isTunnel =>
+                [new PropertyChoice(string.Empty, UiText.NoSshTunnel), .. NameChoices(sshTunnelNames!, property.GetValue(component) as string)],
             PropertyEditorKind.Choice => Enum.GetValues(property.PropertyType).Cast<object>()
                                              .Select(value => new PropertyChoice(value, property.Converter.ConvertToString(value) ?? value.ToString()!))
                                              .ToArray(),

@@ -47,11 +47,13 @@ public sealed partial class MainWindowViewModel : ObservableObject
         _files = new ConnectionFileService(settings);
         Messages = new MessagesViewModel(CoreRuntime.MessageCollector, dispatch);
         launcher ??= new SessionLauncher(new SessionPrograms(), paths.RuntimeDirectory);
+        Tunnels = new SshTunnels(launcher.Programs, paths.RuntimeDirectory, dialogs, dispatch, () => _model?.GetRecursiveChildList() ?? []);
         Sessions = CreateSessions(launcher);
         _programs = new ProgramLauncher(launcher.Programs);
         LoadExternalTools(launcher.Programs);
         PropertyPanel.PropertyEdited += OnPropertyEdited;
         PropertyPanel.IsDescriptionVisible = settings.ShowPropertyDescription;
+        PropertyPanel.SshTunnelNames = SshTunnelNames;
     }
 
     public ObservableCollection<ConnectionNodeViewModel> RootNodes { get; } = [];
@@ -140,6 +142,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
             return false;
 
         Sessions.CloseAll();
+        Tunnels.Dispose();
         return true;
     }
 

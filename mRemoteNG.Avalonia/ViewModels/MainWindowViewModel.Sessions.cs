@@ -5,6 +5,7 @@ using mRemoteNG.Avalonia.Sessions.Rdp;
 using mRemoteNG.Config.Serializers.ConnectionSerializers;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
+using mRemoteNG.Container;
 using mRemoteNG.Messages;
 
 namespace mRemoteNG.Avalonia.ViewModels;
@@ -69,7 +70,16 @@ public sealed partial class MainWindowViewModel
         Task<int> exited;
         try
         {
-            (plan, exited) = _programs.Launch(connection);
+            ConnectionInfo target = connection;
+            if (SshTunnels.Uses(connection))
+            {
+                // The web browser is not this app's to watch: the tunnel stays open until the app closes.
+                TunnelLease tunnel = await Tunnels.OpenAsync(connection, CancellationToken.None);
+                Tunnels.KeepUntilExit(tunnel);
+                target = tunnel.Target;
+            }
+
+            (plan, exited) = _programs.Launch(target);
         }
         catch (SessionException ex)
         {
@@ -95,6 +105,19 @@ public sealed partial class MainWindowViewModel
     [RelayCommand(CanExecute = nameof(CanOpenFileTransfer))]
     private void OpenFileTransfer() => Sessions.OpenFileTransfer(SelectedNode!.Connection);
 
+    /// <summary>Opens the SSH tunnels connections go through (their SSH Tunnel setting).</summary>
+    internal SshTunnels Tunnels { get; }
+
+    // The SSH connections a connection's SSH Tunnel can name; not the selected connection itself.
+    private IReadOnlyList<string> SshTunnelNames() =>
+        (_model?.GetRecursiveChildList() ?? [])
+        .Where(connection => connection is not ContainerInfo && connection.Protocol == ProtocolType.SSH2 &&
+                             connection != PropertyPanel.Connection && connection.Name.Length > 0)
+        .Select(connection => connection.Name)
+        .Distinct()
+        .Order(StringComparer.CurrentCultureIgnoreCase)
+        .ToList();
+
     private SessionsViewModel CreateSessions(SessionLauncher launcher)
     {
         FileTransferConnector connector = new(launcher.Programs);
@@ -111,6 +134,7 @@ public sealed partial class MainWindowViewModel
         return new SessionsViewModel(launcher,
             connection => new FileTransferViewModel(connection, connector.PrepareAsync, _dialogs, prompts, _dispatch, _settings, SaveSettings),
             connection => new RdpSessionViewModel(connection, rdp.ConnectAsync, _dispatch),
-            connection => new VncSessionViewModel(connection, vnc.ConnectAsync, _dispatch));
+            connection => new VncSessionViewModel(connection, vnc.ConnectAsync, _dispatch),
+            Tunnels);
     }
 }
