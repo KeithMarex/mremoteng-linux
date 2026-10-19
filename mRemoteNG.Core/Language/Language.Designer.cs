@@ -7305,6 +7305,15 @@ namespace mRemoteNG.Resources.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SPICE (Proxmox, KVM).
+        /// </summary>
+        public static string Spice {
+            get {
+                return ResourceManager.GetString("Spice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Telnet.
         /// </summary>
         public static string Telnet {

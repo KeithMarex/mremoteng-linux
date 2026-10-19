@@ -68,26 +68,53 @@ public sealed partial class MainWindowViewModel
     {
         SessionPlan plan;
         Task<int> exited;
+        TunnelLease? tunnel = null;
         try
         {
+            bool spice = connection.Protocol == ProtocolType.SPICE;
+            if (spice && SpiceSettings.Source(connection) == SpiceSource.Proxmox && SshTunnels.Uses(connection))
+                throw new SessionException(UiText.ProxmoxThroughSshTunnel);
             ConnectionInfo target = connection;
             if (SshTunnels.Uses(connection))
             {
-                // The web browser is not this app's to watch: the tunnel stays open until the app closes.
-                TunnelLease tunnel = await Tunnels.OpenAsync(connection, CancellationToken.None);
-                Tunnels.KeepUntilExit(tunnel);
+                tunnel = await Tunnels.OpenAsync(connection, CancellationToken.None);
                 target = tunnel.Target;
             }
 
-            (plan, exited) = _programs.Launch(target);
+            (plan, exited) = spice ? await _spice.LaunchAsync(target, CancellationToken.None) : _programs.Launch(target);
         }
         catch (SessionException ex)
         {
+            tunnel?.Dispose();
             await ReportConnectErrorAsync(connection, ex.Message);
             return;
         }
 
+        // remote-viewer is watched, so its tunnel closes with it; the web browser is not, so its tunnel stays until the app closes.
+        if (tunnel is not null && connection.Protocol == ProtocolType.SPICE)
+            _ = CloseWhenEndedAsync(tunnel, exited);
+        else if (tunnel is not null)
+            Tunnels.KeepUntilExit(tunnel);
+
         CoreRuntime.MessageCollector.AddMessage(MessageClass.InformationMsg, UiText.Opening(connection.Name, plan.ToString()));
+        // The program stays open in its own window as long as the user likes; Connect is free again at once.
+        _ = ReportExitAsync(connection, plan, exited);
+    }
+
+    private static async Task CloseWhenEndedAsync(TunnelLease tunnel, Task<int> exited)
+    {
+        try
+        {
+            await exited;
+        }
+        finally
+        {
+            tunnel.Dispose();
+        }
+    }
+
+    private static async Task ReportExitAsync(ConnectionInfo connection, SessionPlan plan, Task<int> exited)
+    {
         int exitCode = await exited;
         if (exitCode != 0)
         {
@@ -108,6 +135,8 @@ public sealed partial class MainWindowViewModel
     /// <summary>Opens the SSH tunnels connections go through (their SSH Tunnel setting).</summary>
     internal SshTunnels Tunnels { get; }
 
+    private SpiceConnector _spice = null!;
+
     // The SSH connections a connection's SSH Tunnel can name; not the selected connection itself.
     private IReadOnlyList<string> SshTunnelNames() =>
         (_model?.GetRecursiveChildList() ?? [])
@@ -125,6 +154,7 @@ public sealed partial class MainWindowViewModel
         FileTransferPrompts prompts = new(_dialogs, pins);
         RdpConnector rdp = new(launcher.Programs, _dialogs, pins);
         VncConnector vnc = new(_dialogs);
+        _spice = new SpiceConnector(launcher.Programs, _paths.RuntimeDirectory, _dialogs, pins);
         // The protocol and the MAC address may change in the property panel while the connection stays selected.
         PropertyPanel.PropertyEdited += (_, _) =>
         {

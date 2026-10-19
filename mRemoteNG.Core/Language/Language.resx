@@ -1797,6 +1797,9 @@ If you run into such an error, please create a new connection file!</value>
   <data name="Sftp" xml:space="preserve">
     <value>SFTP (SSH File Transfer)</value>
   </data>
+  <data name="Spice" xml:space="preserve">
+    <value>SPICE (Proxmox, KVM)</value>
+  </data>
   <data name="Telnet" xml:space="preserve">
     <value>Telnet</value>
   </data>

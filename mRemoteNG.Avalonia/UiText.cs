@@ -74,7 +74,7 @@ public static class UiText
     public const string PasswordsDoNotMatch = "The passwords do not match.";
     public const string NoSessionsYet =
         "Double-click a connection to open it here. RDP, VNC, ARD, SSH, Telnet, Rlogin, Raw, local Terminal, PowerShell, " +
-        "SFTP and FTP connections open in a tab; HTTP, HTTPS and AnyDesk open in their own window.";
+        "SFTP and FTP connections open in a tab; HTTP, HTTPS, AnyDesk and SPICE open in their own window.";
     public const string Disconnected = "Disconnected.";
     public const string NoFavorites = "No favorites yet: set Favorite to Yes in a connection's properties.";
     public const string Categorized = "Categorized";
@@ -86,6 +86,29 @@ public static class UiText
     public const string HostStatus = "Host Status";
     public const string HostOnline = "Online";
     public const string NoSshTunnel = "(none)";
+    public const string SpiceCategory = "SPICE";
+    public const string SpiceSourceName = "Server";
+    public const string SpiceSourceDescription =
+        "Proxmox VE: the virtual machine's console through the Proxmox API (port 8006), with an API token (user@realm!tokenid " +
+        "as the user name, its secret as the password) or a user and password. QEMU/libvirt: QEMU's own SPICE port (5900 and up), " +
+        "with its SPICE password, if it has one.";
+    public const string SpiceSourceProxmox = "Proxmox VE";
+    public const string SpiceSourceDirect = "QEMU/libvirt (direct)";
+    public const string ProxmoxNodeName = "Proxmox node";
+    public const string ProxmoxNodeDescription = "The cluster node the virtual machine is on; when empty, the cluster is asked.";
+    public const string ProxmoxVmName = "Virtual machine";
+    public const string ProxmoxVmDescription = "The virtual machine's ID (such as 100) or name in Proxmox VE.";
+    public const string ProxmoxVmNotSet = "Set the virtual machine (its ID or name) in the connection's SPICE settings.";
+    public const string ProxmoxTwoFactor =
+        "This Proxmox VE user logs in with two-factor authentication: use an API token instead (user@realm!tokenid as the user " +
+        "name, the token's secret as the password).";
+    public const string ProxmoxLoginFailed = "Proxmox VE did not accept the user name or password.";
+    public const string ProxmoxNotAllowed = "Proxmox VE did not allow this; check the API token or the user's permissions (VM.Console).";
+    public const string ProxmoxUnexpectedAnswer = "Proxmox VE gave an answer this app does not understand.";
+    public const string ProxmoxThroughSshTunnel =
+        "A Proxmox VE console goes through Proxmox's SPICE proxy (port 3128), which the SSH tunnel does not forward: connect " +
+        "without the SSH tunnel, or to QEMU directly.";
+    public const string UnsafeSpiceValue = "The SPICE settings hold a line break or another control character, which remote-viewer's file cannot hold.";
     public const string FtpThroughSshTunnel =
         "FTP cannot go through an SSH tunnel, since its transfers open connections of their own. Use SFTP, or no SSH tunnel.";
     public static string WakeOnLan => Language.WakeOnLan;
@@ -195,6 +218,9 @@ public static class UiText
         $"{name}: opening the SSH tunnel through {tunnel}: {commandLine}";
     public static string SshTunnelEnded(string name, string tunnel, string? reason) =>
         $"{name}: the SSH tunnel through {tunnel} ended{(reason is null ? "." : $": {reason}")}";
+    public static string ProxmoxVmNotFound(string vm) => $"Proxmox VE has no virtual machine \"{vm}\".";
+    public static string ProxmoxContainer(string vm) => $"\"{vm}\" is a container, which has no SPICE console; only virtual machines do.";
+    public static string ProxmoxRefused(int status, string? reason) => $"Proxmox VE refused ({status}): {reason}";
     public static string HostOffline(string? problem) => problem is null ? "Offline" : $"Offline: {problem}";
     public static string NoAnswerWithin(TimeSpan timeout) => $"no answer within {timeout.TotalSeconds:0} s";
     public static string InvalidMacAddresses(IEnumerable<string> connections) =>

@@ -15,6 +15,9 @@ namespace mRemoteNG.Connection.Protocol
         public const int Https = 443;
         public const int PowerShell = 5985;
 
+        /// <summary>A SPICE connection goes to the Proxmox VE API by default; one straight to QEMU uses <see cref="Vnc"/>'s 5900.</summary>
+        public const int Proxmox = 8006;
+
         public static int For(ProtocolType protocol)
         {
             return protocol switch
@@ -30,6 +33,7 @@ namespace mRemoteNG.Connection.Protocol
                 ProtocolType.HTTP => Http,
                 ProtocolType.HTTPS => Https,
                 ProtocolType.PowerShell => PowerShell,
+                ProtocolType.SPICE => Proxmox,
                 _ => 0 // WSL, IntApp and AnyDesk do not connect to a port
             };
         }

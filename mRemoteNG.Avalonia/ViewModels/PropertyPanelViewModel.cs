@@ -194,7 +194,8 @@ public sealed partial class PropertyPanelViewModel : ObservableObject
         return properties.Where(property =>
                              ConnectionPropertyRules.IsValidForProtocol(property, connection.Protocol, skipProtocolCheck: false) &&
                              !hidden.Contains(property.Name))
-                         .Concat(FileTransferProperties.For(connection));
+                         .Concat(FileTransferProperties.For(connection))
+                         .Concat(SpiceProperties.For(connection));
     }
 
     private static int FtpPortFor(bool implicitTls) => implicitTls ? 990 : DefaultPorts.Ftp;
@@ -215,6 +216,10 @@ public sealed partial class PropertyPanelViewModel : ObservableObject
             // Implicit TLS has a port of its own.
             case FileTransferSettings.EncryptionKey when connection.Port == FtpPortFor(implicitTls: false) || connection.Port == FtpPortFor(implicitTls: true):
                 connection.Port = FtpPortFor(FileTransferSettings.Encryption(connection) == FileTransfer.Ftp.FtpEncryption.Implicit);
+                break;
+            // A Proxmox VE console starts at the API's port, a direct one at QEMU's.
+            case SpiceSettings.SourceKey when connection.Port is DefaultPorts.Proxmox or SpiceSettings.DirectPort:
+                connection.Port = SpiceSettings.Source(connection) == SpiceSource.Proxmox ? DefaultPorts.Proxmox : SpiceSettings.DirectPort;
                 break;
         }
 

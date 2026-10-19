@@ -167,12 +167,14 @@ public class MainWindowSessionTests
     private MainWindowViewModel _viewModel = null!;
     private readonly List<SessionPlan> _launched = [];
     private int _launchExitCode;
+    private TaskCompletionSource<int>? _running;
 
     [SetUp]
     public async Task Setup()
     {
         _launched.Clear();
         _launchExitCode = 0;
+        _running = null;
         CoreRuntime.MessageCollector.ClearMessages();
         _directory = new TempDirectory();
         AppPaths paths = new(_directory.File("config"), _directory.File("data"));
@@ -185,7 +187,7 @@ public class MainWindowSessionTests
             StartDetached = plan =>
             {
                 _launched.Add(plan);
-                return Task.FromResult(_launchExitCode);
+                return _running?.Task ?? Task.FromResult(_launchExitCode);
             }
         };
         SessionLauncher launcher = new(programs, _directory.File("run"));
@@ -276,6 +278,23 @@ public class MainWindowSessionTests
         await _viewModel.ConnectCommand.ExecuteAsync(null);
 
         Assert.That(CoreRuntime.MessageCollector.Messages.Select(m => m.Text), Has.Some.Contains("exit code 3"));
+    }
+
+    [Test]
+    public async Task AProgramStillOpenLeavesConnectFree()
+    {
+        _viewModel.AddConnectionCommand.Execute(null);
+        ConnectionInfo connection = _viewModel.SelectedNode!.Connection;
+        connection.Protocol = ProtocolType.AnyDesk;
+        connection.Hostname = "123456789";
+        _running = new TaskCompletionSource<int>();
+
+        await _viewModel.ConnectCommand.ExecuteAsync(null).WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.That(_viewModel.ConnectCommand.IsRunning, Is.False, "AnyDesk is still open");
+        Assert.That(_viewModel.ConnectCommand.CanExecute(null), Is.True);
+        _running.SetResult(3);
+        Assert.That(CoreRuntime.MessageCollector.Messages.Select(m => m.Text), Has.Some.Contains("exit code 3"), "its end is still reported");
     }
 
     [Test]

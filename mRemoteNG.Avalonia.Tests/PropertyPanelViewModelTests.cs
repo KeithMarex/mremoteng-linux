@@ -31,6 +31,31 @@ public class PropertyPanelViewModelTests
     }
 
     [Test]
+    public void ASpiceConnectionShowsWhereItsConsoleComesFrom()
+    {
+        ConnectionInfo connection = new() { Protocol = ProtocolType.SSH2 };
+        _panel.Connection = connection;
+        PropertyItemViewModel protocol = Item(nameof(ConnectionInfo.Protocol));
+        protocol.SelectedChoice = protocol.Choices.Single(choice => Equals(choice.Value, ProtocolType.SPICE));
+
+        Assert.That(connection.Port, Is.EqualTo(8006), "the Proxmox API");
+        Assert.That(ShownProperties(), Does.Contain("mRx.SpiceSource").And.Contain("mRx.ProxmoxVm").And.Contain("mRx.ProxmoxNode")
+                                           .And.Contain(nameof(ConnectionInfo.Username)).And.Contain(nameof(ConnectionInfo.Password)));
+        Assert.That(protocol.Choices.Single(choice => Equals(choice.Value, ProtocolType.SPICE)).DisplayText, Is.EqualTo("SPICE (Proxmox, KVM)"));
+
+        PropertyItemViewModel source = Item("mRx.SpiceSource");
+        Assert.That(source.Choices.Select(choice => choice.DisplayText), Is.EqualTo(new[] { "Proxmox VE", "QEMU/libvirt (direct)" }));
+        source.SelectedChoice = source.Choices[1];
+
+        Assert.That(connection.GetPluginProperty("mRx.SpiceSource"), Is.EqualTo("Direct"));
+        Assert.That(connection.Port, Is.EqualTo(5900), "QEMU's SPICE port");
+        Assert.That(ShownProperties(), Does.Not.Contain("mRx.ProxmoxVm"));
+        Item("mRx.SpiceSource").SelectedChoice = Item("mRx.SpiceSource").Choices[0];
+        Assert.That(connection.Port, Is.EqualTo(8006));
+        Assert.That(connection.GetPluginProperty("mRx.SpiceSource"), Is.Empty, "the default is not stored");
+    }
+
+    [Test]
     public void ChangingTheProtocolSetsItsPortAndShowsItsProperties()
     {
         ConnectionInfo connection = new() { Protocol = ProtocolType.SSH2 };
