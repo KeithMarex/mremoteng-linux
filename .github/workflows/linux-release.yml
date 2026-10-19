@@ -123,6 +123,25 @@ jobs:
         run: |
           cd artifacts
           sha256sum *.deb > SHA256SUMS
-          gh release create "$GITHUB_REF_NAME" *.deb SHA256SUMS --repo "$GITHUB_REPOSITORY" \
-            --title "mRemoteNG for Linux ${GITHUB_REF_NAME#v}" \
-            --notes "Debian packages for Debian 12 and 13, Ubuntu 24.04 and Zorin OS 18 (amd64 and arm64). Install with: sudo apt install ./mremoteng_${GITHUB_REF_NAME#v}_amd64.deb"
+          version="${GITHUB_REF_NAME#v}"
+          title="mRemoteNG for Linux $version"
+          stage=""
+          prerelease=""
+          # Until 1.0, and for versions such as 1.0.0-rc.1, a release is a beta: a GitHub pre-release.
+          case "$version" in
+            0.*|*-*) title="$title (beta)"; stage=" This is a beta: keep a backup of your connection files."; prerelease="--prerelease" ;;
+          esac
+          cat > "$RUNNER_TEMP/notes.md" <<EOF
+          An unofficial Linux port of [mRemoteNG](https://github.com/mRemoteNG/mRemoteNG). It is not made by, affiliated with or endorsed by the mRemoteNG project.$stage
+
+          Debian packages for Debian 12 and 13, Ubuntu 24.04 and Zorin OS 18 (amd64 and arm64). Check and install with:
+
+          \`\`\`
+          sha256sum -c SHA256SUMS --ignore-missing
+          sudo apt install ./mremoteng_${version}_amd64.deb
+          \`\`\`
+
+          See the [README](https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_REF_NAME/README.md) for what works and what is not supported yet.
+          EOF
+          gh release create "$GITHUB_REF_NAME" *.deb SHA256SUMS --repo "$GITHUB_REPOSITORY" $prerelease \
+            --title "$title" --notes-file "$RUNNER_TEMP/notes.md"
