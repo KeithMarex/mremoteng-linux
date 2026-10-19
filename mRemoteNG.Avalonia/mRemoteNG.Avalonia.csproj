@@ -17,6 +17,10 @@
     <InternalsVisibleTo Include="mRemoteNG.Avalonia.Tests" />
   </ItemGroup>
   <ItemGroup>
+    <!-- The window icon; the packaging installs the same icon for the desktop. -->
+    <AvaloniaResource Include="..\packaging\linux\icons\256.png" Link="Assets\mremoteng.png" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Desktop" />
     <PackageReference Include="Avalonia.Themes.Fluent" />

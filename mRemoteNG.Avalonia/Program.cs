@@ -35,9 +35,13 @@ internal static class Program
         typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split('+')[0]
         ?? "unknown";
 
+    /// <summary>The X11 window class; desktop environments match it with the .desktop file (StartupWMClass).</summary>
+    public const string WindowClass = "mremoteng";
+
     // Also used by the Avalonia designer.
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .With(new X11PlatformOptions { WmClass = WindowClass })
             .LogToTrace();
 }

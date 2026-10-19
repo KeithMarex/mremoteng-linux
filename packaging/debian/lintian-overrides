@@ -1,0 +1,9 @@
+# SkiaSharp's native library comes from the SkiaSharp project with its own freetype, libjpeg and libpng
+# built in; it cannot use the system's. Updating SkiaSharp updates them.
+mremoteng: embedded-library freetype [usr/lib/mremoteng/libSkiaSharp.so]
+mremoteng: embedded-library libjpeg [usr/lib/mremoteng/libSkiaSharp.so]
+mremoteng: embedded-library libpng [usr/lib/mremoteng/libSkiaSharp.so]
+# The .NET runtime builds zlib-ng into its compression library; updating .NET updates it.
+mremoteng: embedded-library zlib [usr/lib/mremoteng/libSystem.IO.Compression.Native.so]
+# The program has no command-line options a manual page would describe (only --version).
+mremoteng: no-manual-page [usr/bin/mremoteng]

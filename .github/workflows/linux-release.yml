@@ -1,0 +1,128 @@
+name: Linux release
+
+# Builds the Debian packages (amd64 and arm64), checks them with lintian, installs and starts them on Debian 12,
+# Debian 13 and Ubuntu 24.04, and for a v* tag publishes them as a GitHub release.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  pull_request:
+    paths:
+      - 'packaging/**'
+      - 'scripts/linux/build-deb.sh'
+      - 'scripts/linux/deb-copyright.py'
+      - 'scripts/linux/test-deb.sh'
+      - '.github/workflows/linux-release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install .NET SDK (from global.json)
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('Directory.Packages.props', '**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Install packaging tools
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends dpkg-dev binutils-aarch64-linux-gnu
+
+      - name: Check that the tag is the version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          version="$(dotnet msbuild mRemoteNG.Avalonia/mRemoteNG.Avalonia.csproj -getProperty:Version)"
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::The tag $GITHUB_REF_NAME is not the version in mRemoteNG.Avalonia.csproj ($version)."
+            exit 1
+          fi
+
+      - name: Build the package
+        env:
+          # "Name <email>"; without it the author of the tagged commit is the maintainer.
+          DEB_MAINTAINER: ${{ vars.DEB_MAINTAINER }}
+        run: scripts/linux/build-deb.sh ${{ matrix.arch }} artifacts
+
+      - name: Lint (Debian 13's lintian)
+        run: >
+          docker run --rm -v "$PWD/artifacts:/deb:ro" debian:13
+          sh -c "apt-get update -qq && apt-get install -y -qq lintian > /dev/null && lintian --fail-on error,warning /deb/*.deb"
+
+      - name: Upload the package
+        uses: actions/upload-artifact@v7
+        with:
+          name: deb-${{ matrix.arch }}
+          path: artifacts/*.deb
+
+  install:
+    needs: package
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ['debian:12', 'debian:13', 'ubuntu:24.04']
+        arch: [amd64, arm64]
+    runs-on: ubuntu-24.04
+    # arm64 runs emulated (QEMU): slow, and .NET is not always reliable there, so it informs but does not block.
+    continue-on-error: ${{ matrix.arch == 'arm64' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Download the package
+        uses: actions/download-artifact@v8
+        with:
+          name: deb-${{ matrix.arch }}
+          path: artifacts
+
+      - name: Set up arm64 emulation
+        if: matrix.arch == 'arm64'
+        run: sudo apt-get update && sudo apt-get install -y qemu-user-static
+
+      - name: Install, start and remove
+        run: >
+          docker run --rm --platform linux/${{ matrix.arch }}
+          -e START_TIMEOUT=${{ matrix.arch == 'arm64' && '120' || '20' }}
+          -e DOTNET_EnableWriteXorExecute=${{ matrix.arch == 'arm64' && '0' || '1' }}
+          -v "$PWD:/work" -w /work ${{ matrix.image }}
+          bash scripts/linux/test-deb.sh artifacts/mremoteng_*_${{ matrix.arch }}.deb
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [package, install]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download the packages
+        uses: actions/download-artifact@v8
+        with:
+          pattern: deb-*
+          merge-multiple: true
+          path: artifacts
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd artifacts
+          sha256sum *.deb > SHA256SUMS
+          gh release create "$GITHUB_REF_NAME" *.deb SHA256SUMS --repo "$GITHUB_REPOSITORY" \
+            --title "mRemoteNG for Linux ${GITHUB_REF_NAME#v}" \
+            --notes "Debian packages for Debian 12 and 13, Ubuntu 24.04 and Zorin OS 18 (amd64 and arm64). Install with: sudo apt install ./mremoteng_${GITHUB_REF_NAME#v}_amd64.deb"

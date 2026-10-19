@@ -6,6 +6,7 @@
         x:Class="mRemoteNG.Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="{Binding Title}"
+        Icon="avares://mRemoteNG.Avalonia/Assets/mremoteng.png"
         Width="1200" Height="800" MinWidth="700" MinHeight="450">
     <Window.Styles>
         <Style Selector="TextBlock.panelHeader">
