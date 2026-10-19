@@ -49,6 +49,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
         launcher ??= new SessionLauncher(new SessionPrograms(), paths.RuntimeDirectory);
         Sessions = CreateSessions(launcher);
         _programs = new ProgramLauncher(launcher.Programs);
+        LoadExternalTools(launcher.Programs);
         PropertyPanel.PropertyEdited += OnPropertyEdited;
         PropertyPanel.IsDescriptionVisible = settings.ShowPropertyDescription;
     }
@@ -192,18 +193,6 @@ public sealed partial class MainWindowViewModel : ObservableObject
         {
             await ReportErrorAsync(UiText.CouldNotSave(path), ex);
         }
-    }
-
-    [RelayCommand]
-    private async Task OpenOptionsAsync()
-    {
-        OptionsViewModel options = new(_settings);
-        if (!await _dialogs.ShowOptionsAsync(options))
-            return;
-
-        options.ApplyTo(_settings);
-        ApplyTheme(_settings.Theme);
-        SaveSettings();
     }
 
     /// <summary>Imports a file (mRemoteNG XML/CSV, .rdp, RDCMan, PuTTY CM, SecureCRT) into the selected folder.</summary>

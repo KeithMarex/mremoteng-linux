@@ -41,11 +41,20 @@ public partial class MainWindow : Window
     {
         base.OnDataContextChanged(e);
         if (_shownViewModel is not null)
+        {
             _shownViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+            _shownViewModel.ExternalTools.CollectionChanged -= OnExternalToolsChanged;
+        }
+
         _shownViewModel = ViewModel;
         if (_shownViewModel is not null)
+        {
             _shownViewModel.PropertyChanged += OnViewModelPropertyChanged;
+            _shownViewModel.ExternalTools.CollectionChanged += OnExternalToolsChanged;
+        }
+
         ShowNotificationsRow(_shownViewModel?.IsNotificationsVisible ?? false);
+        FillExternalToolsMenu();
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -105,6 +114,34 @@ public partial class MainWindow : Window
         if (menu.Items.Count == 0)
             menu.Items.Add(new MenuItem { Header = UiText.NoFavorites, IsEnabled = false });
         menu.ShowAt(FavoritesButton);
+    }
+
+    private void OnTreeMenuOpening(object? sender, CancelEventArgs e) => ExternalToolsMenu.IsEnabled = ViewModel?.SelectedNode is not null;
+
+    private void OnExternalToolsChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
+        FillExternalToolsMenu();
+
+    // The External Tools submenu of the tree's menu: one item per tool, run on the selected connection or folder. It is
+    // filled ahead of opening, so the menu item shows its submenu arrow.
+    private void FillExternalToolsMenu()
+    {
+        if (ViewModel is not { } viewModel)
+            return;
+
+        ExternalToolsMenu.Items.Clear();
+        foreach (ExternalTools.ExternalToolDefinition tool in viewModel.ExternalTools)
+        {
+            ExternalToolsMenu.Items.Add(new MenuItem
+            {
+                // A TextBlock, so an underscore in the name is not taken for an access key.
+                Header = new TextBlock { Text = tool.DisplayName },
+                Command = viewModel.RunExternalToolCommand,
+                CommandParameter = tool
+            });
+        }
+
+        if (ExternalToolsMenu.Items.Count == 0)
+            ExternalToolsMenu.Items.Add(new MenuItem { Header = UiText.NoExternalTools, IsEnabled = false });
     }
 
     /// <summary>

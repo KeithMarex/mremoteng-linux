@@ -124,6 +124,27 @@ public static class UiText
     public const string ServerClosedConnection = "The server closed the connection.";
     public const string Login = "Log in";
     public const string CtrlAltDel = "Ctrl+Alt+Del";
+    public const string ExternalTools = "External Tools";
+    public const string ExternalToolsMenu = "External _Tools…";
+    public const string NoExternalTool = "(none)";
+    public const string NoExternalTools = "No external tools yet: add them with Tools > External Tools.";
+    public const string NewExternalTool = "New External Tool";
+    public const string New = "New";
+    public const string DisplayName = "Display name";
+    public const string Category = "Category";
+    public const string Program = "Program";
+    public const string Arguments = "Arguments";
+    public const string WorkingDirectory = "Working directory";
+    public const string WaitForExit = "Wait for exit";
+    public const string RunInTab = "Run in a tab (integrated)";
+    public const string RunElevated = "Run elevated";
+    public const string Launch = "Launch";
+    public const string ExternalToolsHelp =
+        "Arguments are split as a shell would (quotes keep spaces), but no shell runs. Variables: %NAME%, %HOSTNAME%, " +
+        "%PORT%, %USERNAME%, %PASSWORD%, %DOMAIN%, %DESCRIPTION%, %MACADDRESS%, %USERFIELD%, and any environment " +
+        "variable such as %HOME%. \\%VARIABLE\\% is only the environment's, ^%VARIABLE^% stays as it is. " +
+        "\"Run in a tab\" runs the tool in a terminal tab.";
+    public const string ExternalToolNotSet = "The connection names no external tool (set External Tool in its properties).";
     public const string FreeRdpNotFound =
         "RDP needs FreeRDP 3: install the freerdp3-x11 package (on Debian 12 from bookworm-backports).";
     public const string RdpInOwnWindow = "The remote desktop is open in its own full-screen window.";
@@ -177,6 +198,13 @@ public static class UiText
     public static string RdpValueWithLineBreak(string option) => $"The value for {option} contains a line break, which xfreerdp cannot take.";
     public static string CertificateNotRead(string host, string reason) =>
         $"The certificate of {host} could not be read beforehand ({reason}); xfreerdp checks it itself.";
+    public static string ExternalToolNotFound(string name) => $"There is no external tool named \"{name}\" (see Tools > External Tools).";
+    public static string ExternalToolWithoutProgram(string name) => $"The external tool \"{name}\" has no program set.";
+    public static string RunElevatedIgnored(string name) => $"\"{name}\" is set to run elevated; on Linux it runs with your own rights.";
+    public static string WorkingDirectoryMissing(string directory) => $"The working directory {directory} does not exist; the tool runs in your home folder.";
+    public static string RunningTool(string tool, string connection, string commandLine) => $"Running {tool} for {connection}: {commandLine}";
+    public static string CouldNotLoadExternalTools(string path) => $"Could not load the external tools from {path}";
+    public static string CouldNotSaveExternalTools(string path) => $"Could not save the external tools to {path}";
     public static string ConnectionLost(string reason) => $"The connection was lost: {reason}";
     public static string CouldNotStart(string program, string reason) => $"Could not start {program}: {reason}";
     public static string Opening(string name, string commandLine) => $"Opening {name}: {commandLine}";

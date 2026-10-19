@@ -22,13 +22,19 @@ public sealed partial class MainWindowViewModel
 
     /// <summary>
     /// Opens the selected connection: in a new tab (a terminal, a file transfer for FTP and SFTP, a remote desktop or VNC),
-    /// or in the program that shows it in its own window (the web browser, AnyDesk).
+    /// or in the program that shows it in its own window (the web browser, AnyDesk, an external tool). Its PreExtApp
+    /// runs first, and its PostExtApp once the tab's session ends.
     /// </summary>
     [RelayCommand(CanExecute = nameof(CanConnect))]
     private async Task ConnectAsync()
     {
         ConnectionInfo connection = SelectedNode!.Connection;
-        switch (ProtocolRouting.KindOf(connection.Protocol))
+        SessionKind kind = ProtocolRouting.KindOf(connection.Protocol);
+        if (kind != SessionKind.NotSupported)
+            await RunPreConnectionToolAsync(connection);
+
+        SessionTabViewModel? before = Sessions.Selected;
+        switch (kind)
         {
             case SessionKind.Terminal:
                 Sessions.Open(connection);
@@ -45,10 +51,16 @@ public sealed partial class MainWindowViewModel
             case SessionKind.Launch:
                 await LaunchAsync(connection);
                 break;
+            case SessionKind.ExternalTool:
+                await OpenExternalToolConnectionAsync(connection);
+                break;
             default:
                 await ReportConnectErrorAsync(connection, ProtocolRouting.NotSupportedReason(connection.Protocol));
                 break;
         }
+
+        if (Sessions.Selected is { } opened && opened != before && opened.Connection == connection)
+            RunPostConnectionToolWhenEnded(connection, opened);
     }
 
     private async Task LaunchAsync(ConnectionInfo connection)

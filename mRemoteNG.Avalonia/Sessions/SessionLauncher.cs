@@ -14,9 +14,11 @@ public sealed class SessionLauncher(SessionPrograms programs, string runtimeDire
     public SessionPrograms Programs { get; } = programs;
 
     /// <exception cref="SessionException">The connection cannot be opened.</exception>
-    public PreparedSession Prepare(ConnectionInfo connection)
+    public PreparedSession Prepare(ConnectionInfo connection) => Prepare(_planner.Plan(connection));
+
+    /// <summary>Prepares a given program, such as an external tool shown in a terminal tab.</summary>
+    public PreparedSession Prepare(SessionPlan plan)
     {
-        SessionPlan plan = _planner.Plan(connection);
         if (plan.Password is not { } password)
             return new PreparedSession(plan, new Dictionary<string, string>(), plan.Warnings, null);
 

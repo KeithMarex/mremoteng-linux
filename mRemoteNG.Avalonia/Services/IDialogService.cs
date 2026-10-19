@@ -36,6 +36,9 @@ public interface IDialogService
     /// <summary>Asks for one line of text, such as a new name; null when cancelled.</summary>
     Task<string?> AskTextAsync(string title, string prompt, string initialText);
 
+    /// <summary>Shows the External Tools window; true when the user kept the changes.</summary>
+    Task<bool> ShowExternalToolsAsync(ViewModels.ExternalToolsViewModel tools);
+
     /// <summary>Shows the options; true when the user confirmed them.</summary>
     Task<bool> ShowOptionsAsync(ViewModels.OptionsViewModel options);
 
