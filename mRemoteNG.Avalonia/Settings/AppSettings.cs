@@ -38,6 +38,32 @@ public sealed class AppSettings
     /// </summary>
     public Dictionary<string, string> TrustedCertificates { get; set; } = new();
 
+    /// <summary>The file transfer tab's columns on this computer's side: the last sort order and widths the user chose.</summary>
+    public FileListLayout LocalFileList { get; set; } = new();
+
+    /// <summary>The file transfer tab's columns on the server's side, kept apart from this computer's as in FileZilla.</summary>
+    public FileListLayout RemoteFileList { get; set; } = new();
+
     /// <summary>The settings shared with Core (defaults for new connections and more).</summary>
     public CoreSettings Core { get; set; } = new();
+}
+
+/// <summary>A column of the file transfer tab's lists, which the user can sort by.</summary>
+public enum FileSortColumn
+{
+    Name,
+    Size,
+    Modified,
+    Permissions
+}
+
+/// <summary>How one of the file transfer tab's lists shows: sorted by which column, and how wide each column is.</summary>
+public sealed class FileListLayout
+{
+    public FileSortColumn SortColumn { get; set; } = FileSortColumn.Name;
+    public bool SortDescending { get; set; }
+    public double NameWidth { get; set; } = 250;
+    public double SizeWidth { get; set; } = 70;
+    public double ModifiedWidth { get; set; } = 120;
+    public double PermissionsWidth { get; set; } = 90;
 }

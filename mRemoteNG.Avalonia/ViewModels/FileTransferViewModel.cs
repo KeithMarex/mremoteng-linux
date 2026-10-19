@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using mRemoteNG.App;
 using mRemoteNG.Avalonia.Services;
 using mRemoteNG.Avalonia.Sessions;
+using mRemoteNG.Avalonia.Settings;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.FileTransfer;
@@ -36,22 +37,26 @@ public sealed partial class FileTransferViewModel : SessionTabViewModel, IProtoc
 
     /// <param name="prepare">Turns the connection into a server to connect to (<see cref="FileTransferConnector.PrepareAsync"/>).</param>
     /// <param name="dispatch">Queues an action on the UI thread.</param>
+    /// <param name="settings">Holds the lists' sort order and column widths, which <paramref name="saveSettings"/> stores.</param>
     public FileTransferViewModel(ConnectionInfo connection, Func<ConnectionInfo, CancellationToken, Task<FileTransferTarget>> prepare,
-                                 IDialogService dialogs, IFileTransferPrompts prompts, Action<Action> dispatch) : base(connection)
+                                 IDialogService dialogs, IFileTransferPrompts prompts, Action<Action> dispatch, AppSettings settings,
+                                 Action saveSettings) : base(connection)
     {
         _prepare = prepare;
         _dialogs = dialogs;
         _prompts = prompts;
         _dispatch = dispatch;
+        Local = new LocalPaneViewModel(settings.LocalFileList, saveSettings);
+        Remote = new RemotePaneViewModel(settings.RemoteFileList, saveSettings);
         Local.Failed += OnPaneFailed;
         Remote.Failed += OnPaneFailed;
         Local.SelectedEntries.CollectionChanged += (_, _) => UploadCommand.NotifyCanExecuteChanged();
         Remote.SelectedEntries.CollectionChanged += (_, _) => NotifyRemoteSelectionCommands();
     }
 
-    public LocalPaneViewModel Local { get; } = new();
+    public LocalPaneViewModel Local { get; }
 
-    public RemotePaneViewModel Remote { get; } = new();
+    public RemotePaneViewModel Remote { get; }
 
     public ObservableCollection<TransferItemViewModel> Transfers { get; } = [];
 

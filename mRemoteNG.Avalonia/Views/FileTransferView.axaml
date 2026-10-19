@@ -7,17 +7,38 @@
     <UserControl.Resources>
         <StreamGeometry x:Key="FolderIcon">M1,3 L6,3 L8,5 L15,5 L15,14 L1,14 Z</StreamGeometry>
         <StreamGeometry x:Key="FileIcon">M3,1 L10,1 L13,4 L13,15 L3,15 Z</StreamGeometry>
+        <!-- A row: the cells are as wide as the pane's columns (the list's Tag), which the user drags in the header. -->
         <DataTemplate x:Key="EntryTemplate" x:DataType="vm:FileEntryViewModel">
-            <Grid ColumnDefinitions="20,*,70,120,90">
-                <Path Width="14" Height="14" Stretch="Uniform" Fill="{DynamicResource SystemControlForegroundBaseMediumBrush}"
-                      Data="{StaticResource FileIcon}" IsVisible="{Binding !IsDirectory}" />
-                <Path Width="14" Height="14" Stretch="Uniform" Fill="Goldenrod"
-                      Data="{StaticResource FolderIcon}" IsVisible="{Binding IsDirectory}" />
-                <TextBlock Grid.Column="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
-                <TextBlock Grid.Column="2" Text="{Binding SizeText}" HorizontalAlignment="Right" Margin="0,0,8,0" Opacity="0.7" VerticalAlignment="Center" />
-                <TextBlock Grid.Column="3" Text="{Binding ModifiedText}" Opacity="0.7" VerticalAlignment="Center" />
-                <TextBlock Grid.Column="4" Text="{Binding Permissions}" FontFamily="monospace" Opacity="0.7" VerticalAlignment="Center" />
-            </Grid>
+            <StackPanel Orientation="Horizontal">
+                <DockPanel Width="{Binding $parent[ListBox].((vm:FilePaneViewModel)Tag).NameColumn.Width}">
+                    <Panel Width="20">
+                        <Path Width="14" Height="14" Stretch="Uniform" Fill="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                              Data="{StaticResource FileIcon}" IsVisible="{Binding !IsDirectory}" />
+                        <Path Width="14" Height="14" Stretch="Uniform" Fill="Goldenrod"
+                              Data="{StaticResource FolderIcon}" IsVisible="{Binding IsDirectory}" />
+                    </Panel>
+                    <TextBlock Classes="cell" Text="{Binding Name}" Padding="0,0,4,0" />
+                </DockPanel>
+                <TextBlock Classes="cell" Width="{Binding $parent[ListBox].((vm:FilePaneViewModel)Tag).SizeColumn.Width}"
+                           Text="{Binding SizeText}" TextAlignment="Right" Opacity="0.7" />
+                <TextBlock Classes="cell" Width="{Binding $parent[ListBox].((vm:FilePaneViewModel)Tag).ModifiedColumn.Width}"
+                           Text="{Binding ModifiedText}" Opacity="0.7" />
+                <TextBlock Classes="cell" Width="{Binding $parent[ListBox].((vm:FilePaneViewModel)Tag).PermissionsColumn.Width}"
+                           Text="{Binding Permissions}" FontFamily="monospace" Opacity="0.7" />
+            </StackPanel>
+        </DataTemplate>
+        <!-- A column header: click to sort by the column (again for the other way round), drag its right edge to resize it. -->
+        <DataTemplate x:Key="ColumnHeaderTemplate" x:DataType="vm:FileColumnViewModel">
+            <Panel Width="{Binding Width}">
+                <Button Classes="columnHeader" Command="{Binding SortCommand}" Focusable="False">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Right" Text="{Binding SortMark}" FontSize="9" Opacity="0.7" Margin="4,0,0,0"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding Header}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                    </DockPanel>
+                </Button>
+                <Border Classes="columnGrip" Cursor="SizeWestEast" />
+            </Panel>
         </DataTemplate>
     </UserControl.Resources>
     <UserControl.Styles>
@@ -30,6 +51,38 @@
             <Setter Property="Background" Value="{DynamicResource MrHover}" />
             <Setter Property="BorderBrush" Value="{DynamicResource MrHoverBorder}" />
             <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="ListBox.files TextBlock.cell">
+            <Setter Property="Padding" Value="4,0" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <!-- Column headers as in a Windows details list: flat, with a line between the columns and under the header. -->
+        <Style Selector="Border.columnHeaders">
+            <Setter Property="BorderBrush" Value="{DynamicResource MrPanelBorder}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+        </Style>
+        <Style Selector="Button.columnHeader">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{DynamicResource MrPanelBorder}" />
+            <Setter Property="BorderThickness" Value="0,0,1,0" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Padding" Value="4,2" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="Button.columnHeader:pointerover /template/ ContentPresenter#PART_ContentPresenter, Button.columnHeader:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource MrHover}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource MrPanelBorder}" />
+        </Style>
+        <Style Selector="Button.columnHeader:pressed">
+            <Setter Property="RenderTransform" Value="none" />
+        </Style>
+        <Style Selector="Border.columnGrip">
+            <Setter Property="Width" Value="6" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Background" Value="Transparent" />
         </Style>
         <Style Selector="TextBlock.paneTitle">
             <Setter Property="FontWeight" Value="SemiBold" />
@@ -93,9 +146,21 @@
                         </TextBox.KeyBindings>
                     </TextBox>
                 </DockPanel>
+                <Border DockPanel.Dock="Top" Classes="columnHeaders">
+                    <ScrollViewer x:Name="LocalHeader" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                        <!-- Lined up with the rows: the list items' padding on both sides. -->
+                        <ItemsControl ItemsSource="{Binding Local.Columns}" ItemTemplate="{StaticResource ColumnHeaderTemplate}" Margin="6,0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
                 <ListBox x:Name="LocalList" Classes="files" ItemsSource="{Binding Local.Entries}" SelectionMode="Multiple"
                          SelectedItems="{Binding Local.SelectedEntries}" ItemTemplate="{StaticResource EntryTemplate}"
-                         DragDrop.AllowDrop="True">
+                         Tag="{Binding Local}" ScrollViewer.HorizontalScrollBarVisibility="Auto" DragDrop.AllowDrop="True">
                     <ListBox.KeyBindings>
                         <KeyBinding Gesture="Enter" Command="{Binding Local.OpenCommand}" CommandParameter="{Binding #LocalList.SelectedItem}" />
                         <KeyBinding Gesture="Back" Command="{Binding Local.UpCommand}" />
@@ -127,9 +192,21 @@
                         </TextBox.KeyBindings>
                     </TextBox>
                 </DockPanel>
+                <Border DockPanel.Dock="Top" Classes="columnHeaders">
+                    <ScrollViewer x:Name="RemoteHeader" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                        <!-- Lined up with the rows: the list items' padding on both sides. -->
+                        <ItemsControl ItemsSource="{Binding Remote.Columns}" ItemTemplate="{StaticResource ColumnHeaderTemplate}" Margin="6,0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
                 <ListBox x:Name="RemoteList" Classes="files" ItemsSource="{Binding Remote.Entries}" SelectionMode="Multiple"
                          SelectedItems="{Binding Remote.SelectedEntries}" ItemTemplate="{StaticResource EntryTemplate}"
-                         DragDrop.AllowDrop="True">
+                         Tag="{Binding Remote}" ScrollViewer.HorizontalScrollBarVisibility="Auto" DragDrop.AllowDrop="True">
                     <ListBox.KeyBindings>
                         <KeyBinding Gesture="Enter" Command="{Binding Remote.OpenCommand}" CommandParameter="{Binding #RemoteList.SelectedItem}" />
                         <KeyBinding Gesture="Back" Command="{Binding Remote.UpCommand}" />
