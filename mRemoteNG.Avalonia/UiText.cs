@@ -83,6 +83,10 @@ public static class UiText
     // File transfer
     public const string OpenFileTransfer = "Open SFTP";
     public const string ThisComputer = "This computer";
+    public static string ColumnName => Language.Name;
+    public const string ColumnSize = "Size";
+    public const string ColumnModified = "Modified";
+    public const string ColumnPermissions = "Permissions";
     public const string Transfers = "Transfers";
     public const string ClearFinished = "Clear finished";
     public const string Upload = "Upload";

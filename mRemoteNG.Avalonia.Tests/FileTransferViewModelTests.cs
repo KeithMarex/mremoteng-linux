@@ -230,7 +230,8 @@ public class FileTransferViewModelTests
 
     private FileTransferViewModel Tab(Func<CancellationToken, Task<IRemoteFileSystem>> connect, string? startDirectory = null) =>
         new(_connection, (_, _) => Task.FromResult(new FileTransferTarget(startDirectory, [], (_, _, token) => connect(token))),
-            _dialogs, new FileTransferPrompts(_dialogs, new CertificatePins(new AppSettings(), () => { })), action => action());
+            _dialogs, new FileTransferPrompts(_dialogs, new CertificatePins(new AppSettings(), () => { })), action => action(),
+            new AppSettings(), () => { });
 
     private static async Task Finished(TransferItemViewModel transfer)
     {

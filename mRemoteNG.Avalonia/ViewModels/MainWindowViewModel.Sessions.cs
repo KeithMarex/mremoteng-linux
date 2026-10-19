@@ -105,7 +105,7 @@ public sealed partial class MainWindowViewModel
         // The protocol may change in the property panel while the connection stays selected.
         PropertyPanel.PropertyEdited += (_, _) => OpenFileTransferCommand.NotifyCanExecuteChanged();
         return new SessionsViewModel(launcher,
-            connection => new FileTransferViewModel(connection, connector.PrepareAsync, _dialogs, prompts, _dispatch),
+            connection => new FileTransferViewModel(connection, connector.PrepareAsync, _dialogs, prompts, _dispatch, _settings, SaveSettings),
             connection => new RdpSessionViewModel(connection, rdp.ConnectAsync, _dispatch),
             connection => new VncSessionViewModel(connection, vnc.ConnectAsync, _dispatch));
     }

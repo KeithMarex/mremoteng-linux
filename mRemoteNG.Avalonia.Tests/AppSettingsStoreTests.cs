@@ -30,6 +30,9 @@ public class AppSettingsStoreTests
         AppSettingsStore store = new(_directory.File("sub/settings.json"));
         AppSettings settings = new() { ConnectionFile = "/shared/confCons.xml", ConnectionFileVersion = "2.8" };
         settings.Core.ConDefaultProtocol = "SSH2";
+        settings.RemoteFileList.SortColumn = FileSortColumn.Modified;
+        settings.RemoteFileList.SortDescending = true;
+        settings.RemoteFileList.NameWidth = 321;
 
         store.Save(settings);
         AppSettings loaded = store.Load();
@@ -37,6 +40,11 @@ public class AppSettingsStoreTests
         Assert.That(loaded.ConnectionFile, Is.EqualTo("/shared/confCons.xml"));
         Assert.That(loaded.ConnectionFileVersion, Is.EqualTo("2.8"));
         Assert.That(loaded.Core.ConDefaultProtocol, Is.EqualTo("SSH2"));
+        Assert.That(loaded.RemoteFileList.SortColumn, Is.EqualTo(FileSortColumn.Modified));
+        Assert.That(loaded.RemoteFileList.SortDescending, Is.True);
+        Assert.That(loaded.RemoteFileList.NameWidth, Is.EqualTo(321));
+        Assert.That(loaded.LocalFileList.SortColumn, Is.EqualTo(FileSortColumn.Name), "each side has its own");
+        Assert.That(File.ReadAllText(store.SettingsFile), Does.Contain("\"Modified\""), "stored by name");
     }
 
     [Test, Platform(Exclude = "Win")]
