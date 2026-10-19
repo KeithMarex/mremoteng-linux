@@ -65,6 +65,11 @@ the mRemoteNG project, not to this fork.
 - Search by name, host or description.
 - Drag and drop, move up and down, and sort A–Z or Z–A.
 - Favorites.
+- **Wake-on-LAN:** "Wake up (Wake-on-LAN)" in the right-click menu sends a magic packet to the connection's MAC
+  address; on a folder, to every connection in it that has one.
+- **Host status** (View > Host Status, off until you turn it on): a green or red dot after each connection shows
+  whether its server answers, checked every minute with a TCP connection to its host and port. The tooltip says why
+  a server is offline.
 - Import from mRemoteNG XML and CSV, `.rdp` files, Remote Desktop Connection Manager (`.rdg`), PuTTY Connection
   Manager (`.dat`) and SecureCRT (`.crt`).
 
@@ -90,6 +95,15 @@ the mRemoteNG project, not to this fork.
 - Tabs show the connection's icon and tab colour. Copy with Ctrl+Shift+C, paste with Ctrl+Shift+V, and close with
   Ctrl+Shift+W.
 - A session that drops keeps its tab, with a Reconnect button.
+
+**SSH tunnels**
+
+- A connection's **SSH Tunnel** setting works as on Windows: the SSH connection it names forwards a free local port
+  to the connection's server, and the session connects through it. This works for SSH, SFTP, Telnet, Raw, Rlogin,
+  RDP, VNC, ARD, External Tool connections and HTTP(S), but not for FTP.
+- The tunnel's questions (an unknown host key, a password that is not stored) come up as dialogs.
+- The server keeps its own name: its `~/.ssh/config` entries, its `known_hosts` entry and a trusted RDP certificate
+  apply as if you connected directly.
 
 **Remote desktop tabs: RDP**
 
@@ -129,6 +143,12 @@ These two protocols are new in this fork; Windows mRemoteNG does not have them.
 
 - **HTTP and HTTPS** open the address in your web browser (`xdg-open`).
 - **AnyDesk** starts the AnyDesk client with the connection's ID, and hands it the stored password.
+- **SPICE** opens a virtual machine's console in `remote-viewer` (package `virt-viewer`):
+  - **Proxmox VE**: through the Proxmox API (port 8006), with an API token (`user@realm!tokenid` as the user name,
+    its secret as the password) or a user and password. Set the virtual machine by ID or name; its node is found
+    when you leave it empty.
+  - **QEMU/libvirt**: QEMU's own SPICE port (5900 and up), with its SPICE password if it has one.
+  - The password goes to `remote-viewer` in a file only you can read, which is deleted once it is read.
 
 **External tools**
 
@@ -160,6 +180,8 @@ These two protocols are new in this fork; Windows mRemoteNG does not have them.
 - **PuTTY-specific SSH options** are dropped, and the connection's opening command is not sent yet.
 - **Telnet** does not log in with the stored user name and password.
 - **SFTP** does not use the SSH agent or `ProxyJump`/`ProxyCommand` from `ssh_config`.
+- **SPICE:** a Proxmox VE console cannot go through an SSH tunnel (it uses Proxmox's SPICE proxy on port 3128), and
+  QEMU's SPICE port with TLS is not supported.
 - The app is in English only, has no Help or About window yet, and is packaged only as a `.deb`.
 
 ## Install
@@ -177,7 +199,7 @@ These two protocols are new in this fork; Windows mRemoteNG does not have them.
 
 The package contains everything .NET needs (it is self-contained), so you do not have to install .NET. It
 depends on `openssh-client`, recommends `inetutils-telnet`, `xdg-utils` and `freerdp3-x11`, and suggests `rsh-redone-client` (for
-rlogin). PowerShell (`pwsh`) and AnyDesk come from Microsoft and AnyDesk.
+rlogin) and `virt-viewer` (for SPICE). PowerShell (`pwsh`) and AnyDesk come from Microsoft and AnyDesk.
 
 To remove the app, run `sudo apt remove mremoteng`. Your connection files and settings are left in place.
 
@@ -189,15 +211,15 @@ The Linux app writes connection files that Windows mRemoteNG can open.
   You can choose 2.8 (Windows 1.78.1 and later) or 2.9 in Options.
 - **Passwords.** Passwords are encrypted the same way as on Windows. The file password (master password) is set
   with the Password property of the root node.
-- **SFTP and FTP connections.** Windows mRemoteNG does not know these protocols, so they are stored in a way it
-  can read:
-  - In `confCons.xml`, FTP is saved as RAW and SFTP as SSH2.
+- **SFTP, FTP and SPICE connections.** Windows mRemoteNG does not know these protocols, so they are stored in a
+  way it can read:
+  - In `confCons.xml`, FTP is saved as RAW, SFTP as SSH2 and SPICE as VNC.
   - The real protocol is saved in the node's `PluginData` (as `mRx.*` values), which newer Windows versions keep.
   - It is also saved in a small file next to the connection file, `confCons.xml.linux.json`, for Windows versions
     that drop `PluginData`. Keep that file together with the connection file.
   - If someone changes the protocol on Windows, that change wins.
-  - **Limitation:** a *folder's* SFTP/FTP protocol is lost once Windows saves the file, because Windows gives
-    folders new IDs.
+  - **Limitation:** a *folder's* SFTP, FTP or SPICE protocol is lost once Windows saves the file, because Windows
+    gives folders new IDs.
 
 ## Where files are kept
 
