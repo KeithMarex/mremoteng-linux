@@ -1,204 +1,229 @@
-<p align="Left">
-	Developing mRemoteNG to its fullest potential is my personal priority.<br>
-While the project remains non-commercial, it does come with ongoing costs — including VPS hosting for testing, AI tools, domain fees, and more. <br> If you find value in mRemoteNG and want to support its future, even a small donation from our community can make a huge difference.<br>
-Your support helps me keep the project secure, modern, and accessible for everyone who relies on it — and brings us closer to a brighter, more collaborative future.<br><br>
-Consider donating — every contribution counts!
-	<br><br>
-	<a href="https://www.paypal.com/paypalme/mremoteng">
-    	<img height='36' alt="PayPal" style='border:0px;height:36px;' src="https://img.shields.io/badge/%24-PayPal-blue.svg?label=Donate&logo=PayPal&style=flat-square">
-	</a><br>
-	<a href='https://ko-fi.com/Q5Q41I7JS' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
-  </a>
+<p align="center">
+  <img width="96" src="packaging/linux/icons/128.png" alt="">
 </p>
 
----
+<h1 align="center">mRemoteNG for Linux</h1>
 
 <p align="center">
-  <img width="450" src="https://github.com/mRemoteNG/mRemoteNG/blob/mRemoteNGProjectFiles/Header_dark.png">
-</p>
-  
-<p align="center">
-  An open source, multi-protocol, tabbed remote connections manager allowing you to view all of your connections in a simple yet powerful interface
+  A Linux port of <a href="https://github.com/mRemoteNG/mRemoteNG">mRemoteNG</a>, the open source, multi-protocol,
+  tabbed remote connections manager.
 </p>
 
-<p align="center">
-  <img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/mremoteng/mremoteng/total?label=Overall%20Downloads&style=for-the-badge">
-</p>
+> [!IMPORTANT]
+> **This is an unofficial, community-maintained fork.** It is not made by, affiliated with or endorsed by the
+> mRemoteNG project. All credit for mRemoteNG goes to its authors; see [Credits](#credits).
+> Please report problems with the Linux app [here](https://github.com/KeithMarex/mremoteng-linux/issues), not to
+> the mRemoteNG project.
 
-<p align="center">
-  <a href="https://www.reddit.com/r/mRemoteNG/">
-    <img alt="Subreddit subscribers" src="https://img.shields.io/reddit/subreddit-subscribers/mremoteng?label=Reddit&logo=Reddit&style=flat-square">
-  </a>
-  <a href="https://twitter.com/mremoteng">
-    <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/mremoteng?color=%231DA1F2&label=Twitter&logo=Twitter&style=flat-square">
-  </a>
-  <a href="https://app.element.io/#/room/#mremoteng:matrix.org">
-    <img alt="Element" src="https://img.shields.io/matrix/mremoteng:matrix.org?label=Join%20to%20chat%20about%20mRemoteNG&logo=element&style=social&link=https://app.element.io/#/room/#mremoteng:matrix.org">
-  </a>  
-</p>
+> [!WARNING]
+> **Beta.** Version 0.1.0 is the first release. Expect rough edges, and keep a backup of your connection files.
 
-<p align="center">
-  <a href="https://github.com/mRemoteNG/mRemoteNG/blob/develop/COPYING.TXT">
-    <img alt="License" src="https://img.shields.io/github/license/mremoteng/mremoteng?label=License&style=flat">
-  </a>
-  <a href="https://bestpractices.coreinfrastructure.org/projects/529">
-    <img alt="CII Best Practices" src="https://bestpractices.coreinfrastructure.org/projects/529/badge?style=flat">
-  </a>
-  <a href='https://mremoteng.readthedocs.io/en/latest/?badge=latest'>
-    <img src='https://readthedocs.org/projects/mremoteng/badge/?version=latest' alt='Documentation Status' />
-  </a>
-  <a href="https://gurubase.io/g/mremoteng">
-    <img alt="Gurubase" src="https://img.shields.io/badge/Gurubase-Ask%20mRemoteNG%20Guru-006BFF?style=flat-square">
-  </a>
-</p>
+## What it is
 
----
+[mRemoteNG](https://mremoteng.org) is a Windows application. This fork adds a native Linux app, built with
+[Avalonia](https://avaloniaui.net) and .NET 10, that opens the same connection files (`confCons.xml`), encrypted
+passwords included. A team can keep one connection file and use it from Windows mRemoteNG and from Linux.
 
-| Channel | Build Status | Downloads |
-| ---------------|--------------|-----------|
-| Stable | ![Build status](https://ci.appveyor.com/api/projects/status/rqwxjxldail7btcf?svg=true) | [![Github Releases (by Release)](https://img.shields.io/github/downloads/mRemoteNG/mRemoteNG/v1.76.20/total.svg)](https://github.com/mRemoteNG/mRemoteNG/releases/tag/v1.76.20) |
-| Preview | ![Build status](https://ci.appveyor.com/api/projects/status/rqwxjxldail7btcf/branch/preview?svg=true) | [![Github Releases (by Release)](https://img.shields.io/github/downloads/mRemoteNG/mRemoteNG/v1.77.1/total.svg)](https://github.com/mRemoteNG/mRemoteNG/releases/tag/v1.77.1) |
-| Nightly | ![Build status](https://ci.appveyor.com/api/projects/status/rqwxjxldail7btcf/branch/develop?svg=true) | [![Github Releases](https://img.shields.io/github/downloads/mRemoteNG/mRemoteNG/20250916-v1.78.2-NB-(3177)/total.svg)](https://github.com/mRemoteNG/mRemoteNG/releases/tag/20250916-v1.78.2-NB-(3177)) |
+It runs on Debian 12 and 13, Ubuntu 24.04 and Zorin OS 18, on amd64 and arm64.
+
+## Credits
+
+mRemoteNG is the work of its authors and contributors, and this port would not exist without them:
+
+- **mRemote**, the original application, was written by Felix Deimel.
+- **mRemoteNG** was started by Riley McArdle as its continuation.
+- mRemoteNG is maintained today by [Dimitrij Gorodeckij](https://github.com/Kvarkas) and
+  [many contributors](https://github.com/mRemoteNG/mRemoteNG/graphs/contributors). The full list of people,
+  translators and included components is in [CREDITS.md](CREDITS.md).
+
+Links to the original project:
+
+- Source code: [github.com/mRemoteNG/mRemoteNG](https://github.com/mRemoteNG/mRemoteNG)
+- Website: [mremoteng.org](https://mremoteng.org)
+- Documentation: [mremoteng.readthedocs.io](https://mremoteng.readthedocs.io/en/latest/)
+
+What the Linux app takes from mRemoteNG:
+
+- the connection model and its inheritance rules;
+- the `confCons.xml` reading and writing, including its encryption;
+- the importers;
+- the connection icons and toolbar images;
+- the look of the Windows app.
+
+Most of that code was moved from the Windows app into the shared `mRemoteNG.Core` project rather than rewritten,
+so it stays the code the mRemoteNG authors wrote.
+
+**Support the original project.** If mRemoteNG is useful to you, consider supporting its maintainer through
+[PayPal](https://www.paypal.com/paypalme/mremoteng) or [Ko-fi](https://ko-fi.com/Q5Q41I7JS). These links go to
+the mRemoteNG project, not to this fork.
 
 ## Features
 
-The following protocols are supported:
+**Connections**
 
-* RDP (Remote Desktop Protocol)
-* VNC (Virtual Network Computing)
-* SSH (Secure Shell)
-* Telnet (TELecommunication NETwork)
-* HTTP/HTTPS (Hypertext Transfer Protocol)
-* rlogin (Remote Login)
-* Raw Socket Connections
-* Powershell remoting
-* AnyDesk
+- A connection tree with folders and inheritance.
+- Search by name, host or description.
+- Drag and drop, move up and down, and sort A–Z or Z–A.
+- Favorites.
+- Import from mRemoteNG XML and CSV, `.rdp` files, Remote Desktop Connection Manager (`.rdg`), PuTTY Connection
+  Manager (`.dat`) and SecureCRT (`.crt`).
 
-For a detailed feature list and general usage support, refer to the [Documentation](https://mremoteng.readthedocs.io/en/latest/).
+**Config panel**
 
-## Build environment
+- Properties and inheritance, categorized or alphabetical.
+- Only the properties that apply to the chosen protocol are shown.
+- An optional description pane.
 
-This project must be built on Windows using Visual Studio 2026 tooling. Use the MSBuild.exe from the Visual Studio 2026 installation instead of the .NET Core `dotnet build` fallback; the Windows desktop project requires the Visual Studio build environment and COM/desktop targets.
+**Session tabs**
 
-For local builds, prefer:
+- **SSH** runs the system's OpenSSH (`ssh`), so your `~/.ssh/config`, keys, agent and `known_hosts` apply.
+  - A stored password is handed to `ssh` through `SSH_ASKPASS`. It never appears on the command line or in the
+    environment.
+- **Telnet** runs the system's `telnet`.
+- **Rlogin** runs the system's `rlogin` (package `rsh-redone-client`). Without it the app connects itself, but most
+  rlogin servers only accept the `rlogin` client, which can use a privileged port.
+- **Raw** opens a TCP connection.
+- **Terminal** opens a local shell.
+- **PowerShell** runs `pwsh`: a local shell, or `Enter-PSSession` to the host. On Linux, PowerShell remoting runs
+  over SSH, not WinRM, so the server needs PowerShell's SSH subsystem. A stored password is handed over the same way
+  as for SSH.
+- Tabs show the connection's icon and tab colour. Copy with Ctrl+Shift+C, paste with Ctrl+Shift+V, and close with
+  Ctrl+Shift+W.
+- A session that drops keeps its tab, with a Reconnect button.
 
-```powershell
-& "$env:ProgramFiles(x86)\Microsoft Visual Studio\2026\Enterprise\MSBuild\Current\Bin\MSBuild.exe" mRemoteNG.sln /p:Configuration=Debug /p:Platform=x64
+**File transfer tabs: SFTP, FTP and FTPS**
+
+These two protocols are new in this fork; Windows mRemoteNG does not have them.
+
+- Two panes: this computer and the server.
+- Upload and download with the buttons, by dragging between the panes, or by dragging files in from the file
+  manager.
+- On the server: new folder, rename, delete, and moving items by dragging them onto a folder or "..".
+- A transfer queue with progress and cancel.
+- Host key and certificate checks, with "trust and remember".
+- "Open SFTP" on SSH2 connections, from the tree's right-click menu.
+
+**Programs with their own window**
+
+- **HTTP and HTTPS** open the address in your web browser (`xdg-open`).
+- **AnyDesk** starts the AnyDesk client with the connection's ID, and hands it the stored password.
+
+**Options**
+
+- The connection file format version: 2.7, 2.8 or 2.9.
+- Saving after every edit.
+- Encryption settings, including encrypting the whole file.
+- Theme: system, light or dark.
+
+## Not supported yet
+
+- **RDP, VNC, ARD and external tools.** These connections stay in the file and can be edited, but opening one shows
+  an error.
+- **WSL** only exists on Windows; opening such a connection says so.
+- **SSH1** is refused, because OpenSSH no longer supports it.
+- **PuTTY-specific SSH options** are dropped, and the connection's opening command is not sent yet.
+- **Telnet** does not log in with the stored user name and password.
+- **SFTP** does not use the SSH agent or `ProxyJump`/`ProxyCommand` from `ssh_config`.
+- The app is in English only, has no Help or About window yet, and is packaged only as a `.deb`.
+
+## Install
+
+1. Download `mremoteng_<version>_amd64.deb` (or `_arm64.deb`) and `SHA256SUMS` from the
+   [Releases](https://github.com/KeithMarex/mremoteng-linux/releases) page.
+2. Check the download and install it:
+
+   ```bash
+   sha256sum -c SHA256SUMS --ignore-missing
+   sudo apt install ./mremoteng_0.1.0_amd64.deb
+   ```
+
+3. Start **mRemoteNG** from the applications menu, or run `mremoteng`.
+
+The package contains everything .NET needs (it is self-contained), so you do not have to install .NET. It
+depends on `openssh-client`, recommends `inetutils-telnet` and `xdg-utils`, and suggests `rsh-redone-client` (for
+rlogin). PowerShell (`pwsh`) and AnyDesk come from Microsoft and AnyDesk.
+
+To remove the app, run `sudo apt remove mremoteng`. Your connection files and settings are left in place.
+
+## Sharing connection files with Windows
+
+The Linux app writes connection files that Windows mRemoteNG can open.
+
+- **File format.** By default it writes file format 2.7, which Windows mRemoteNG 1.77 and later read and write.
+  You can choose 2.8 (Windows 1.78.1 and later) or 2.9 in Options.
+- **Passwords.** Passwords are encrypted the same way as on Windows. The file password (master password) is set
+  with the Password property of the root node.
+- **SFTP and FTP connections.** Windows mRemoteNG does not know these protocols, so they are stored in a way it
+  can read:
+  - In `confCons.xml`, FTP is saved as RAW and SFTP as SSH2.
+  - The real protocol is saved in the node's `PluginData` (as `mRx.*` values), which newer Windows versions keep.
+  - It is also saved in a small file next to the connection file, `confCons.xml.linux.json`, for Windows versions
+    that drop `PluginData`. Keep that file together with the connection file.
+  - If someone changes the protocol on Windows, that change wins.
+  - **Limitation:** a *folder's* SFTP/FTP protocol is lost once Windows saves the file, because Windows gives
+    folders new IDs.
+
+## Where files are kept
+
+| What | Where |
+|---|---|
+| Connection file | `~/.local/share/mRemoteNG/confCons.xml`. You can open another one with File > Open. |
+| Backups | Next to the connection file, as `<file>.<date-time>.backup`. The last 10 are kept. |
+| Settings | `~/.config/mRemoteNG/settings.json` |
+| Log | `~/.local/state/mRemoteNG/mRemoteNG.log` |
+
+These follow `XDG_DATA_HOME`, `XDG_CONFIG_HOME` and `XDG_STATE_HOME` when those are set.
+
+## Build from source
+
+You need the .NET SDK version named in [global.json](global.json) (10.0).
+
+```bash
+dotnet build mRemoteNG.Linux.slnf -c Release
+dotnet test mRemoteNG.Linux.slnf -c Release --no-build
+dotnet run --project mRemoteNG.Avalonia
 ```
 
-If your installation path differs, locate the VS2026 MSBuild from `vswhere.exe` first and then call that `MSBuild.exe` explicitly.
+[mRemoteNG.Linux.slnf](mRemoteNG.Linux.slnf) contains only the projects that build on Linux. The full
+`mRemoteNG.sln` also contains the Windows app, which needs Windows and Visual Studio to build.
 
-## Plugin development workflow
+To build the Debian package:
 
-Plugin projects are built from a separate plugin-only solution and loaded from the app's plugin folder at runtime.
-
-To build the plugin set:
-
-```powershell
-dotnet build mRemoteNG.Plugins.sln -c Release -p:Platform=x64
+```bash
+scripts/linux/build-deb.sh amd64            # or arm64; the package goes to artifacts/
 ```
 
-Then copy the generated plugin DLLs into the app plugin folder, while keeping the shared contracts assembly in the app's `Assemblies` folder:
+This needs `dpkg-deb`, `python3` and `strip`. For arm64 it also needs `binutils-aarch64-linux-gnu`.
 
-The example below uses the x64 output path. For ARM64 builds, replace `x64` with `arm64`.
+To test the package, run [scripts/linux/test-deb.sh](scripts/linux/test-deb.sh) as root in a clean Debian or
+Ubuntu container. It installs the package, starts the app on a virtual X server and removes it again.
 
-```powershell
-Copy-Item .\mRemoteNG.PluginContracts\bin\x64\Release\net10.0-windows10.0.26100.0\mRp.Contracts.dll .\mRemoteNG\bin\x64\Release\Assemblies\
-Copy-Item .\mRemoteNG.Plugins.PortScan\bin\x64\Release\net10.0-windows10.0.26100.0\mRp.PortScan.dll .\mRemoteNG\bin\x64\Release\Plugins\
-Copy-Item .\mRemoteNG.Plugins.SshTransfer\bin\x64\Release\net10.0-windows10.0.26100.0\mRp.SshTransfer.dll .\mRemoteNG\bin\x64\Release\Plugins\
-Copy-Item .\mRemoteNG.Plugins.AWS\bin\x64\Release\net10.0-windows10.0.26100.0\mRp.AWS.dll .\mRemoteNG\bin\x64\Release\Plugins\
-Copy-Item .\mRemoteNG.Plugins.MultiAddress\bin\x64\Release\net10.0-windows10.0.26100.0\mRp.MultiAddress.dll .\mRemoteNG\bin\x64\Release\Plugins\
-```
+[.github/workflows/linux-release.yml](.github/workflows/linux-release.yml) does all of this in CI. On a `v*` tag it
+publishes the release.
 
-See [README.plugins.md](README.plugins.md) for the full workflow and details.
+## How this fork is organised
 
-## Installation
+| Project | What it is |
+|---|---|
+| `mRemoteNG.Core` | The platform-neutral parts of mRemoteNG (connections, files, encryption, importers), moved out of the Windows app. Both apps use it. |
+| `mRemoteNG.Avalonia` | The Linux app. |
+| `mRemoteNG.FileTransfer` | The SFTP and FTP/FTPS engine. |
+| `*.Tests` | Tests for the projects above. |
+| `mRemoteNG` | The Windows app, as in mRemoteNG, except that it uses `mRemoteNG.Core`. |
+| `packaging/`, `scripts/linux/` | The Debian package. |
 
-### Supported Operating Systems
+Other notes:
 
-- [Windows 11](https://en.wikipedia.org/wiki/Windows_11)
-- [Windows 10](https://en.wikipedia.org/wiki/Windows_10)
-- [Windows 8.1](https://en.wikipedia.org/wiki/Windows_8.1)
-- [Windows Server 2022](https://en.wikipedia.org/wiki/Windows_Server_2022)
-- [Windows Server 2019](https://en.wikipedia.org/wiki/Windows_Server_2019)
-- [Windows Server 2016](https://en.wikipedia.org/wiki/Windows_Server_2016)
-- [Windows Server 2012 R2](https://en.wikipedia.org/wiki/Windows_Server_2012_R2)
+- This fork does not publish Windows builds. On Windows, use the
+  [official mRemoteNG releases](https://github.com/mRemoteNG/mRemoteNG/releases).
+- Changes from mRemoteNG are merged in regularly.
+- Changes that are useful to mRemoteNG itself, such as fixes in the shared code, are meant to be offered upstream.
 
-#### Source package
+## License
 
-This contains the source code from which mRemoteNG is built.
-You will need to compile it yourself using Visual Studio.
+mRemoteNG for Linux is licensed under the GNU General Public License, version 2, the same license as mRemoteNG.
+See [COPYING.txt](COPYING.txt). The licenses of the bundled libraries are listed in the package's
+`/usr/share/doc/mremoteng/copyright`.
 
-### Minimum Requirements
-
-Make sure you have the latest version installed:
-
-* [Microsoft .NET Desktop Runtime 10.0](https://dotnet.microsoft.com/download/dotnet/10.0)
-* Microsoft Visual C++ Redistributable 2015–2026 is needed:
- - [x64](https://aka.ms/vs/18/release/vc_redist.x64.exe)
- - [ARM64](https://aka.ms/vs/18/release/vc_redist.arm64.exe)
- - [x86](https://aka.ms/vs/18/release/vc_redist.x86.exe)
-* Microsoft Terminal Service Client 6.0 or later (needed if you use RDP with mstscax.dll and/or msrdp.ocx to be registered)
-
-### Download
-
-> :star: Starting Windows 11 you can use winget to install mRemoteNG. Just run `winget install -e --id mRemoteNG.mRemoteNG`
-
-mRemoteNG is available as a redistributable MSI package or as a portable ZIP package and can be downloaded from the following locations:
-* [GitHub](https://github.com/mRemoteNG/mRemoteNG/releases)
-* [Project Website](https://mremoteng.org/download)
-
-### Command line install
-
-The MSI package of mRemoteNG can be installed using the command line:
-
-`msiexec /i C:\Path\To\mRemoteNG-Installer.msi [/qn] [INSTALLDIR=value] [IGNOREPREREQUISITES=value] [/lv* <log path>]`
-
-**Note on privileges**: The MSI installer supports dual-mode installation. By default, it will prompt for an installation scope in the UI. When running silently (`/qn`), it skips the UI and installs **per-machine** by default (which requires Administrator privileges). If you want to silently install it for the current user without requiring Administrator privileges, you must set the `MSIINSTALLPERUSER=1 ALLUSERS=2` properties from the command line.
-
-| Argument/Property | Value | Description |
-|-|-|-|
-| /qn | `Silent Installation` | Will run the installer silently in the background. |
-| /lv* | `Silent Installation` | Will write a logfile to the specified location. (For paths that contain spaces, enclose the path in double quotes) |
-| INSTALLDIR | `folder path` | Allows you to set the installation directory from the command line. (For paths that contain spaces, enclose the path in double quotes) |
-| IGNOREPREREQUISITES | `0` or `1` | When set to `1`, the installer will not be halted if any prerequisite check is not met. Administrator privileges are still required for a per-machine installation. |
-| ALLUSERS | `2` | Enables single-package authoring so `MSIINSTALLPERUSER` can select the installation scope. |
-| MSIINSTALLPERUSER | `1` | With `ALLUSERS=2`, installs for the current user; omit this property for a per-machine installation. |
-
-## Manual Uninstall
-
-_If you are using the Portable version, simply deleting the folder that contains mRemoteNG should be sufficient. These uninstall instructions are only necessary for the normal binary .MSI installed version of mRemoteNG_
-
-* Delete the folder where mRemoteNG was installed. By default, this is:
-	`%PROGRAMFILES%\mRemoteNG` (for versions before 1.77 on a x64 Windows its `%programfiles(x86)%\mRemoteNG`)
-
-* Delete the mRemoteNG install entry from the following location. You may search for "mRemoteNG" in the DisplayName field:
-  * x86 Windows or mRemoteNG starting with v1.77: `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\`
-  * x64 Windows and mRemoteNG before 1.77: `HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\`
-* Remove the following registry key: `HKLM\SOFTWARE\mRemoteNG` (on x64 Windows with mRemoteNG before 1.77 it's `HKLM\SOFTWARE\WOW6432Node\mRemoteNG`)
-
-* (Optional) If you would also like to delete user data remove `%LOCALAPPDATA%\mRemoteNG`
-* (Optional) If you would also like to remove the connection configuration, delete `%APPDATA%\mRemoteNG`
-
-* (Optional) If no other software uses it, the "Microsoft Windows Desktop Runtime" may be uninstalled too.
-
-## Featured Projects
-
-* [PSmRemoteNG](https://github.com/realslacker/PSmRemoteNG) A module to create mRemoteNG connection files from PowerShell.
-* [mRemoteNGOpenVPN](https://github.com/T3los/mRemoteNGOpenVPN) A script that can be embedded as an external tool to control OpenVPN.
-* [mRemoteNG-Icons](https://github.com/bearlikelion/mRemoteNG-Icons) A collection of fancy icons to customize the connections
-
-## Contribute
-
-If you find mRemoteNG useful and would like to contribute, it would be greatly appreciated. When you contribute, you make it possible for the team to cover the costs of producing mRemoteNG.
-
-### Submit Code
-Check out the [Wiki page](https://github.com/mRemoteNG/mRemoteNG/wiki) on how to configure your development environment and submit a pull request.
-
-### Translate
-Check out the [Wiki page](https://github.com/mRemoteNG/mRemoteNG/wiki) on how to help make mRemoteNG a polyglot.
-
-</br>
-<p align="center">
-  <img alt="Developed with ReSharper" src="https://github.com/mRemoteNG/mRemoteNG/blob/mRemoteNGProjectFiles/icon_ReSharper.png">
-</p>
+The mRemoteNG name and logo are those of the mRemoteNG project. This fork uses them only to say what it is a port
+of.

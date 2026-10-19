@@ -180,14 +180,110 @@ public class SessionPlannerTests
         Assert.That((plan.Program, plan.Arguments), Is.EqualTo(("/usr/bin/ssh", (IReadOnlyList<string>)["-l", "deploy", "--", "web1"])));
     }
 
-    [TestCase(ProtocolType.RDP)]
-    [TestCase(ProtocolType.VNC)]
-    [TestCase(ProtocolType.HTTPS)]
-    [TestCase(ProtocolType.Rlogin)]
-    public void OtherProtocolsAreNotSupportedYet(ProtocolType protocol)
+    [TestCase(513, new[] { "--", "oldhost" })]
+    [TestCase(5513, new[] { "-p", "5513", "--", "oldhost" })]
+    public void RloginUsesTheRloginClient(int port, string[] arguments)
     {
-        Assert.That(SessionPlanner.Supports(protocol), Is.False);
-        Assert.Throws<SessionException>(() => _planner.Plan(new ConnectionInfo { Protocol = protocol, Hostname = "host" }));
+        SessionPlan plan = _planner.Plan(new ConnectionInfo { Protocol = ProtocolType.Rlogin, Hostname = "oldhost", Port = port });
+
+        Assert.That((plan.Program, plan.Arguments), Is.EqualTo(("/usr/bin/rlogin", (IReadOnlyList<string>)arguments)));
+        Assert.That(plan.Warnings, Is.Empty);
+    }
+
+    [Test]
+    public void WithoutAnRloginClientThisAppRelaysAndSaysWhatThatMeans()
+    {
+        SessionPlanner planner = new(new SessionPrograms { App = App, Find = program => program == "rlogin" ? null : Programs.Find(program) });
+        ConnectionInfo connection = new() { Protocol = ProtocolType.Rlogin, Hostname = "oldhost" };
+        connection.SetDefaultPort();
+
+        SessionPlan plan = planner.Plan(connection);
+
+        Assert.That((plan.Program, plan.Arguments), Is.EqualTo((App, (IReadOnlyList<string>)[RloginRelay.Argument, "oldhost", "513"])));
+        Assert.That(plan.ToString(), Is.EqualTo("rlogin oldhost:513"));
+        Assert.That(plan.Warnings, Is.EqualTo(new[] { UiText.NoRloginClient }));
+    }
+
+    [TestCase("")]
+    [TestCase("localhost")]
+    public void ALocalPowerShellOpensPwsh(string hostname)
+    {
+        SessionPlan plan = _planner.Plan(new ConnectionInfo { Protocol = ProtocolType.PowerShell, Hostname = hostname });
+
+        Assert.That((plan.Program, plan.Arguments), Is.EqualTo(("/usr/bin/pwsh", (IReadOnlyList<string>)["-NoLogo"])));
+    }
+
+    [Test]
+    public void RemotePowerShellEntersASessionOverSshWithTheDomainUser()
+    {
+        ConnectionInfo connection = new()
+        {
+            Protocol = ProtocolType.PowerShell, Hostname = "srv1", Username = "admin", Domain = "CORP", Password = "secret", Port = 2222
+        };
+
+        SessionPlan plan = _planner.Plan(connection);
+
+        Assert.That(plan.Program, Is.EqualTo("/usr/bin/pwsh"));
+        Assert.That(plan.Arguments, Is.EqualTo(new[]
+        {
+            "-NoLogo", "-NoExit", "-Command", @"Enter-PSSession -HostName 'srv1' -UserName 'CORP\admin' -Port 2222"
+        }));
+        Assert.That((plan.Password, plan.PasswordHost), Is.EqualTo(("secret", "srv1")));
+        Assert.That(plan.ToString(), Does.Not.Contain("secret"));
+        Assert.That(plan.Warnings, Is.Empty);
+    }
+
+    [Test]
+    public void TheWinRmPortIsLeftOutWithAnExplanation()
+    {
+        ConnectionInfo connection = new() { Protocol = ProtocolType.PowerShell, Hostname = "srv1" };
+        connection.SetDefaultPort();
+
+        SessionPlan plan = _planner.Plan(connection);
+
+        Assert.That(plan.Arguments[^1], Is.EqualTo("Enter-PSSession -HostName 'srv1'"));
+        Assert.That(plan.Warnings.Single(), Does.Contain("5985"));
+    }
+
+    [TestCase("ad'min")]
+    [TestCase("ad’min")]
+    [TestCase("-admin")]
+    [TestCase("ad min")]
+    public void APowerShellUserNameThatCouldEndTheQuotesIsRefused(string username)
+    {
+        ConnectionInfo connection = new() { Protocol = ProtocolType.PowerShell, Hostname = "srv1", Username = username };
+
+        Assert.Throws<SessionException>(() => _planner.Plan(connection));
+    }
+
+    [Test]
+    public void APowerShellHostNameThatCouldEndTheQuotesIsRefused()
+    {
+        ConnectionInfo connection = new() { Protocol = ProtocolType.PowerShell, Hostname = "srv'1" };
+
+        Assert.Throws<SessionException>(() => _planner.Plan(connection));
+    }
+
+    [Test]
+    public void WslIsRefusedWithAnExplanation()
+    {
+        ConnectionInfo connection = new() { Protocol = ProtocolType.WSL, Hostname = "Ubuntu" };
+
+        Assert.That(ProtocolRouting.KindOf(ProtocolType.WSL), Is.EqualTo(SessionKind.NotSupported));
+        Assert.That(Assert.Throws<SessionException>(() => _planner.Plan(connection))!.Message, Does.Contain("only on Windows"));
+    }
+
+    [TestCase(ProtocolType.SSH2, SessionKind.Terminal)]
+    [TestCase(ProtocolType.SSH1, SessionKind.Terminal)]
+    [TestCase(ProtocolType.Rlogin, SessionKind.Terminal)]
+    [TestCase(ProtocolType.PowerShell, SessionKind.Terminal)]
+    [TestCase(ProtocolType.SFTP, SessionKind.FileTransfer)]
+    [TestCase(ProtocolType.HTTPS, SessionKind.Launch)]
+    [TestCase(ProtocolType.AnyDesk, SessionKind.Launch)]
+    [TestCase(ProtocolType.WSL, SessionKind.NotSupported)]
+    public void EachProtocolOpensInItsKindOfSession(ProtocolType protocol, SessionKind kind)
+    {
+        Assert.That(ProtocolRouting.KindOf(protocol), Is.EqualTo(kind));
     }
 
     [Test]

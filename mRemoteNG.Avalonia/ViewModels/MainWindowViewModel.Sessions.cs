@@ -12,31 +12,65 @@ public sealed partial class MainWindowViewModel
 {
     public SessionsViewModel Sessions { get; }
 
+    private readonly ProgramLauncher _programs;
+
     private bool CanConnect => SelectedNode is { IsFolder: false };
 
     // "Open SFTP" on an SSH connection opens its host's files.
     private bool CanOpenFileTransfer => SelectedNode is { IsFolder: false, Connection.Protocol: ProtocolType.SSH2 or ProtocolType.SFTP };
 
-    /// <summary>Opens the selected connection in a new tab: a terminal, or a file transfer for FTP and SFTP.</summary>
+    /// <summary>
+    /// Opens the selected connection: in a new tab (a terminal, or a file transfer for FTP and SFTP), or in the
+    /// program that shows it in its own window (the web browser, AnyDesk).
+    /// </summary>
     [RelayCommand(CanExecute = nameof(CanConnect))]
     private async Task ConnectAsync()
     {
         ConnectionInfo connection = SelectedNode!.Connection;
-        if (FileTransferCompatibility.IsFileTransfer(connection.Protocol))
+        switch (ProtocolRouting.KindOf(connection.Protocol))
         {
-            Sessions.OpenFileTransfer(connection);
+            case SessionKind.Terminal:
+                Sessions.Open(connection);
+                break;
+            case SessionKind.FileTransfer:
+                Sessions.OpenFileTransfer(connection);
+                break;
+            case SessionKind.Launch:
+                await LaunchAsync(connection);
+                break;
+            default:
+                await ReportConnectErrorAsync(connection, ProtocolRouting.NotSupportedReason(connection.Protocol));
+                break;
+        }
+    }
+
+    private async Task LaunchAsync(ConnectionInfo connection)
+    {
+        SessionPlan plan;
+        Task<int> exited;
+        try
+        {
+            (plan, exited) = _programs.Launch(connection);
+        }
+        catch (SessionException ex)
+        {
+            await ReportConnectErrorAsync(connection, ex.Message);
             return;
         }
 
-        if (!SessionPlanner.Supports(connection.Protocol))
+        CoreRuntime.MessageCollector.AddMessage(MessageClass.InformationMsg, UiText.Opening(connection.Name, plan.ToString()));
+        int exitCode = await exited;
+        if (exitCode != 0)
         {
-            string message = UiText.ProtocolNotSupported(connection.Protocol.ToString());
-            CoreRuntime.MessageCollector.AddMessage(MessageClass.ErrorMsg, $"{connection.Name}: {message}");
-            await _dialogs.ShowErrorAsync(UiText.Connect, message);
-            return;
+            CoreRuntime.MessageCollector.AddMessage(MessageClass.WarningMsg,
+                $"{connection.Name}: {UiText.ProgramEnded(Path.GetFileName(plan.Program), exitCode)}");
         }
+    }
 
-        Sessions.Open(connection);
+    private async Task ReportConnectErrorAsync(ConnectionInfo connection, string message)
+    {
+        CoreRuntime.MessageCollector.AddMessage(MessageClass.ErrorMsg, $"{connection.Name}: {message}");
+        await _dialogs.ShowErrorAsync(UiText.Connect, message);
     }
 
     [RelayCommand(CanExecute = nameof(CanOpenFileTransfer))]

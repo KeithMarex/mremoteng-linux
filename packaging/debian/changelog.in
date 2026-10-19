@@ -1,7 +1,8 @@
 mremoteng (0.1.0) unstable; urgency=medium
 
-  * First release of mRemoteNG for Linux: connection files shared with
-    Windows mRemoteNG 1.77 and later; SSH, Telnet, raw TCP and local
-    terminal sessions; SFTP and FTP/FTPS file transfer.
+  * First beta release of mRemoteNG for Linux, an unofficial port of
+    mRemoteNG: connection files shared with Windows mRemoteNG 1.77 and
+    later; SSH, Telnet, raw TCP and local terminal sessions; SFTP and
+    FTP/FTPS file transfer; a look that follows mRemoteNG for Windows.
 
- -- @MAINTAINER@  Fri, 16 Oct 2026 12:00:00 +0200
+ -- @MAINTAINER@  Mon, 19 Oct 2026 12:00:00 +0200

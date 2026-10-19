@@ -11,11 +11,13 @@ internal static class Program
     [STAThread]
     public static int Main(string[] args)
     {
-        // Started by a session rather than by the user: as ssh's askpass helper, or as a Raw session's relay.
+        // Started by a session rather than by the user: as ssh's askpass helper, or as a Raw or Rlogin session's relay.
         if (AskpassClient.IsRequested(Environment.GetEnvironmentVariable))
             return AskpassClient.Run(args, Environment.GetEnvironmentVariable);
         if (RawTcpRelay.IsRequested(args))
             return RawTcpRelay.Run(args);
+        if (RloginRelay.IsRequested(args))
+            return RloginRelay.Run(args);
 
         if (args.Contains("--version"))
         {

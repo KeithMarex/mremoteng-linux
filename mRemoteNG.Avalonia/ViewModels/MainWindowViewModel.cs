@@ -35,7 +35,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
     private bool _changingFilePassword;
 
     /// <param name="dispatch">Queues an action on the UI thread (after the current one completes).</param>
-    /// <param name="launcher">Prepares sessions; by default with ssh and telnet from the PATH.</param>
+    /// <param name="launcher">Prepares sessions; by default with the programs (ssh, telnet, …) on the PATH.</param>
     public MainWindowViewModel(AppSettings settings, AppSettingsStore settingsStore, AppPaths paths,
                                IDialogService dialogs, Action<Action> dispatch, SessionLauncher? launcher = null)
     {
@@ -46,7 +46,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
         _dispatch = dispatch;
         _files = new ConnectionFileService(settings);
         Messages = new MessagesViewModel(CoreRuntime.MessageCollector, dispatch);
-        Sessions = CreateSessions(launcher ?? new SessionLauncher(new SessionPrograms(), paths.RuntimeDirectory));
+        launcher ??= new SessionLauncher(new SessionPrograms(), paths.RuntimeDirectory);
+        Sessions = CreateSessions(launcher);
+        _programs = new ProgramLauncher(launcher.Programs);
         PropertyPanel.PropertyEdited += OnPropertyEdited;
         PropertyPanel.IsDescriptionVisible = settings.ShowPropertyDescription;
     }

@@ -30,11 +30,11 @@
   </provides>
   <content_rating type="oars-1.1" />
   <releases>
-    <release version="0.1.0" date="2026-10-16">
+    <release version="0.1.0" date="2026-10-19" type="development">
       <description>
         <p>
-          First release: connection files shared with Windows mRemoteNG 1.77 and later; SSH, Telnet, raw TCP and
-          local terminal sessions; SFTP and FTP/FTPS file transfer.
+          First beta release: connection files shared with Windows mRemoteNG 1.77 and later; SSH, Telnet, raw TCP
+          and local terminal sessions; SFTP and FTP/FTPS file transfer; a look that follows mRemoteNG for Windows.
         </p>
       </description>
     </release>
