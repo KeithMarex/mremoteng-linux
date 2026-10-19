@@ -46,7 +46,8 @@ public sealed class FileTransferConnector(SessionPrograms programs)
         string user = connection.Username.Trim();
         if (user.Any(char.IsControl))
             throw new SessionException(UiText.UnsafeUsername);
-        if (connection.Password.Any(c => c is '\r' or '\n'))
+        // A new connection's password is null until one is set.
+        if ((connection.Password ?? string.Empty).Any(c => c is '\r' or '\n'))
             throw new SessionException(UiText.UnsafePassword);
 
         FtpOptions options = new()
