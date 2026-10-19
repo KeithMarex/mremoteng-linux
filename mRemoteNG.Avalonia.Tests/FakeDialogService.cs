@@ -38,6 +38,15 @@ internal sealed class FakeDialogService : IDialogService
         return Task.FromResult(Secrets.Count > 0 && Secrets.Dequeue() is { } secret ? secret.ConvertToSecureString() : null);
     }
 
+    public Queue<LoginCredentials?> Logins { get; } = new();
+    public List<(string Prompt, LoginCredentials Initial)> LoginQuestions { get; } = [];
+
+    public Task<LoginCredentials?> AskLoginAsync(string prompt, LoginCredentials initial)
+    {
+        LoginQuestions.Add((prompt, initial));
+        return Task.FromResult(Logins.Count > 0 ? Logins.Dequeue() : null);
+    }
+
     public TrustDecision TrustAnswer { get; set; } = TrustDecision.Reject;
     public List<string> TrustQuestions { get; } = [];
 

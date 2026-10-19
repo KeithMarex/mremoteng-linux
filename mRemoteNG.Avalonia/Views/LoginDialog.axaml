@@ -1,0 +1,23 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="using:mRemoteNG.Avalonia"
+        x:Class="mRemoteNG.Avalonia.Views.LoginDialog"
+        Title="{x:Static app:UiText.Login}"
+        Width="400" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <StackPanel Margin="16" Spacing="10">
+        <TextBlock x:Name="PromptText" TextWrapping="Wrap" />
+        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="10">
+            <Label Content="{x:Static app:UiText.Username}" Target="UserBox" VerticalAlignment="Center" />
+            <TextBox x:Name="UserBox" Grid.Column="1" />
+            <Label Grid.Row="1" Content="{x:Static app:UiText.Domain}" Target="DomainBox" VerticalAlignment="Center" />
+            <TextBox x:Name="DomainBox" Grid.Row="1" Grid.Column="1" />
+            <Label Grid.Row="2" Content="{x:Static app:UiText.Password}" Target="PasswordBox" VerticalAlignment="Center" />
+            <TextBox x:Name="PasswordBox" Grid.Row="2" Grid.Column="1" PasswordChar="•" />
+        </Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button Content="{x:Static app:UiText.Ok}" IsDefault="True" Click="OnOkClick" MinWidth="80" />
+            <Button Content="{x:Static app:UiText.Cancel}" IsCancel="True" Click="OnCancelClick" MinWidth="80" />
+        </StackPanel>
+    </StackPanel>
+</Window>

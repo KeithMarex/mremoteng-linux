@@ -304,11 +304,11 @@ public class FileTransferConnectorTests
     private readonly FileTransferConnector _connector = new(new SessionPrograms { Find = _ => null });
 
     [Test]
-    public void AnFtpPasswordWithALineBreakCannotAddCommands()
+    public async Task AnFtpPasswordWithALineBreakCannotAddCommands()
     {
         ConnectionInfo connection = new() { Protocol = ProtocolType.FTP, Hostname = "ftp.example", Username = "u", Password = "pw\r\nDELE x" };
 
-        Assert.ThrowsAsync<SessionException>(() => _connector.PrepareAsync(connection, CancellationToken.None));
+        await Assert.ThrowsAsync<SessionException>(() => _connector.PrepareAsync(connection, CancellationToken.None));
     }
 
     [Test]
@@ -323,11 +323,11 @@ public class FileTransferConnectorTests
     }
 
     [Test]
-    public void AnSftpHostThatCouldBeAnOptionIsRefused()
+    public async Task AnSftpHostThatCouldBeAnOptionIsRefused()
     {
         ConnectionInfo connection = new() { Protocol = ProtocolType.SFTP, Hostname = "-oProxyCommand=x" };
 
-        Assert.ThrowsAsync<SessionException>(() => _connector.PrepareAsync(connection, CancellationToken.None));
+        await Assert.ThrowsAsync<SessionException>(() => _connector.PrepareAsync(connection, CancellationToken.None));
     }
 }
 

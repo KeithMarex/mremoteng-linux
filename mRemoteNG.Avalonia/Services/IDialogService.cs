@@ -3,6 +3,9 @@ using mRemoteNG.FileTransfer;
 
 namespace mRemoteNG.Avalonia.Services;
 
+/// <summary>A login: what a connection stores, or what the user typed when asked.</summary>
+public sealed record LoginCredentials(string Username, string Domain, string Password);
+
 /// <summary>The dialogs the main window needs; an interface so view models can be tested without a UI.</summary>
 public interface IDialogService
 {
@@ -21,6 +24,9 @@ public interface IDialogService
 
     /// <summary>Asks for a secret, such as a server password or a key passphrase; null when cancelled. Callable from any thread.</summary>
     Task<SecureString?> AskSecretAsync(string prompt);
+
+    /// <summary>Asks for a user name, domain and password, starting from the given ones; null when cancelled.</summary>
+    Task<LoginCredentials?> AskLoginAsync(string prompt, LoginCredentials initial);
 
     Task<bool> ConfirmAsync(string title, string message);
 

@@ -278,6 +278,7 @@ public class SessionPlannerTests
     [TestCase(ProtocolType.Rlogin, SessionKind.Terminal)]
     [TestCase(ProtocolType.PowerShell, SessionKind.Terminal)]
     [TestCase(ProtocolType.SFTP, SessionKind.FileTransfer)]
+    [TestCase(ProtocolType.RDP, SessionKind.Rdp)]
     [TestCase(ProtocolType.HTTPS, SessionKind.Launch)]
     [TestCase(ProtocolType.AnyDesk, SessionKind.Launch)]
     [TestCase(ProtocolType.WSL, SessionKind.NotSupported)]

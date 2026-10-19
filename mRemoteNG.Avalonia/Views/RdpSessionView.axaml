@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:app="using:mRemoteNG.Avalonia"
+             xmlns:vm="using:mRemoteNG.Avalonia.ViewModels"
+             xmlns:views="using:mRemoteNG.Avalonia.Views"
+             x:Class="mRemoteNG.Avalonia.Views.RdpSessionView"
+             x:DataType="vm:RdpSessionViewModel">
+    <!-- The embedded window always covers its area, so the status goes above it rather than on top of it. -->
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="8,4" IsVisible="{Binding ShowsStatus}">
+            <Button DockPanel.Dock="Right" Content="{x:Static app:UiText.Reconnect}" Command="{Binding ReconnectCommand}"
+                    IsVisible="{Binding HasEnded}" Margin="8,0,0,0" />
+            <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" TextWrapping="Wrap" />
+        </DockPanel>
+        <views:X11EmbedHost x:Name="Host" />
+    </DockPanel>
+</UserControl>

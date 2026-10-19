@@ -11,6 +11,9 @@ public enum SessionKind
     /// <summary>A file transfer tab (FTP, SFTP).</summary>
     FileTransfer,
 
+    /// <summary>A remote desktop tab, shown by xfreerdp.</summary>
+    Rdp,
+
     /// <summary>A program that opens its own window, such as the web browser; there is no tab.</summary>
     Launch,
 
@@ -27,6 +30,7 @@ public static class ProtocolRouting
         ProtocolType.SSH1 or ProtocolType.SSH2 or ProtocolType.Telnet or ProtocolType.Rlogin or ProtocolType.RAW
             or ProtocolType.Terminal or ProtocolType.PowerShell => SessionKind.Terminal,
         ProtocolType.FTP or ProtocolType.SFTP => SessionKind.FileTransfer,
+        ProtocolType.RDP => SessionKind.Rdp,
         ProtocolType.HTTP or ProtocolType.HTTPS or ProtocolType.AnyDesk => SessionKind.Launch,
         _ => SessionKind.NotSupported
     };

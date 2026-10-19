@@ -7,13 +7,14 @@ Section: net
 Priority: optional
 Homepage: https://github.com/KeithMarex/mremoteng-linux
 Depends: openssh-client, libc6 (>= 2.34), libgcc-s1 (>= 3.0), libstdc++6 (>= 6), libfontconfig1 (>= 2.12.6), libicu76 | libicu74 | libicu72, libssl3t64 | libssl3, libx11-6, libxcursor1, libxext6, libxfixes3, libxi6, libxrandr2, libice6, libsm6
-Recommends: inetutils-telnet | telnet, xdg-utils
+Recommends: inetutils-telnet | telnet, xdg-utils, freerdp3-x11
 Suggests: rsh-redone-client
 Description: remote connections manager (community Linux port of mRemoteNG)
  mRemoteNG for Linux keeps remote connections in a tree and opens them in
  tabs: SSH, Telnet, rlogin, raw TCP, PowerShell and local terminal sessions,
- and SFTP and FTP/FTPS file transfers. Web addresses open in the browser and
- AnyDesk connections in the AnyDesk client.
+ remote desktops (RDP, through FreeRDP), and SFTP and FTP/FTPS file
+ transfers. Web addresses open in the browser and AnyDesk connections in the
+ AnyDesk client.
  .
  Its connection files (confCons.xml) are those of mRemoteNG for Windows, so
  a team can share one file, including its encrypted passwords. SSH uses
