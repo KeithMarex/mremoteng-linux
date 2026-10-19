@@ -71,7 +71,8 @@ public static class UiText
     public const string ConfirmPassword = "Confirm password";
     public const string PasswordsDoNotMatch = "The passwords do not match.";
     public const string NoSessionsYet =
-        "Double-click a connection to open it here. SSH, Telnet, Raw, local Terminal, SFTP and FTP connections are supported.";
+        "Double-click a connection to open it here. SSH, Telnet, Rlogin, Raw, local Terminal, PowerShell, SFTP and FTP " +
+        "connections open in a tab; HTTP, HTTPS and AnyDesk open in their own window.";
     public const string Disconnected = "Disconnected.";
     public const string NoFavorites = "No favorites yet: set Favorite to Yes in a connection's properties.";
     public const string Categorized = "Categorized";
@@ -117,7 +118,14 @@ public static class UiText
     public const string PuttySessionIgnored = "The PuTTY session name is not a valid ssh_config host name and was left out.";
     public const string OpeningCommandNotSupported = "The opening command is not sent yet by mRemoteNG for Linux.";
     public const string StoredPasswordUnavailable = "The stored password cannot be handed to ssh; type it in the terminal.";
-    public const string NeedsAppExecutable = "Raw connections need mRemoteNG to run from its own executable, not through \"dotnet\".";
+    public const string WslWindowsOnly = "WSL connections open a Linux distribution on a Windows computer; they exist only on Windows.";
+    public const string ServerClosedConnection = "The server closed the connection.";
+    public const string NoRloginClient =
+        "No rlogin client is installed, so mRemoteNG connects itself. Most rlogin servers only accept the rlogin client, " +
+        "which can use a privileged port; install the rsh-redone-client package where your distribution has it.";
+    public const string InvalidWebAddress = "The host name does not make a valid http or https address.";
+    public const string InvalidAnyDeskId =
+        "The host name is not a valid AnyDesk ID: only letters, digits, '@', '-', '_' and '.' are allowed, and it may not start with '-'.";
     public const string UnsavedChangesTitle = "Unsaved changes";
     public const string UnsavedChangesMessage = "The connection file has unsaved changes. Close without saving?";
 
@@ -138,6 +146,15 @@ public static class UiText
     public static string CouldNotConnect(string reason) => $"{Language.ConnectionOpenFailed} {reason}";
     public static string CouldNotConnectTo(string host, int port, string reason) => $"Could not connect to {host}:{port}: {reason}";
     public static string RawConnection(string host, string port) => $"raw TCP {host}:{port}";
+    public static string RloginConnection(string host, string port) => $"rlogin {host}:{port}";
+    public static string NeedsAppExecutable(string protocol) =>
+        $"{protocol} connections need mRemoteNG to run from its own executable, not through \"dotnet\".";
+    public static string PowerShellUsesSsh(int port) =>
+        $"PowerShell on Linux connects over SSH (port 22), not WinRM; port {port} is not used. The server needs PowerShell's SSH subsystem.";
+    public static string ConnectionLost(string reason) => $"The connection was lost: {reason}";
+    public static string CouldNotStart(string program, string reason) => $"Could not start {program}: {reason}";
+    public static string Opening(string name, string commandLine) => $"Opening {name}: {commandLine}";
+    public static string ProgramEnded(string program, int exitCode) => $"{program} ended with exit code {exitCode}.";
     public static string ConnectedTo(string server) => $"Connected to {server}.";
     public static string CouldNotList(string path, string reason) => $"Could not open {path}: {reason}";
     public static string ConfirmOverwrite(int count, string directory) => count == 1

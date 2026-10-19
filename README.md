@@ -80,8 +80,13 @@ the mRemoteNG project, not to this fork.
   - A stored password is handed to `ssh` through `SSH_ASKPASS`. It never appears on the command line or in the
     environment.
 - **Telnet** runs the system's `telnet`.
+- **Rlogin** runs the system's `rlogin` (package `rsh-redone-client`). Without it the app connects itself, but most
+  rlogin servers only accept the `rlogin` client, which can use a privileged port.
 - **Raw** opens a TCP connection.
 - **Terminal** opens a local shell.
+- **PowerShell** runs `pwsh`: a local shell, or `Enter-PSSession` to the host. On Linux, PowerShell remoting runs
+  over SSH, not WinRM, so the server needs PowerShell's SSH subsystem. A stored password is handed over the same way
+  as for SSH.
 - Tabs show the connection's icon and tab colour. Copy with Ctrl+Shift+C, paste with Ctrl+Shift+V, and close with
   Ctrl+Shift+W.
 - A session that drops keeps its tab, with a Reconnect button.
@@ -98,6 +103,11 @@ These two protocols are new in this fork; Windows mRemoteNG does not have them.
 - Host key and certificate checks, with "trust and remember".
 - "Open SFTP" on SSH2 connections, from the tree's right-click menu.
 
+**Programs with their own window**
+
+- **HTTP and HTTPS** open the address in your web browser (`xdg-open`).
+- **AnyDesk** starts the AnyDesk client with the connection's ID, and hands it the stored password.
+
 **Options**
 
 - The connection file format version: 2.7, 2.8 or 2.9.
@@ -107,8 +117,9 @@ These two protocols are new in this fork; Windows mRemoteNG does not have them.
 
 ## Not supported yet
 
-- **Graphical and web protocols:** RDP, VNC, HTTP/HTTPS, rlogin, PowerShell remoting, AnyDesk and external tools.
-  These connections stay in the file and can be edited, but opening one shows an error.
+- **RDP, VNC, ARD and external tools.** These connections stay in the file and can be edited, but opening one shows
+  an error.
+- **WSL** only exists on Windows; opening such a connection says so.
 - **SSH1** is refused, because OpenSSH no longer supports it.
 - **PuTTY-specific SSH options** are dropped, and the connection's opening command is not sent yet.
 - **Telnet** does not log in with the stored user name and password.
@@ -129,7 +140,8 @@ These two protocols are new in this fork; Windows mRemoteNG does not have them.
 3. Start **mRemoteNG** from the applications menu, or run `mremoteng`.
 
 The package contains everything .NET needs (it is self-contained), so you do not have to install .NET. It
-depends on `openssh-client` and recommends `inetutils-telnet`.
+depends on `openssh-client`, recommends `inetutils-telnet` and `xdg-utils`, and suggests `rsh-redone-client` (for
+rlogin). PowerShell (`pwsh`) and AnyDesk come from Microsoft and AnyDesk.
 
 To remove the app, run `sudo apt remove mremoteng`. Your connection files and settings are left in place.
 

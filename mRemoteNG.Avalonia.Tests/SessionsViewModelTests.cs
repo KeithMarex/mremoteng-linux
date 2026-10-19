@@ -165,16 +165,30 @@ public class MainWindowSessionTests
     private TempDirectory _directory = null!;
     private FakeDialogService _dialogs = null!;
     private MainWindowViewModel _viewModel = null!;
+    private readonly List<SessionPlan> _launched = [];
+    private int _launchExitCode;
 
     [SetUp]
     public async Task Setup()
     {
+        _launched.Clear();
+        _launchExitCode = 0;
+        CoreRuntime.MessageCollector.ClearMessages();
         _directory = new TempDirectory();
         AppPaths paths = new(_directory.File("config"), _directory.File("data"));
         AppSettings settings = new();
         CoreRuntime.Settings = settings.Core;
         _dialogs = new FakeDialogService();
-        SessionLauncher launcher = new(new SessionPrograms { Find = program => "/usr/bin/" + program }, _directory.File("run"));
+        SessionPrograms programs = new()
+        {
+            Find = program => "/usr/bin/" + program,
+            StartDetached = plan =>
+            {
+                _launched.Add(plan);
+                return Task.FromResult(_launchExitCode);
+            }
+        };
+        SessionLauncher launcher = new(programs, _directory.File("run"));
         _viewModel = new MainWindowViewModel(settings, new AppSettingsStore(paths.SettingsFile), paths, _dialogs, action => action(), launcher);
         await _viewModel.InitializeAsync();
     }
@@ -201,12 +215,57 @@ public class MainWindowSessionTests
     public async Task AProtocolThisAppCannotOpenIsReportedWithoutATab()
     {
         _viewModel.AddConnectionCommand.Execute(null);
-        _viewModel.SelectedNode!.Connection.Protocol = ProtocolType.RDP;
+        _viewModel.SelectedNode!.Connection.Protocol = ProtocolType.WSL;
 
         await _viewModel.ConnectCommand.ExecuteAsync(null);
 
         Assert.That(_viewModel.Sessions.Items, Is.Empty);
-        Assert.That(_dialogs.Errors.Single(), Does.Contain("RDP"));
+        Assert.That(_dialogs.Errors.Single(), Does.EndWith(UiText.WslWindowsOnly));
+    }
+
+    [Test]
+    public async Task AWebConnectionOpensInTheBrowserWithoutATab()
+    {
+        _viewModel.AddConnectionCommand.Execute(null);
+        ConnectionInfo connection = _viewModel.SelectedNode!.Connection;
+        connection.Protocol = ProtocolType.HTTPS;
+        connection.Hostname = "intranet";
+        connection.SetDefaultPort();
+
+        await _viewModel.ConnectCommand.ExecuteAsync(null);
+
+        Assert.That(_viewModel.Sessions.Items, Is.Empty);
+        Assert.That(_launched.Single().Arguments, Is.EqualTo(new[] { "https://intranet/" }));
+        Assert.That(CoreRuntime.MessageCollector.Messages.Select(m => m.Text), Has.Some.Contains("https://intranet/"));
+        Assert.That(_dialogs.Errors, Is.Empty);
+    }
+
+    [Test]
+    public async Task AProgramThatFailsIsReportedInTheNotifications()
+    {
+        _viewModel.AddConnectionCommand.Execute(null);
+        ConnectionInfo connection = _viewModel.SelectedNode!.Connection;
+        connection.Protocol = ProtocolType.AnyDesk;
+        connection.Hostname = "123456789";
+        _launchExitCode = 3;
+
+        await _viewModel.ConnectCommand.ExecuteAsync(null);
+
+        Assert.That(CoreRuntime.MessageCollector.Messages.Select(m => m.Text), Has.Some.Contains("exit code 3"));
+    }
+
+    [Test]
+    public async Task AnInvalidWebAddressIsReportedWithoutStartingTheBrowser()
+    {
+        _viewModel.AddConnectionCommand.Execute(null);
+        ConnectionInfo connection = _viewModel.SelectedNode!.Connection;
+        connection.Protocol = ProtocolType.HTTP;
+        connection.Hostname = "file:///etc/passwd";
+
+        await _viewModel.ConnectCommand.ExecuteAsync(null);
+
+        Assert.That(_launched, Is.Empty);
+        Assert.That(_dialogs.Errors.Single(), Does.EndWith(UiText.InvalidWebAddress));
     }
 
     [Test]
