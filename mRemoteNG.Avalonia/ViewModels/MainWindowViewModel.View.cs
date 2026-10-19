@@ -1,6 +1,6 @@
 namespace mRemoteNG.Avalonia.ViewModels;
 
-/// <summary>The View menu: which panels show. Both are hidden until the user shows them, and the choice is remembered.</summary>
+/// <summary>The View menu: which panels show, and the host status. All are off until the user turns them on, and the choice is remembered.</summary>
 public sealed partial class MainWindowViewModel
 {
     public bool IsNotificationsVisible
@@ -26,6 +26,21 @@ public sealed partial class MainWindowViewModel
                 return;
             _settings.ShowPropertyDescription = value;
             PropertyPanel.IsDescriptionVisible = value;
+            OnPropertyChanged();
+            SaveSettings();
+        }
+    }
+
+    /// <summary>Whether the connection tree shows which servers answer (<see cref="HostStatusChecks"/>).</summary>
+    public bool IsHostStatusVisible
+    {
+        get => _settings.ShowHostStatus;
+        set
+        {
+            if (value == _settings.ShowHostStatus)
+                return;
+            _settings.ShowHostStatus = value;
+            ShowHostStatus();
             OnPropertyChanged();
             SaveSettings();
         }

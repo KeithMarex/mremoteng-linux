@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
 using CommunityToolkit.Mvvm.Input;
@@ -9,9 +10,12 @@ using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.Avalonia.ViewModels;
 
-// Wake-on-LAN.
+// Wake-on-LAN and the host status.
 public partial class MainWindowViewModel
 {
+    /// <summary>Checks which servers answer while View > Host Status is on.</summary>
+    internal HostStatusMonitor HostStatusChecks { get; } = new();
+
     /// <summary>Where Wake-on-LAN packets go: the broadcast addresses, or a local port in tests.</summary>
     internal Func<IEnumerable<IPEndPoint>> WakeOnLanTargets { get; set; } = WakeOnLan.BroadcastTargets;
 
@@ -50,4 +54,24 @@ public partial class MainWindowViewModel
     }
 
     private static bool HasMacAddress(ConnectionInfo connection) => !string.IsNullOrWhiteSpace(connection.MacAddress);
+
+    // Checks the tree's servers while the user wants to see it and a file is open; again from the start for a new file.
+    private void ShowHostStatus()
+    {
+        if (_settings.ShowHostStatus && _model is not null)
+            HostStatusChecks.Start(AllNodes);
+        else
+            HostStatusChecks.Stop();
+    }
+
+    // A connection that now points somewhere else is checked at once, not at the next round.
+    private void CheckHostAgain(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(ConnectionInfo.Hostname) or nameof(ConnectionInfo.Port) or nameof(ConnectionInfo.Protocol)
+                or nameof(ConnectionInfo.SSHTunnelConnectionName) &&
+            sender is ConnectionInfo connection && FindNode(connection) is { } node)
+        {
+            _ = HostStatusChecks.CheckAsync(node);
+        }
+    }
 }
