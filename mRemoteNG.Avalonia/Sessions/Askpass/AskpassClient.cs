@@ -14,6 +14,9 @@ internal static class AskpassClient
 {
     private static readonly TimeSpan ServerTimeout = TimeSpan.FromSeconds(10);
 
+    // The server may ask the user in a dialog (for an SSH tunnel), who takes the time they need.
+    private static readonly TimeSpan AnswerTimeout = TimeSpan.FromMinutes(15);
+
     /// <summary>Whether this process was started by ssh as the askpass helper of a session.</summary>
     public static bool IsRequested(Func<string, string?> getEnvironmentVariable) =>
         !string.IsNullOrEmpty(getEnvironmentVariable(AskpassServer.SocketVariable));
@@ -33,9 +36,8 @@ internal static class AskpassClient
                 return TerminalPrompt.Ask(prompt, echo: true)?.Trim().Equals("yes", StringComparison.OrdinalIgnoreCase) == true ? 0 : 1;
         }
 
-        string? answer = AskServer(getEnvironmentVariable, prompt) is { AskInTerminal: false, Password: { } password }
-            ? password
-            : TerminalPrompt.Ask(prompt, echo: IsQuestion(prompt));
+        AskpassReply? reply = AskServer(getEnvironmentVariable, prompt);
+        string? answer = reply is { AskInTerminal: false } ? reply.Password : TerminalPrompt.Ask(prompt, echo: IsQuestion(prompt));
         if (answer is null)
             return 1;
 
@@ -59,7 +61,8 @@ internal static class AskpassClient
             using NetworkStream stream = new(socket);
             AskpassRequest request = new(getEnvironmentVariable(AskpassServer.TokenVariable), prompt);
             AskpassProtocol.WriteLineAsync(stream, JsonSerializer.Serialize(request), timeout.Token).GetAwaiter().GetResult();
-            string? line = AskpassProtocol.ReadLineAsync(stream, timeout.Token).GetAwaiter().GetResult();
+            using CancellationTokenSource answerTimeout = new(AnswerTimeout);
+            string? line = AskpassProtocol.ReadLineAsync(stream, answerTimeout.Token).GetAwaiter().GetResult();
             return line is null ? null : JsonSerializer.Deserialize<AskpassReply>(line);
         }
         catch (Exception ex) when (ex is IOException or SocketException or JsonException or OperationCanceledException

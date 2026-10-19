@@ -74,10 +74,13 @@ public sealed class FileTransferConnector(SessionPrograms programs)
         // Without OpenSSH: the connection's own values and OpenSSH's defaults.
         string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         string user = connection.Username.Trim();
+        TunnelledServer? server = TunnelLease.ServerOf(connection);
         return new SshHostConfig
         {
             HostName = SessionPlanner.Host(connection),
             Port = SessionPlanner.Port(connection),
+            // Through an SSH tunnel, as OpenSshCommand tells ssh: known_hosts names the server, not the tunnel's end.
+            HostKeyAlias = server is null ? null : server.Port == 22 ? server.Host : $"[{server.Host}]:{server.Port}",
             User = user.Length > 0 ? user : Environment.UserName,
             IdentityFiles = new[] { "id_ed25519", "id_ecdsa", "id_rsa" }.Select(name => Path.Combine(home, ".ssh", name)).ToList(),
             UserKnownHostsFiles = [Path.Combine(home, ".ssh", "known_hosts")],

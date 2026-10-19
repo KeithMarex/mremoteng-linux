@@ -31,6 +31,15 @@ public sealed record SftpOptions
     /// <summary>The name known_hosts uses for the host, when it is not <see cref="Host"/>.</summary>
     public string? HostKeyAlias { get; init; }
 
+    /// <summary>
+    /// The port known_hosts names the host with. As in ssh, a HostKeyAlias stands for the host and port both, so
+    /// the alias is looked up as it is, whatever port is connected to (an SSH tunnel's local end, for instance).
+    /// </summary>
+    public int KnownHostsPort => HostKeyAlias is null ? Port : 22;
+
+    /// <summary>The server as the user knows it: its HostKeyAlias (an SSH tunnel's server, for instance), or host and port.</summary>
+    public string ServerName => HostKeyAlias ?? (Port == 22 ? Host : $"{Host}:{Port}");
+
     public TimeSpan Timeout { get; init; } = TimeSpan.FromSeconds(30);
 
     public static SftpOptions From(SshHostConfig config, string? password) => new()
@@ -58,7 +67,7 @@ public sealed class SftpFileSystem : IRemoteFileSystem
     private SftpFileSystem(SftpClient client, SftpOptions options)
     {
         _client = client;
-        Description = options.Port == 22 ? $"sftp://{options.User}@{options.Host}" : $"sftp://{options.User}@{options.Host}:{options.Port}";
+        Description = $"sftp://{options.User}@{options.ServerName}";
     }
 
     public string Description { get; }
@@ -110,7 +119,7 @@ public sealed class SftpFileSystem : IRemoteFileSystem
                     continue;
                 }
 
-                password = prompts.AskPassword($"{options.User}@{options.Host}'s password:") ?? throw new OperationCanceledException();
+                password = prompts.AskPassword($"{options.User}@{options.ServerName}'s password:") ?? throw new OperationCanceledException();
                 passwordTyped = true;
                 passwordAttempts++;
             }
@@ -231,7 +240,7 @@ public sealed class SftpFileSystem : IRemoteFileSystem
         Renci.SshNet.ConnectionInfo info = new(options.Host, options.Port, options.User, [.. methods]) { Timeout = options.Timeout };
 
         // Like ssh, prefer the key types known_hosts already has for the host, so a known host is not asked about again.
-        IReadOnlyList<string> knownTypes = knownHosts.KeyTypesFor(options.HostKeyAlias ?? options.Host, options.Port);
+        IReadOnlyList<string> knownTypes = knownHosts.KeyTypesFor(options.HostKeyAlias ?? options.Host, options.KnownHostsPort);
         int position = 0;
         foreach (string algorithm in info.HostKeyAlgorithms.Keys.ToList())
         {
@@ -303,7 +312,7 @@ public sealed class SftpFileSystem : IRemoteFileSystem
                 return true;
 
             string host = options.HostKeyAlias ?? options.Host;
-            HostKeyCheck check = KnownHosts.Check(host, options.Port, key);
+            HostKeyCheck check = KnownHosts.Check(host, options.KnownHostsPort, key);
             switch (check.Status)
             {
                 case HostKeyStatus.Trusted:
@@ -314,7 +323,7 @@ public sealed class SftpFileSystem : IRemoteFileSystem
                 case HostKeyStatus.Changed:
                     Failure = $"The host key of {host} has changed since it was saved in {check.Conflict}. Someone could be " +
                               $"intercepting the connection. If the server got a new key, remove the old one with: ssh-keygen -R " +
-                              $"\"{KnownHosts.HostName(host, options.Port)}\"";
+                              $"\"{KnownHosts.HostName(host, options.KnownHostsPort)}\"";
                     return false;
             }
 
@@ -322,7 +331,7 @@ public sealed class SftpFileSystem : IRemoteFileSystem
             {
                 "yes" => TrustDecision.Reject,
                 "accept-new" or "no" => TrustDecision.TrustAndRemember,
-                _ => prompts.ConfirmHostKey(new HostKeyQuestion(host, options.Port, KnownHosts.KeyType(key), KnownHosts.Fingerprint(key),
+                _ => prompts.ConfirmHostKey(new HostKeyQuestion(host, options.KnownHostsPort, KnownHosts.KeyType(key), KnownHosts.Fingerprint(key),
                                                                 check.KnownKeyTypes))
             };
             switch (decision)
@@ -334,7 +343,7 @@ public sealed class SftpFileSystem : IRemoteFileSystem
                         : $"The host key of {host} is not in known_hosts, and StrictHostKeyChecking is yes.";
                     return false;
                 case TrustDecision.TrustAndRemember when options.KnownHostsFileToAddTo is { } file:
-                    KnownHosts.Add(file, host, options.Port, key, options.HashKnownHosts);
+                    KnownHosts.Add(file, host, options.KnownHostsPort, key, options.HashKnownHosts);
                     break;
             }
 

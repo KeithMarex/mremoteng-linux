@@ -172,6 +172,22 @@ public class PropertyPanelViewModelTests
     }
 
     [Test]
+    public void TheSshTunnelIsChosenFromTheSshConnections()
+    {
+        ConnectionInfo connection = new() { Protocol = ProtocolType.RDP, SSHTunnelConnectionName = "old jump" };
+        _panel.SshTunnelNames = () => ["bastion", "jump"];
+        _panel.Connection = connection;
+        PropertyItemViewModel tunnel = Item(nameof(ConnectionInfo.SSHTunnelConnectionName));
+
+        tunnel.SelectedChoice = Choice(tunnel, "jump");
+
+        Assert.That(tunnel.Choices.Select(choice => choice.DisplayText), Is.EqualTo(new[] { "(none)", "bastion", "jump", "old jump" }));
+        Assert.That(connection.SSHTunnelConnectionName, Is.EqualTo("jump"));
+        tunnel.SelectedChoice = Choice(tunnel, string.Empty);
+        Assert.That(connection.SSHTunnelConnectionName, Is.Empty);
+    }
+
+    [Test]
     public void TheSelectedRowsDescriptionIsShown()
     {
         _panel.Connection = new ConnectionInfo { Protocol = ProtocolType.SSH2 };

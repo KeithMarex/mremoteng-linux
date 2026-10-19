@@ -10,9 +10,11 @@ namespace mRemoteNG.Avalonia.ViewModels;
 /// <param name="createFileTransfer">Creates a file transfer tab for a connection.</param>
 /// <param name="createRdp">Creates a remote desktop tab for a connection.</param>
 /// <param name="createVnc">Creates a VNC tab for a connection.</param>
+/// <param name="tunnels">Opens the SSH tunnels connections go through.</param>
 public sealed partial class SessionsViewModel(SessionLauncher launcher, Func<ConnectionInfo, FileTransferViewModel> createFileTransfer,
                                               Func<ConnectionInfo, RdpSessionViewModel>? createRdp = null,
-                                              Func<ConnectionInfo, VncSessionViewModel>? createVnc = null)
+                                              Func<ConnectionInfo, VncSessionViewModel>? createVnc = null,
+                                              SshTunnels? tunnels = null)
     : ObservableObject
 {
     public ObservableCollection<SessionTabViewModel> Items { get; } = [];
@@ -80,6 +82,7 @@ public sealed partial class SessionsViewModel(SessionLauncher launcher, Func<Con
     private T Add<T>(T session) where T : SessionTabViewModel
     {
         session.CloseRequested += OnCloseRequested;
+        session.Tunnels = tunnels;
         Items.Add(session);
         Selected = session;
         return session;

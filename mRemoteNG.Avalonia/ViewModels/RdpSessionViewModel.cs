@@ -115,11 +115,12 @@ public sealed partial class RdpSessionViewModel : SessionTabViewModel, IProtocol
         RdpSession session;
         try
         {
-            session = await _connect(Connection, _view.Describe(), connecting.Token);
+            session = await _connect(await OpenTunnelAsync(connecting.Token), _view.Describe(), connecting.Token);
         }
         catch (Exception ex) when (ex is SessionException or OperationCanceledException)
         {
             IsConnecting = false;
+            CloseTunnel();
             Fail(ex is SessionException ? ex.Message : UiText.ConnectionCancelled);
             return;
         }
@@ -153,6 +154,7 @@ public sealed partial class RdpSessionViewModel : SessionTabViewModel, IProtocol
 
         _session = null;
         session.Process.Dispose();
+        CloseTunnel();
         Connection.OpenConnections.Remove(this);
         bool disconnected = _disconnecting;
         _disconnecting = false;

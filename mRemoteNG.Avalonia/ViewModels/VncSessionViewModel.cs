@@ -114,11 +114,12 @@ public sealed partial class VncSessionViewModel : SessionTabViewModel, IProtocol
         RfbClient client;
         try
         {
-            client = await _connect(Connection, connecting.Token);
+            client = await _connect(await OpenTunnelAsync(connecting.Token), connecting.Token);
         }
         catch (Exception ex) when (ex is SessionException or OperationCanceledException)
         {
             IsConnecting = false;
+            CloseTunnel();
             Fail(ex is SessionException ? ex.Message : UiText.ConnectionCancelled);
             return;
         }
@@ -150,6 +151,7 @@ public sealed partial class VncSessionViewModel : SessionTabViewModel, IProtocol
             return;
 
         Client = null;
+        CloseTunnel();
         Connection.OpenConnections.Remove(this);
         bool disconnected = _disconnecting;
         _disconnecting = false;
