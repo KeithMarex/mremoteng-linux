@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
+using mRemoteNG.Avalonia.Services;
 using mRemoteNG.Avalonia.Views;
 using mRemoteNG.Connection;
 using mRemoteNG.Container;
@@ -15,6 +16,8 @@ public sealed class ConnectionNodeViewModel : ObservableObject, IDisposable
 {
     private bool _isVisible = true;
     private bool _expandedByFilter;
+    private HostStatus _hostStatus;
+    private string? _hostStatusProblem;
 
     public ConnectionNodeViewModel(ConnectionInfo connection, ConnectionNodeViewModel? parent = null)
     {
@@ -48,8 +51,28 @@ public sealed class ConnectionNodeViewModel : ObservableObject, IDisposable
         : IsFolder ? AppImages.Folder
         : AppImages.ConnectionIcon(Connection.Icon);
 
-    /// <summary>The host and protocol of a connection, as a tooltip.</summary>
-    public string? ToolTip => IsFolder || string.IsNullOrEmpty(Connection.Hostname) ? null : $"{Connection.Hostname} ({Detail})";
+    /// <summary>The host and protocol of a connection, as a tooltip, and whether it answered (View > Host Status).</summary>
+    public string? ToolTip => IsFolder || string.IsNullOrEmpty(Connection.Hostname)
+        ? null
+        : $"{Connection.Hostname} ({Detail}){HostStatus switch
+        {
+            HostStatus.Online => Environment.NewLine + UiText.HostOnline,
+            HostStatus.Offline => Environment.NewLine + UiText.HostOffline(_hostStatusProblem),
+            _ => string.Empty
+        }}";
+
+    /// <summary>Whether the server answered when it was last checked; only checked while View > Host Status is on.</summary>
+    public HostStatus HostStatus => _hostStatus;
+
+    /// <summary>A green or red dot after the name, as the Windows app shows a host's status.</summary>
+    public Bitmap? HostStatusIcon => HostStatus switch
+    {
+        HostStatus.Online => AppImages.Image("HostStatus_On"),
+        HostStatus.Offline => AppImages.Image("HostStatus_Off"),
+        _ => null
+    };
+
+    public bool HasHostStatus => HostStatus != HostStatus.Unknown;
 
     /// <summary>The protocol shown next to a connection's name; empty for folders.</summary>
     public string Detail => IsFolder ? string.Empty : Connection.Protocol.ToString();
@@ -126,6 +149,18 @@ public sealed class ConnectionNodeViewModel : ObservableObject, IDisposable
         yield return this;
         foreach (ConnectionNodeViewModel descendant in Children.SelectMany(child => child.SelfAndDescendants()))
             yield return descendant;
+    }
+
+    internal void SetHostStatus(HostStatus status, string? problem)
+    {
+        if (status == _hostStatus && problem == _hostStatusProblem)
+            return;
+        _hostStatus = status;
+        _hostStatusProblem = problem;
+        OnPropertyChanged(nameof(HostStatus));
+        OnPropertyChanged(nameof(HostStatusIcon));
+        OnPropertyChanged(nameof(HasHostStatus));
+        OnPropertyChanged(nameof(ToolTip));
     }
 
     public void Dispose()

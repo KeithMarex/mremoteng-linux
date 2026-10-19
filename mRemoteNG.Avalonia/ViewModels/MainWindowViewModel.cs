@@ -356,6 +356,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
         NotifyTreeCommands();
         AddConnectionCommand.NotifyCanExecuteChanged();
         AddFolderCommand.NotifyCanExecuteChanged();
+        ShowHostStatus();
     }
 
     private void AddItem(ConnectionInfo item)
@@ -380,8 +381,10 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
     private void OnModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName != nameof(ConnectionInfo.OpenConnections))
-            MarkChanged();
+        if (e.PropertyName == nameof(ConnectionInfo.OpenConnections))
+            return;
+        MarkChanged();
+        CheckHostAgain(sender, e);
     }
 
     private void MarkChanged()

@@ -26,6 +26,12 @@ public sealed class AppSettings
     /// <summary>Whether the selected property's description shows under the Config panel (View menu); hidden until the user shows it.</summary>
     public bool ShowPropertyDescription { get; set; }
 
+    /// <summary>
+    /// Whether the connection tree shows which servers answer (View menu); off until the user turns it on, since the
+    /// checks connect to every server in the file every minute.
+    /// </summary>
+    public bool ShowHostStatus { get; set; }
+
     // Same defaults as the WinForms app's security options.
     public BlockCipherEngines EncryptionEngine { get; set; } = BlockCipherEngines.AES;
     public BlockCipherModes EncryptionBlockCipherMode { get; set; } = BlockCipherModes.GCM;

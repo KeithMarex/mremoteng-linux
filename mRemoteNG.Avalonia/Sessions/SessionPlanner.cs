@@ -90,7 +90,7 @@ public sealed class SessionPlanner(SessionPrograms programs)
     }
 
     // Like the Windows Terminal and PowerShell protocols: no host name, or localhost, opens a local shell.
-    private static bool IsLocal(ConnectionInfo connection)
+    internal static bool IsLocal(ConnectionInfo connection)
     {
         string host = connection.Hostname.Trim();
         return host.Length == 0 || host.Equals("localhost", StringComparison.OrdinalIgnoreCase);

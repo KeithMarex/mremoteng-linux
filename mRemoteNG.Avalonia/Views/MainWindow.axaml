@@ -83,6 +83,8 @@
                           IsChecked="{Binding IsNotificationsVisible, Mode=TwoWay}" />
                 <MenuItem Header="{x:Static app:UiText.PropertyDescription}" ToggleType="CheckBox"
                           IsChecked="{Binding IsPropertyDescriptionVisible, Mode=TwoWay}" />
+                <MenuItem Header="{x:Static app:UiText.HostStatus}" ToggleType="CheckBox"
+                          IsChecked="{Binding IsHostStatusVisible, Mode=TwoWay}" />
             </MenuItem>
             <MenuItem Header="{x:Static app:UiText.Tools}">
                 <MenuItem Header="{x:Static app:UiText.ExternalToolsMenu}" Command="{Binding OpenExternalToolsCommand}" />
@@ -196,6 +198,8 @@
                                                        Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top" />
                                             </Panel>
                                             <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                                            <!-- View > Host Status: whether the server answered -->
+                                            <Image Source="{Binding HostStatusIcon}" IsVisible="{Binding HasHostStatus}" Width="16" Height="16" />
                                         </StackPanel>
                                     </TreeDataTemplate>
                                 </TreeView.ItemTemplate>
