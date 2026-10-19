@@ -4,11 +4,13 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0-only</project_license>
   <name>mRemoteNG</name>
-  <summary>Manage SSH, Telnet, SFTP and FTP connections in one window</summary>
+  <summary>Manage SSH, RDP, VNC, SFTP and other connections in one window</summary>
   <description>
     <p>
       mRemoteNG for Linux keeps your remote connections in a tree and opens them in tabs: SSH, Telnet,
-      raw TCP and local terminal sessions, and SFTP and FTP/FTPS file transfers.
+      Rlogin, raw TCP, PowerShell and local terminal sessions, remote desktops (RDP through FreeRDP, VNC
+      and Apple Remote Desktop), and SFTP and FTP/FTPS file transfers. Web addresses, AnyDesk and SPICE
+      consoles of Proxmox VE and QEMU virtual machines open in their own window.
     </p>
     <p>
       Its connection files are those of mRemoteNG for Windows, so a team can share one file between
@@ -33,9 +35,16 @@
     <release version="0.1.0" date="2026-10-19" type="development">
       <description>
         <p>
-          First beta release: connection files shared with Windows mRemoteNG 1.77 and later; SSH, Telnet, raw TCP
-          and local terminal sessions; SFTP and FTP/FTPS file transfer; a look that follows mRemoteNG for Windows.
+          First beta release. Connection files are shared with Windows mRemoteNG 1.77 and later, encrypted passwords
+          included, and the app looks like mRemoteNG for Windows.
         </p>
+        <ul>
+          <li>Terminal tabs: SSH (OpenSSH), Telnet, Rlogin, raw TCP, PowerShell and local shells</li>
+          <li>Remote desktop tabs: RDP through FreeRDP 3, and VNC and Apple Remote Desktop with a built-in viewer</li>
+          <li>SFTP and FTP/FTPS file transfer tabs</li>
+          <li>Web addresses in the browser, AnyDesk, and SPICE consoles of Proxmox VE and QEMU virtual machines</li>
+          <li>SSH tunnels, external tools, Wake-on-LAN and the servers' status in the connection tree</li>
+        </ul>
       </description>
     </release>
   </releases>
