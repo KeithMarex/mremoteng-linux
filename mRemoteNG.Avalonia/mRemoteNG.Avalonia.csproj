@@ -36,5 +36,6 @@
   <ItemGroup>
     <ProjectReference Include="..\mRemoteNG.Core\mRemoteNG.Core.csproj" />
     <ProjectReference Include="..\mRemoteNG.FileTransfer\mRemoteNG.FileTransfer.csproj" />
+    <ProjectReference Include="..\mRemoteNG.Vnc\mRemoteNG.Vnc.csproj" />
   </ItemGroup>
 </Project>

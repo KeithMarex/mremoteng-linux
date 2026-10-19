@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:app="using:mRemoteNG.Avalonia"
+             xmlns:vm="using:mRemoteNG.Avalonia.ViewModels"
+             xmlns:views="using:mRemoteNG.Avalonia.Views"
+             x:Class="mRemoteNG.Avalonia.Views.VncSessionView"
+             x:DataType="vm:VncSessionViewModel">
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="8,2">
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="6">
+                <Button Content="{x:Static app:UiText.CtrlAltDel}" Command="{Binding SendCtrlAltDelCommand}" />
+                <Button Content="{x:Static app:UiText.Refresh}" Command="{Binding RefreshCommand}" />
+                <Button Content="{x:Static app:UiText.Reconnect}" Command="{Binding ReconnectCommand}" IsVisible="{Binding HasEnded}" />
+            </StackPanel>
+            <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" Opacity="0.7" TextTrimming="CharacterEllipsis" />
+        </DockPanel>
+        <ScrollViewer x:Name="Scroller" Background="Black">
+            <views:VncDisplay x:Name="Display" Client="{Binding Client}" SmartSize="{Binding SmartSize}" ViewOnly="{Binding ViewOnly}" />
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

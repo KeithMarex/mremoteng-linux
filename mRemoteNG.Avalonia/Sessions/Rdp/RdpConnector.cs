@@ -53,10 +53,10 @@ public sealed class RdpConnector(
     // asked for, as Windows asks; without it the server shows its own logon screen.
     private async Task<LoginCredentials> LoginAsync(ConnectionInfo connection, string host)
     {
-        LoginCredentials stored = new(connection.Username.Trim(), connection.Domain.Trim(), connection.Password);
+        LoginCredentials stored = new(connection.Username.Trim(), connection.Domain, connection.Password ?? string.Empty);
         if (!connection.UseCredSsp || (stored.Username.Length > 0 && stored.Password.Length > 0))
             return stored;
-        return await dialogs.AskLoginAsync(UiText.RdpLoginPrompt(host), stored)
+        return await dialogs.AskLoginAsync(UiText.LoginPrompt(host), stored)
                ?? throw new SessionException(UiText.ConnectionCancelled);
     }
 

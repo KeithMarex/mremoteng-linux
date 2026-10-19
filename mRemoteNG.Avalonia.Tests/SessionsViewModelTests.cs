@@ -235,6 +235,18 @@ public class MainWindowSessionTests
         Assert.That(_viewModel.Sessions.Selected, Is.SameAs(_viewModel.Sessions.Items.Single()));
     }
 
+    [TestCase(ProtocolType.VNC)]
+    [TestCase(ProtocolType.ARD)]
+    public async Task VncAndAppleRemoteDesktopOpenAVncTab(ProtocolType protocol)
+    {
+        _viewModel.AddConnectionCommand.Execute(null);
+        _viewModel.SelectedNode!.Connection.Protocol = protocol;
+
+        await _viewModel.ConnectCommand.ExecuteAsync(null);
+
+        Assert.That(_viewModel.Sessions.Items.Single(), Is.TypeOf<VncSessionViewModel>());
+    }
+
     [Test]
     public async Task AWebConnectionOpensInTheBrowserWithoutATab()
     {

@@ -104,6 +104,15 @@ the mRemoteNG project, not to this fork.
 - Arguments and passwords go to `xfreerdp3` on its standard input, never on its command line.
 - Click into the session to type in it; clicking anywhere else in the app takes the keyboard back.
 
+**VNC tabs: VNC and Apple Remote Desktop**
+
+- A VNC viewer built into the app draws the remote screen in the tab, as VncSharp does on Windows. It speaks RFB
+  3.3 to 3.8 with the Raw, CopyRect, RRE, Hextile and ZRLE encodings, the remote pointer and screen-size changes.
+- VNC passwords and Apple Remote Desktop logins (user name and password, as macOS Screen Sharing asks) are
+  supported; a missing one is asked for.
+- Smart Size (fit or stretch the screen, or show it pixel for pixel with scroll bars) and View Only work as on
+  Windows. Ctrl+Alt+Del and Refresh are above the screen, and the clipboard is shared both ways (text).
+
 **File transfer tabs: SFTP, FTP and FTPS**
 
 These two protocols are new in this fork; Windows mRemoteNG does not have them.
@@ -130,8 +139,8 @@ These two protocols are new in this fork; Windows mRemoteNG does not have them.
 
 ## Not supported yet
 
-- **VNC, ARD and external tools.** These connections stay in the file and can be edited, but opening one shows an
-  error.
+- **External tools.** These connections stay in the file and can be edited, but opening one shows an error.
+- **VNC:** the VNC proxy settings, Tight encoding and VeNCrypt/TLS logins are not supported.
 - **RDP:** serial ports, drive letters, the idle timeout, Hyper-V enhanced session mode and external credential
   providers are not supported.
 - **WSL** only exists on Windows; opening such a connection says so.

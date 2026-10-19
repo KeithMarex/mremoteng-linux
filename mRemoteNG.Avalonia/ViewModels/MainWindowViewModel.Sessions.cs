@@ -21,7 +21,7 @@ public sealed partial class MainWindowViewModel
     private bool CanOpenFileTransfer => SelectedNode is { IsFolder: false, Connection.Protocol: ProtocolType.SSH2 or ProtocolType.SFTP };
 
     /// <summary>
-    /// Opens the selected connection: in a new tab (a terminal, a file transfer for FTP and SFTP, or a remote desktop),
+    /// Opens the selected connection: in a new tab (a terminal, a file transfer for FTP and SFTP, a remote desktop or VNC),
     /// or in the program that shows it in its own window (the web browser, AnyDesk).
     /// </summary>
     [RelayCommand(CanExecute = nameof(CanConnect))]
@@ -38,6 +38,9 @@ public sealed partial class MainWindowViewModel
                 break;
             case SessionKind.Rdp:
                 Sessions.OpenRdp(connection);
+                break;
+            case SessionKind.Vnc:
+                Sessions.OpenVnc(connection);
                 break;
             case SessionKind.Launch:
                 await LaunchAsync(connection);
@@ -86,10 +89,12 @@ public sealed partial class MainWindowViewModel
         CertificatePins pins = new(_settings, SaveSettings);
         FileTransferPrompts prompts = new(_dialogs, pins);
         RdpConnector rdp = new(launcher.Programs, _dialogs, pins);
+        VncConnector vnc = new(_dialogs);
         // The protocol may change in the property panel while the connection stays selected.
         PropertyPanel.PropertyEdited += (_, _) => OpenFileTransferCommand.NotifyCanExecuteChanged();
         return new SessionsViewModel(launcher,
             connection => new FileTransferViewModel(connection, connector.PrepareAsync, _dialogs, prompts, _dispatch),
-            connection => new RdpSessionViewModel(connection, rdp.ConnectAsync, _dispatch));
+            connection => new RdpSessionViewModel(connection, rdp.ConnectAsync, _dispatch),
+            connection => new VncSessionViewModel(connection, vnc.ConnectAsync, _dispatch));
     }
 }

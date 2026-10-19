@@ -279,6 +279,8 @@ public class SessionPlannerTests
     [TestCase(ProtocolType.PowerShell, SessionKind.Terminal)]
     [TestCase(ProtocolType.SFTP, SessionKind.FileTransfer)]
     [TestCase(ProtocolType.RDP, SessionKind.Rdp)]
+    [TestCase(ProtocolType.VNC, SessionKind.Vnc)]
+    [TestCase(ProtocolType.ARD, SessionKind.Vnc)]
     [TestCase(ProtocolType.HTTPS, SessionKind.Launch)]
     [TestCase(ProtocolType.AnyDesk, SessionKind.Launch)]
     [TestCase(ProtocolType.WSL, SessionKind.NotSupported)]
