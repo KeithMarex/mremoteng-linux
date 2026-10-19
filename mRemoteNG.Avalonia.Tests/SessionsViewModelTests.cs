@@ -224,6 +224,18 @@ public class MainWindowSessionTests
     }
 
     [Test]
+    public async Task AnRdpConnectionOpensARemoteDesktopTab()
+    {
+        _viewModel.AddConnectionCommand.Execute(null);
+        _viewModel.SelectedNode!.Connection.Protocol = ProtocolType.RDP;
+
+        await _viewModel.ConnectCommand.ExecuteAsync(null);
+
+        Assert.That(_viewModel.Sessions.Items.Single(), Is.TypeOf<RdpSessionViewModel>());
+        Assert.That(_viewModel.Sessions.Selected, Is.SameAs(_viewModel.Sessions.Items.Single()));
+    }
+
+    [Test]
     public async Task AWebConnectionOpensInTheBrowserWithoutATab()
     {
         _viewModel.AddConnectionCommand.Execute(null);

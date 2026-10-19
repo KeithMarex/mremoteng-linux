@@ -251,6 +251,9 @@
                                 <DataTemplate DataType="vm:FileTransferViewModel">
                                     <views:FileTransferView IsVisible="{Binding IsSelected}" />
                                 </DataTemplate>
+                                <DataTemplate DataType="vm:RdpSessionViewModel">
+                                    <views:RdpSessionView IsVisible="{Binding IsSelected}" />
+                                </DataTemplate>
                             </ItemsControl.DataTemplates>
                         </ItemsControl>
                     </Panel>

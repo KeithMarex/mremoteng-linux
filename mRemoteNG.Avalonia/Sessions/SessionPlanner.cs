@@ -106,6 +106,9 @@ public sealed class SessionPrograms
 
     public string Rlogin { get; init; } = "rlogin";
 
+    /// <summary>FreeRDP 3's X11 client, for RDP.</summary>
+    public string FreeRdp { get; init; } = "xfreerdp3";
+
     public string PowerShell { get; init; } = "pwsh";
 
     /// <summary>Opens web addresses in the user's browser.</summary>

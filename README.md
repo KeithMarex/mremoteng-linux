@@ -91,6 +91,19 @@ the mRemoteNG project, not to this fork.
   Ctrl+Shift+W.
 - A session that drops keeps its tab, with a Reconnect button.
 
+**Remote desktop tabs: RDP**
+
+- RDP runs FreeRDP 3 (`xfreerdp3`, package `freerdp3-x11`; on Debian 12 from bookworm-backports), shown inside the
+  tab. Full screen opens in a window of its own.
+- The connection's settings are passed on: resolution and smart sizing, colours, drives (your home folder, or all
+  mounts), printers, smart cards, clipboard, sound and microphone, the desktop experience, console session,
+  restricted admin and Remote Credential Guard, the start program, load balancing info and the Remote Desktop
+  Gateway.
+- A missing user name or password is asked for. The server's certificate is checked as the connection's
+  authentication level says, with "trust and remember" for one this computer does not trust.
+- Arguments and passwords go to `xfreerdp3` on its standard input, never on its command line.
+- Click into the session to type in it; clicking anywhere else in the app takes the keyboard back.
+
 **File transfer tabs: SFTP, FTP and FTPS**
 
 These two protocols are new in this fork; Windows mRemoteNG does not have them.
@@ -117,8 +130,10 @@ These two protocols are new in this fork; Windows mRemoteNG does not have them.
 
 ## Not supported yet
 
-- **RDP, VNC, ARD and external tools.** These connections stay in the file and can be edited, but opening one shows
-  an error.
+- **VNC, ARD and external tools.** These connections stay in the file and can be edited, but opening one shows an
+  error.
+- **RDP:** serial ports, drive letters, the idle timeout, Hyper-V enhanced session mode and external credential
+  providers are not supported.
 - **WSL** only exists on Windows; opening such a connection says so.
 - **SSH1** is refused, because OpenSSH no longer supports it.
 - **PuTTY-specific SSH options** are dropped, and the connection's opening command is not sent yet.
@@ -140,7 +155,7 @@ These two protocols are new in this fork; Windows mRemoteNG does not have them.
 3. Start **mRemoteNG** from the applications menu, or run `mremoteng`.
 
 The package contains everything .NET needs (it is self-contained), so you do not have to install .NET. It
-depends on `openssh-client`, recommends `inetutils-telnet` and `xdg-utils`, and suggests `rsh-redone-client` (for
+depends on `openssh-client`, recommends `inetutils-telnet`, `xdg-utils` and `freerdp3-x11`, and suggests `rsh-redone-client` (for
 rlogin). PowerShell (`pwsh`) and AnyDesk come from Microsoft and AnyDesk.
 
 To remove the app, run `sudo apt remove mremoteng`. Your connection files and settings are left in place.

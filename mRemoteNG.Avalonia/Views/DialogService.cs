@@ -66,6 +66,9 @@ public sealed class DialogService(Window owner) : IDialogService
     public Task<SecureString?> AskSecretAsync(string prompt) =>
         OnUiThread(() => new PasswordDialog(prompt, confirm: false).ShowDialog<SecureString?>(owner));
 
+    public Task<LoginCredentials?> AskLoginAsync(string prompt, LoginCredentials initial) =>
+        OnUiThread(() => new LoginDialog(prompt, initial).ShowDialog<LoginCredentials?>(owner));
+
     public Task<TrustDecision> AskTrustAsync(string title, string message) =>
         OnUiThread(() => new TrustDialog(title, message).ShowDialog<TrustDecision>(owner));
 

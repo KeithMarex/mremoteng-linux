@@ -27,6 +27,8 @@ public static class UiText
     public static string Properties => Language.Properties;
     public static string Notifications => Language.Notifications;
     public static string Password => Language.Password;
+    public static string Username => Language.Username;
+    public static string Domain => Language.Domain;
     public static string Search => Language.SearchPrompt;
     public static string MoveUp => Language.MoveUp;
     public static string MoveDown => Language.MoveDown;
@@ -120,6 +122,23 @@ public static class UiText
     public const string StoredPasswordUnavailable = "The stored password cannot be handed to ssh; type it in the terminal.";
     public const string WslWindowsOnly = "WSL connections open a Linux distribution on a Windows computer; they exist only on Windows.";
     public const string ServerClosedConnection = "The server closed the connection.";
+    public const string Login = "Log in";
+    public const string FreeRdpNotFound =
+        "RDP needs FreeRDP 3: install the freerdp3-x11 package (on Debian 12 from bookworm-backports).";
+    public const string RdpInOwnWindow = "The remote desktop is open in its own full-screen window.";
+    public const string RdpCustomDrivesAsHome = "Drive letters do not exist on Linux; your home folder is shared instead of the chosen drives.";
+    public const string RdpGatewayWithoutHost = "The Remote Desktop Gateway has no host name and is not used.";
+    public const string RdpGatewayLoginIgnored =
+        "The gateway's login (smart card or external credential provider) is not supported here; the gateway asks for none.";
+    public const string RdpGatewayValueWithComma =
+        "A gateway setting (host, user name, domain, password or access token) contains a comma or quote, which xfreerdp cannot take.";
+    public const string ExternalCredentialProviderIgnored =
+        "External credential providers are not supported by mRemoteNG for Linux yet; the connection's own login is used.";
+    public const string NotAnRdpServer = "the server did not answer as a Remote Desktop server";
+    public const string NoServerCertificate = "the server sent no certificate";
+    public const string CertificateRejected = "The server's certificate was not accepted.";
+    public const string CertificateNameMismatch = "it is issued to another name";
+    public const string CertificateNotTrusted = "it is not issued by an authority this computer trusts (it may be self-signed or expired)";
     public const string NoRloginClient =
         "No rlogin client is installed, so mRemoteNG connects itself. Most rlogin servers only accept the rlogin client, " +
         "which can use a privileged port; install the rsh-redone-client package where your distribution has it.";
@@ -151,6 +170,11 @@ public static class UiText
         $"{protocol} connections need mRemoteNG to run from its own executable, not through \"dotnet\".";
     public static string PowerShellUsesSsh(int port) =>
         $"PowerShell on Linux connects over SSH (port 22), not WinRM; port {port} is not used. The server needs PowerShell's SSH subsystem.";
+    public static string RdpLoginPrompt(string host) => $"Log in to {host}:";
+    public static string RdpSettingIgnored(string setting) => $"The RDP setting \"{setting}\" is not supported by xfreerdp and was left out.";
+    public static string RdpValueWithLineBreak(string option) => $"The value for {option} contains a line break, which xfreerdp cannot take.";
+    public static string CertificateNotRead(string host, string reason) =>
+        $"The certificate of {host} could not be read beforehand ({reason}); xfreerdp checks it itself.";
     public static string ConnectionLost(string reason) => $"The connection was lost: {reason}";
     public static string CouldNotStart(string program, string reason) => $"Could not start {program}: {reason}";
     public static string Opening(string name, string commandLine) => $"Opening {name}: {commandLine}";
