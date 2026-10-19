@@ -78,9 +78,8 @@ jobs:
       matrix:
         image: ['debian:12', 'debian:13', 'ubuntu:24.04']
         arch: [amd64, arm64]
-    runs-on: ubuntu-24.04
-    # arm64 runs emulated (QEMU): slow, and .NET is not always reliable there, so it informs but does not block.
-    continue-on-error: ${{ matrix.arch == 'arm64' }}
+    # arm64 runs on an arm64 runner: emulated (QEMU), .NET and Avalonia crash while starting.
+    runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -91,15 +90,9 @@ jobs:
           name: deb-${{ matrix.arch }}
           path: artifacts
 
-      - name: Set up arm64 emulation
-        if: matrix.arch == 'arm64'
-        run: sudo apt-get update && sudo apt-get install -y qemu-user-static
-
       - name: Install, start and remove
         run: >
           docker run --rm --platform linux/${{ matrix.arch }}
-          -e START_TIMEOUT=${{ matrix.arch == 'arm64' && '120' || '20' }}
-          -e DOTNET_EnableWriteXorExecute=${{ matrix.arch == 'arm64' && '0' || '1' }}
           -v "$PWD:/work" -w /work ${{ matrix.image }}
           bash scripts/linux/test-deb.sh artifacts/mremoteng_*_${{ matrix.arch }}.deb
 
