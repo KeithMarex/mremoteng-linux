@@ -102,8 +102,12 @@ public sealed partial class MainWindowViewModel
         FileTransferPrompts prompts = new(_dialogs, pins);
         RdpConnector rdp = new(launcher.Programs, _dialogs, pins);
         VncConnector vnc = new(_dialogs);
-        // The protocol may change in the property panel while the connection stays selected.
-        PropertyPanel.PropertyEdited += (_, _) => OpenFileTransferCommand.NotifyCanExecuteChanged();
+        // The protocol and the MAC address may change in the property panel while the connection stays selected.
+        PropertyPanel.PropertyEdited += (_, _) =>
+        {
+            OpenFileTransferCommand.NotifyCanExecuteChanged();
+            WakeOnLanCommand.NotifyCanExecuteChanged();
+        };
         return new SessionsViewModel(launcher,
             connection => new FileTransferViewModel(connection, connector.PrepareAsync, _dialogs, prompts, _dispatch, _settings, SaveSettings),
             connection => new RdpSessionViewModel(connection, rdp.ConnectAsync, _dispatch),

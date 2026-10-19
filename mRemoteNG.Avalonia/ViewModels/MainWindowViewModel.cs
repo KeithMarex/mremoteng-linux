@@ -65,7 +65,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DuplicateCommand), nameof(DeleteCommand), nameof(MoveUpCommand), nameof(MoveDownCommand),
-                                nameof(ConnectCommand), nameof(OpenFileTransferCommand))]
+                                nameof(ConnectCommand), nameof(OpenFileTransferCommand), nameof(WakeOnLanCommand))]
     private ConnectionNodeViewModel? _selectedNode;
 
     [ObservableProperty]
