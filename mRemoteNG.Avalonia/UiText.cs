@@ -73,8 +73,8 @@ public static class UiText
     public const string ConfirmPassword = "Confirm password";
     public const string PasswordsDoNotMatch = "The passwords do not match.";
     public const string NoSessionsYet =
-        "Double-click a connection to open it here. SSH, Telnet, Rlogin, Raw, local Terminal, PowerShell, SFTP and FTP " +
-        "connections open in a tab; HTTP, HTTPS and AnyDesk open in their own window.";
+        "Double-click a connection to open it here. RDP, VNC, ARD, SSH, Telnet, Rlogin, Raw, local Terminal, PowerShell, " +
+        "SFTP and FTP connections open in a tab; HTTP, HTTPS and AnyDesk open in their own window.";
     public const string Disconnected = "Disconnected.";
     public const string NoFavorites = "No favorites yet: set Favorite to Yes in a connection's properties.";
     public const string Categorized = "Categorized";
@@ -123,6 +123,7 @@ public static class UiText
     public const string WslWindowsOnly = "WSL connections open a Linux distribution on a Windows computer; they exist only on Windows.";
     public const string ServerClosedConnection = "The server closed the connection.";
     public const string Login = "Log in";
+    public const string CtrlAltDel = "Ctrl+Alt+Del";
     public const string FreeRdpNotFound =
         "RDP needs FreeRDP 3: install the freerdp3-x11 package (on Debian 12 from bookworm-backports).";
     public const string RdpInOwnWindow = "The remote desktop is open in its own full-screen window.";
@@ -170,7 +171,8 @@ public static class UiText
         $"{protocol} connections need mRemoteNG to run from its own executable, not through \"dotnet\".";
     public static string PowerShellUsesSsh(int port) =>
         $"PowerShell on Linux connects over SSH (port 22), not WinRM; port {port} is not used. The server needs PowerShell's SSH subsystem.";
-    public static string RdpLoginPrompt(string host) => $"Log in to {host}:";
+    public static string LoginPrompt(string host) => $"Log in to {host}:";
+    public static string VncPasswordPrompt(string host) => $"Enter the VNC password for {host}.";
     public static string RdpSettingIgnored(string setting) => $"The RDP setting \"{setting}\" is not supported by xfreerdp and was left out.";
     public static string RdpValueWithLineBreak(string option) => $"The value for {option} contains a line break, which xfreerdp cannot take.";
     public static string CertificateNotRead(string host, string reason) =>

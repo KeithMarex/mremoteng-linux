@@ -12,9 +12,9 @@ Suggests: rsh-redone-client
 Description: remote connections manager (community Linux port of mRemoteNG)
  mRemoteNG for Linux keeps remote connections in a tree and opens them in
  tabs: SSH, Telnet, rlogin, raw TCP, PowerShell and local terminal sessions,
- remote desktops (RDP, through FreeRDP), and SFTP and FTP/FTPS file
- transfers. Web addresses open in the browser and AnyDesk connections in the
- AnyDesk client.
+ remote desktops (RDP through FreeRDP; VNC and Apple Remote Desktop with a
+ built-in viewer), and SFTP and FTP/FTPS file transfers. Web addresses
+ open in the browser and AnyDesk connections in the AnyDesk client.
  .
  Its connection files (confCons.xml) are those of mRemoteNG for Windows, so
  a team can share one file, including its encrypted passwords. SSH uses

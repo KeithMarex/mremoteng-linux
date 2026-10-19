@@ -245,7 +245,7 @@ namespace mRemoteNG.Connection
          LocalizedAttributes.LocalizedDisplayName(nameof(Language.Username)),
          LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUsername)),
          AttributeUsedInProtocol(ProtocolType.RDP, ProtocolType.SSH1, ProtocolType.SSH2, ProtocolType.HTTP, ProtocolType.HTTPS, ProtocolType.IntApp,
-            ProtocolType.PowerShell, ProtocolType.FTP, ProtocolType.SFTP)]
+            ProtocolType.PowerShell, ProtocolType.ARD, ProtocolType.FTP, ProtocolType.SFTP)]
         public virtual string Username
         {
             get => GetPropertyValue("Username", _username);

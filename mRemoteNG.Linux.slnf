@@ -6,6 +6,8 @@
       "mRemoteNG.Core.Tests\\mRemoteNG.Core.Tests.csproj",
       "mRemoteNG.FileTransfer\\mRemoteNG.FileTransfer.csproj",
       "mRemoteNG.FileTransfer.Tests\\mRemoteNG.FileTransfer.Tests.csproj",
+      "mRemoteNG.Vnc\\mRemoteNG.Vnc.csproj",
+      "mRemoteNG.Vnc.Tests\\mRemoteNG.Vnc.Tests.csproj",
       "mRemoteNG.Avalonia\\mRemoteNG.Avalonia.csproj",
       "mRemoteNG.Avalonia.Tests\\mRemoteNG.Avalonia.Tests.csproj"
     ]

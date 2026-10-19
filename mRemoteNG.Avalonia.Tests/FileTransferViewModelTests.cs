@@ -312,6 +312,16 @@ public class FileTransferConnectorTests
     }
 
     [Test]
+    public async Task AnFtpConnectionWithoutAPasswordCanBeOpened()
+    {
+        ConnectionInfo connection = new() { Protocol = ProtocolType.FTP, Hostname = "ftp.example", Username = "anonymous" };
+
+        FileTransferTarget target = await _connector.PrepareAsync(connection, CancellationToken.None);
+
+        Assert.That(target, Is.Not.Null);
+    }
+
+    [Test]
     public async Task TheStartDirectoryComesFromTheConnection()
     {
         ConnectionInfo connection = new() { Protocol = ProtocolType.SFTP, Hostname = "web1", Port = 22 };

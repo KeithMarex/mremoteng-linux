@@ -193,7 +193,9 @@ namespace mRemoteNG.Connection
             List<string> strHide = new();
             if (connection.VNCAuthMode == AuthMode.AuthVNC)
             {
-                strHide.Add(nameof(AbstractConnectionRecord.Username));
+                // Apple Remote Desktop logs in with a user account.
+                if (connection.Protocol != ProtocolType.ARD)
+                    strHide.Add(nameof(AbstractConnectionRecord.Username));
                 strHide.Add(nameof(AbstractConnectionRecord.Domain));
             }
 

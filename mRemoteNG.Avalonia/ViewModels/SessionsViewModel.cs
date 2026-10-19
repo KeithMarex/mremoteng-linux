@@ -5,12 +5,14 @@ using mRemoteNG.Connection;
 
 namespace mRemoteNG.Avalonia.ViewModels;
 
-/// <summary>The session tabs: terminals, file transfers and remote desktops.</summary>
+/// <summary>The session tabs: terminals, file transfers, remote desktops and VNC.</summary>
 /// <param name="launcher">Prepares terminal sessions.</param>
 /// <param name="createFileTransfer">Creates a file transfer tab for a connection.</param>
 /// <param name="createRdp">Creates a remote desktop tab for a connection.</param>
+/// <param name="createVnc">Creates a VNC tab for a connection.</param>
 public sealed partial class SessionsViewModel(SessionLauncher launcher, Func<ConnectionInfo, FileTransferViewModel> createFileTransfer,
-                                              Func<ConnectionInfo, RdpSessionViewModel>? createRdp = null)
+                                              Func<ConnectionInfo, RdpSessionViewModel>? createRdp = null,
+                                              Func<ConnectionInfo, VncSessionViewModel>? createVnc = null)
     : ObservableObject
 {
     public ObservableCollection<SessionTabViewModel> Items { get; } = [];
@@ -38,6 +40,10 @@ public sealed partial class SessionsViewModel(SessionLauncher launcher, Func<Con
     /// <summary>Opens a remote desktop tab; it connects as soon as it has a window to show the desktop in.</summary>
     public RdpSessionViewModel OpenRdp(ConnectionInfo connection) =>
         Add((createRdp ?? throw new InvalidOperationException("No RDP sessions")).Invoke(connection));
+
+    /// <summary>Opens a VNC tab; it connects as soon as it is shown.</summary>
+    public VncSessionViewModel OpenVnc(ConnectionInfo connection) =>
+        Add((createVnc ?? throw new InvalidOperationException("No VNC sessions")).Invoke(connection));
 
     public void Close(SessionTabViewModel session)
     {

@@ -44,6 +44,20 @@ namespace mRemoteNG.Core.Tests.Connection
             Assert.That(ConnectionPropertyRules.IsValidForProtocol(property, ProtocolType.SSH2, skipProtocolCheck: true), Is.True);
         }
 
+        [TestCase(ProtocolType.ARD, true)]
+        [TestCase(ProtocolType.VNC, false)]
+        [TestCase(ProtocolType.PowerShell, true)]
+        public void TheUserNameIsShownWhereTheProtocolLogsInWithIt(ProtocolType protocol, bool shown)
+        {
+            ConnectionInfo connection = new() { Protocol = protocol };
+            PropertyDescriptor property = TypeDescriptor.GetProperties(typeof(ConnectionInfo))[nameof(ConnectionInfo.Username)];
+
+            bool visible = ConnectionPropertyRules.IsValidForProtocol(property, protocol, skipProtocolCheck: false) &&
+                           !ConnectionPropertyRules.HiddenConnectionProperties(connection).Contains(nameof(ConnectionInfo.Username));
+
+            Assert.That(visible, Is.EqualTo(shown));
+        }
+
         [Test]
         public void InheritedPropertiesAreHidden()
         {
