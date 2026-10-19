@@ -50,13 +50,16 @@ namespace mRemoteNG.Connection.Protocol
         [LocalizedAttributes.LocalizedDescription(nameof(Language.ExternalTool))]
         IntApp = 20,
 
-        // File transfer (mRemoteNG for Linux). Windows mRemoteNG does not know these, so connection files store them
-        // as SSH2 and RAW plus a marker; see FileTransferCompatibility.
+        // mRemoteNG for Linux: file transfer and SPICE. Windows mRemoteNG does not know these, so connection files store
+        // them as RAW, SSH2 and VNC plus a marker; see FileTransferCompatibility.
         [LocalizedAttributes.LocalizedDescription(nameof(Language.Ftp))]
         FTP = 100,
 
         [LocalizedAttributes.LocalizedDescription(nameof(Language.Sftp))]
-        SFTP = 101
+        SFTP = 101,
+
+        [LocalizedAttributes.LocalizedDescription(nameof(Language.Spice))]
+        SPICE = 102
     }
 
     public class ProtocolFeature

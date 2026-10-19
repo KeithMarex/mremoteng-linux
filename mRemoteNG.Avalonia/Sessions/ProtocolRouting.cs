@@ -38,7 +38,7 @@ public static class ProtocolRouting
         ProtocolType.FTP or ProtocolType.SFTP => SessionKind.FileTransfer,
         ProtocolType.RDP => SessionKind.Rdp,
         ProtocolType.VNC or ProtocolType.ARD => SessionKind.Vnc,
-        ProtocolType.HTTP or ProtocolType.HTTPS or ProtocolType.AnyDesk => SessionKind.Launch,
+        ProtocolType.HTTP or ProtocolType.HTTPS or ProtocolType.AnyDesk or ProtocolType.SPICE => SessionKind.Launch,
         ProtocolType.IntApp => SessionKind.ExternalTool,
         _ => SessionKind.NotSupported
     };

@@ -8,8 +8,8 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers
 {
     /// <summary>
     /// The file next to a connection file ("confCons.xml.linux.json") that keeps what Windows mRemoteNG 1.77 and older
-    /// drop when they save it: the real protocol of FTP and SFTP connections and their mRemoteNG for Linux ("mRx.")
-    /// settings, by connection ID. It holds no passwords. A folder set to FTP or SFTP (for its children to inherit)
+    /// drop when they save it: the real protocol of FTP, SFTP and SPICE connections and their mRemoteNG for Linux ("mRx.")
+    /// settings, by connection ID. It holds no passwords. A folder set to one of them (for its children to inherit)
     /// is kept too, but only until Windows saves the file: Windows gives folders a new ID on every load.
     /// </summary>
     public static class ConnectionFileSidecar
@@ -22,7 +22,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers
         public static string? Build(IEnumerable<ConnectionInfo> nodes)
         {
             Dictionary<string, SidecarEntry?> entries = new();
-            foreach (ConnectionInfo node in nodes.Where(node => FileTransferCompatibility.IsFileTransfer(node.Protocol)))
+            foreach (ConnectionInfo node in nodes.Where(node => FileTransferCompatibility.IsLinuxOnly(node.Protocol)))
             {
                 Dictionary<string, string> settings = node.PluginProperties
                                                           .Where(property => property.Key.StartsWith(FileTransferCompatibility.KeyPrefix, StringComparison.Ordinal))
@@ -36,7 +36,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers
         }
 
         /// <summary>
-        /// Restores FTP and SFTP connections from a sidecar: the protocol where the file still has its stand-in, and
+        /// Restores FTP, SFTP and SPICE connections from a sidecar: the protocol where the file still has its stand-in, and
         /// then the settings the file no longer has. Returns how many connections were restored.
         /// </summary>
         /// <exception cref="JsonException">The sidecar is not valid.</exception>
@@ -69,7 +69,7 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers
         }
 
         private const string Comment =
-            "Kept by mRemoteNG for Linux: FTP and SFTP connections, which the connection file stores as RAW and SSH2 for Windows mRemoteNG.";
+            "Kept by mRemoteNG for Linux: FTP, SFTP and SPICE connections, which the connection file stores as RAW, SSH2 and VNC for Windows mRemoteNG.";
 
         private sealed record SidecarFile(string? Comment, Dictionary<string, SidecarEntry?>? Connections);
 

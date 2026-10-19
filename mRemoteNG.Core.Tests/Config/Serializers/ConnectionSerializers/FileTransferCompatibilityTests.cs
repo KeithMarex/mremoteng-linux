@@ -110,8 +110,33 @@ namespace mRemoteNG.Core.Tests.Config.Serializers.ConnectionSerializers
             Assert.That(ConnectionFileSidecar.Build(root.GetRecursiveChildList()), Is.Null);
         }
 
+        [TestCase("2.7")]
+        [TestCase("2.9")]
+        public void SpiceIsStoredAsVncWithItsSettingsAndComesBack(string version)
+        {
+            RootNodeInfo root = new(RootNodeType.Connection);
+            ConnectionInfo spice = new() { Name = "vm", Hostname = "pve.example", Protocol = ProtocolType.SPICE, Port = 8006 };
+            spice.SetPluginProperty("mRx.ProxmoxVm", "105");
+            root.AddChild(spice);
+
+            string xml = Serialize(root, version);
+            string sidecar = ConnectionFileSidecar.Build(root.GetRecursiveChildList())!;
+
+            Assert.That((string)XDocument.Parse(xml).Descendants("Node").Single().Attribute("Protocol"), Is.EqualTo("VNC"));
+            ConnectionInfo loaded = Load(xml).Single();
+            Assert.That(loaded.Protocol, Is.EqualTo(ProtocolType.SPICE));
+            Assert.That(loaded.GetPluginProperty("mRx.ProxmoxVm"), Is.EqualTo("105"));
+
+            ConnectionInfo afterWindows177 = Load(WithoutPluginData(xml)).Single();
+            Assert.That(afterWindows177.Protocol, Is.EqualTo(ProtocolType.VNC));
+            Assert.That(ConnectionFileSidecar.Apply(sidecar, [afterWindows177]), Is.EqualTo(1));
+            Assert.That(afterWindows177.Protocol, Is.EqualTo(ProtocolType.SPICE));
+            Assert.That(afterWindows177.GetPluginProperty("mRx.ProxmoxVm"), Is.EqualTo("105"));
+        }
+
         [TestCase(ProtocolType.FTP, 21)]
         [TestCase(ProtocolType.SFTP, 22)]
+        [TestCase(ProtocolType.SPICE, 8006)]
         public void FileTransferHasTheUsualDefaultPorts(ProtocolType protocol, int port)
         {
             Assert.That(DefaultPorts.For(protocol), Is.EqualTo(port));

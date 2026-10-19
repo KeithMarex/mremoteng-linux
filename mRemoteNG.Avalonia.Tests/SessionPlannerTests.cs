@@ -283,6 +283,7 @@ public class SessionPlannerTests
     [TestCase(ProtocolType.ARD, SessionKind.Vnc)]
     [TestCase(ProtocolType.HTTPS, SessionKind.Launch)]
     [TestCase(ProtocolType.AnyDesk, SessionKind.Launch)]
+    [TestCase(ProtocolType.SPICE, SessionKind.Launch)]
     [TestCase(ProtocolType.IntApp, SessionKind.ExternalTool)]
     [TestCase(ProtocolType.WSL, SessionKind.NotSupported)]
     public void EachProtocolOpensInItsKindOfSession(ProtocolType protocol, SessionKind kind)

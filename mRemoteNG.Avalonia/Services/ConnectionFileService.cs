@@ -127,7 +127,7 @@ public sealed class ConnectionFileService(AppSettings settings)
         }
         catch (Exception ex) when (ex is System.Text.Json.JsonException or IOException or UnauthorizedAccessException)
         {
-            CoreRuntime.MessageCollector.AddExceptionMessage($"Could not read {sidecarPath}; FTP and SFTP connections may show as RAW and SSH2.",
+            CoreRuntime.MessageCollector.AddExceptionMessage($"Could not read {sidecarPath}; FTP, SFTP and SPICE connections may show as RAW, SSH2 and VNC.",
                                                              ex, MessageClass.WarningMsg, logOnly: false);
         }
     }

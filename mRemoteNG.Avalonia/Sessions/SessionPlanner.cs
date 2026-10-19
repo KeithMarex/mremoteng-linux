@@ -116,6 +116,9 @@ public sealed class SessionPrograms
 
     public string AnyDesk { get; init; } = "anydesk";
 
+    /// <summary>virt-viewer's client, for SPICE.</summary>
+    public string RemoteViewer { get; init; } = "remote-viewer";
+
     /// <summary>The user's login shell, for local terminal sessions.</summary>
     public string Shell { get; init; } = Environment.GetEnvironmentVariable("SHELL") is { Length: > 0 } shell ? shell : "/bin/sh";
 
