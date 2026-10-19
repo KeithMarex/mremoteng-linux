@@ -30,6 +30,7 @@ public static class UiText
     public static string Search => Language.SearchPrompt;
     public static string MoveUp => Language.MoveUp;
     public static string MoveDown => Language.MoveDown;
+    public static string View => Menu(Language._View);
     public static string Tools => Menu(Language._Tools);
     public static string ImportFromFile => Menu(Language.ImportFromFile);
     public static string ImportFileTitle => Language.ImportFromFile.Replace("&", string.Empty).TrimEnd('.');
@@ -42,6 +43,13 @@ public static class UiText
     public static string EncryptCompleteConnectionFile => Language.EncryptCompleteConnectionFile;
     public static string SaveConnectionsAfterEveryEdit => Language.SaveConnectionsAfterEveryEdit;
     public static string Connect => Language.Connect;
+    public static string Config => Language.Config;
+    public static string PropertiesView => Language.Properties;
+    public static string InheritanceView => Language.Inheritance;
+    public static string ExpandAllFolders => Language.ExpandAllFolders;
+    public static string CollapseAllFolders => Language.CollapseAllFolders;
+    public static string Sort => Language.Sort;
+    public static string Favorites => Language.Favorites;
     public static string Reconnect => Language.Reconnect;
     public static string CloseTab => Language._Close.Replace("&", string.Empty);
     public static string ConfirmCloseSessions => Language.ConfirmExitMainInstruction;
@@ -56,7 +64,6 @@ public static class UiText
     public const string FileFormatHelp =
         "Use the version every Windows mRemoteNG in your team can read. Older versions store fewer settings " +
         "(2.7 lacks e.g. tab colours); the change applies the next time the file is saved.";
-    public const string Inherit = "Inherit";
     public const string Ok = "OK";
     public const string Cancel = "Cancel";
     public const string Yes = "Yes";
@@ -64,8 +71,11 @@ public static class UiText
     public const string ConfirmPassword = "Confirm password";
     public const string PasswordsDoNotMatch = "The passwords do not match.";
     public const string NoSessionsYet =
-        "Double-click a connection to open it here. SSH, Telnet, Raw and local Terminal connections are supported; SFTP and FTP follow in a later version.";
+        "Double-click a connection to open it here. SSH, Telnet, Raw, local Terminal, SFTP and FTP connections are supported.";
     public const string Disconnected = "Disconnected.";
+    public const string NoFavorites = "No favorites yet: set Favorite to Yes in a connection's properties.";
+    public const string Categorized = "Categorized";
+    public const string Alphabetical = "Alphabetical";
 
     // File transfer
     public const string OpenFileTransfer = "Open SFTP";
@@ -73,6 +83,8 @@ public static class UiText
     public const string Transfers = "Transfers";
     public const string ClearFinished = "Clear finished";
     public const string Upload = "Upload";
+    public const string Move = "Move";
+    public const string PropertyDescription = "Property Description";
     public const string Refresh = "Refresh";
     public const string Up = "Up";
     public const string NewFolderPrompt = "Name of the new folder:";
@@ -133,6 +145,9 @@ public static class UiText
         : $"{count} items already exist in {directory}. Replace them? (No skips them.)";
     public static string RenamePrompt(string name) => $"New name for {name}:";
     public static string ItemCount(int count) => $"{count} items";
+    public static string NotMovedAlreadyThere(IReadOnlyList<string> names, string directory) => names.Count == 1
+        ? $"\"{names[0]}\" already exists in {directory} and was not moved."
+        : $"{string.Join(", ", names.Select(name => $"\"{name}\""))} already exist in {directory} and were not moved.";
     public static string ConfirmDeleteOnServer(string what) => $"Delete {what} from the server? This cannot be undone.";
     public static string InvalidFileName(string name) => $"\"{name}\" is not a valid name: it may not contain '/' or be '.' or '..'.";
     public static string TransferProgress(string done, string total, string? file) =>

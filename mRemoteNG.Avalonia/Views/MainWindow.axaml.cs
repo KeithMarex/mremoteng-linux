@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -19,6 +20,8 @@ public partial class MainWindow : Window
     private bool _closeConfirmed;
     private PointerPressedEventArgs? _dragStart;
     private Point _dragStartPoint;
+    private MainWindowViewModel? _shownViewModel;
+    private GridLength _notificationsHeight = new(150);
 
     public MainWindow()
     {
@@ -33,6 +36,33 @@ public partial class MainWindow : Window
     }
 
     private MainWindowViewModel? ViewModel => DataContext as MainWindowViewModel;
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        if (_shownViewModel is not null)
+            _shownViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        _shownViewModel = ViewModel;
+        if (_shownViewModel is not null)
+            _shownViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        ShowNotificationsRow(_shownViewModel?.IsNotificationsVisible ?? false);
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(MainWindowViewModel.IsNotificationsVisible))
+            ShowNotificationsRow(_shownViewModel!.IsNotificationsVisible);
+    }
+
+    // A hidden panel leaves no empty row; shown again, it gets the height the user last gave it.
+    private void ShowNotificationsRow(bool visible)
+    {
+        RowDefinition splitter = LayoutGrid.RowDefinitions[1], panel = LayoutGrid.RowDefinitions[2];
+        if (!visible && panel.Height.Value > 0)
+            _notificationsHeight = panel.Height;
+        splitter.Height = new GridLength(visible ? 3 : 0);
+        panel.Height = visible ? _notificationsHeight : new GridLength(0);
+    }
 
     protected override async void OnClosing(WindowClosingEventArgs e)
     {
@@ -52,6 +82,30 @@ public partial class MainWindow : Window
     }
 
     private void OnExitClick(object? sender, RoutedEventArgs e) => Close();
+
+    // The favorite connections, as the dropdown of Windows' Favorites button; choosing one opens it.
+    private void OnFavoritesClick(object? sender, RoutedEventArgs e)
+    {
+        if (ViewModel is not { } viewModel)
+            return;
+
+        viewModel.RefreshFavorites();
+        MenuFlyout menu = new();
+        foreach (ConnectionNodeViewModel favorite in viewModel.Favorites)
+        {
+            menu.Items.Add(new MenuItem
+            {
+                Header = favorite.Name,
+                Icon = new Image { Source = favorite.Icon, Width = 16, Height = 16 },
+                Command = viewModel.OpenFavoriteCommand,
+                CommandParameter = favorite
+            });
+        }
+
+        if (menu.Items.Count == 0)
+            menu.Items.Add(new MenuItem { Header = UiText.NoFavorites, IsEnabled = false });
+        menu.ShowAt(FavoritesButton);
+    }
 
     /// <summary>
     /// Runs the menu item whose shortcut (with Ctrl or Alt) was pressed. Avalonia applies HotKeys before the focused

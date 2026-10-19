@@ -3,7 +3,21 @@
              x:Class="mRemoteNG.Avalonia.App"
              RequestedThemeVariant="Default">
     <!-- "Default" follows the desktop's light/dark preference. -->
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://mRemoteNG.Avalonia/Themes/Palette.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
     <Application.Styles>
-        <FluentTheme />
+        <!-- Compact, in the colours of Windows mRemoteNG's vs2015light and vs2015dark themes. -->
+        <FluentTheme DensityStyle="Compact">
+            <FluentTheme.Palettes>
+                <ColorPaletteResources x:Key="Light" Accent="#007ACC" RegionColor="#EEEEF2" />
+                <ColorPaletteResources x:Key="Dark" Accent="#007ACC" RegionColor="#2D2D30" />
+            </FluentTheme.Palettes>
+        </FluentTheme>
+        <StyleInclude Source="avares://mRemoteNG.Avalonia/Themes/WindowsLook.axaml" />
     </Application.Styles>
 </Application>

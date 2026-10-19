@@ -6,15 +6,21 @@ using mRemoteNG.FileTransfer;
 
 namespace mRemoteNG.Avalonia.ViewModels;
 
-/// <summary>A file or directory in one of the two panes.</summary>
+/// <summary>A file or directory in one of the two panes, or the ".." entry for the directory above.</summary>
 public sealed class FileEntryViewModel(string name, string fullPath, bool isDirectory, long size, DateTime? modified, string permissions,
-                                       RemoteEntry? remote = null)
+                                       RemoteEntry? remote = null, bool isParent = false)
 {
+    /// <summary>The ".." entry at the top of a listing, as in FileZilla: opening it or dropping on it goes one directory up.</summary>
+    public static FileEntryViewModel ParentEntry(string parentPath) => new("..", parentPath, true, 0, null, string.Empty, isParent: true);
+
     public string Name { get; } = name;
     public string FullPath { get; } = fullPath;
     public bool IsDirectory { get; } = isDirectory;
     public long Size { get; } = size;
     public string Permissions { get; } = permissions;
+
+    /// <summary>Whether this is the ".." entry, which is never transferred, renamed, moved or deleted.</summary>
+    public bool IsParent { get; } = isParent;
 
     /// <summary>The server's entry, in the remote pane.</summary>
     public RemoteEntry? Remote { get; } = remote;
@@ -41,6 +47,9 @@ public abstract partial class FilePaneViewModel : ObservableObject
 
     public ObservableCollection<FileEntryViewModel> SelectedEntries { get; } = [];
 
+    /// <summary>The selection without the ".." entry: what the commands work on.</summary>
+    public IReadOnlyList<FileEntryViewModel> ChosenEntries => SelectedEntries.Where(entry => !entry.IsParent).ToList();
+
     /// <summary>Raised when a directory cannot be shown, with the message.</summary>
     public event EventHandler<string>? Failed;
 
@@ -54,6 +63,8 @@ public abstract partial class FilePaneViewModel : ObservableObject
             CurrentPath = path;
             PathText = path;
             Entries.Clear();
+            if (ParentOf(path) is var parent && parent != path)
+                Entries.Add(FileEntryViewModel.ParentEntry(parent));
             foreach (FileEntryViewModel entry in entries.OrderByDescending(entry => entry.IsDirectory)
                                                         .ThenBy(entry => entry.Name, StringComparer.CurrentCultureIgnoreCase))
             {
@@ -75,6 +86,14 @@ public abstract partial class FilePaneViewModel : ObservableObject
     }
 
     public Task RefreshAsync() => NavigateAsync(CurrentPath);
+
+    /// <summary>
+    /// Whether <paramref name="entry"/> can be moved into <paramref name="directory"/>: not the ".." entry, not where it
+    /// is already, and a directory not into itself.
+    /// </summary>
+    public bool CanMoveInto(FileEntryViewModel entry, string directory) =>
+        !entry.IsParent && entry.FullPath != directory && ParentOf(entry.FullPath) != directory &&
+        !directory.StartsWith(entry.FullPath.TrimEnd('/') + "/", StringComparison.Ordinal);
 
     protected abstract Task<IReadOnlyList<FileEntryViewModel>> ListAsync(string path);
 

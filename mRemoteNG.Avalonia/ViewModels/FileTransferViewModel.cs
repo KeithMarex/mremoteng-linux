@@ -153,30 +153,76 @@ public sealed partial class FileTransferViewModel : SessionTabViewModel, IProtoc
         }
     }
 
-    /// <summary>Uploads local files or directories (dropped from a file manager, for instance) to the remote directory.</summary>
-    public async Task UploadAsync(IReadOnlyList<string> localPaths)
+    /// <summary>
+    /// Uploads local files or directories (dropped from a file manager, for instance) to the remote directory, or to
+    /// <paramref name="remoteDirectory"/> (a directory or ".." they were dropped on).
+    /// </summary>
+    public async Task UploadAsync(IReadOnlyList<string> localPaths, string? remoteDirectory = null)
     {
         if (_queue is not { } queue || localPaths.Count == 0)
             return;
 
-        HashSet<string> existing = Remote.Entries.Select(entry => entry.Name).ToHashSet();
+        string target = remoteDirectory ?? Remote.CurrentPath;
+        HashSet<string> existing;
+        try
+        {
+            existing = target == Remote.CurrentPath
+                ? Remote.Entries.Where(entry => !entry.IsParent).Select(entry => entry.Name).ToHashSet()
+                : (await Remote.RunAsync(remote => remote.ListAsync(target, CancellationToken.None))).Select(entry => entry.Name).ToHashSet();
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            await ReportAsync(ex);
+            return;
+        }
+
         int conflicts = localPaths.Count(path => existing.Contains(Path.GetFileName(path.TrimEnd('/'))));
-        bool overwrite = conflicts > 0 && await _dialogs.ConfirmAsync(UiText.Upload, UiText.ConfirmOverwrite(conflicts, Remote.CurrentPath));
+        bool overwrite = conflicts > 0 && await _dialogs.ConfirmAsync(UiText.Upload, UiText.ConfirmOverwrite(conflicts, target));
         foreach (string path in localPaths)
-            Transfers.Add(new TransferItemViewModel(queue.Upload(path, Remote.CurrentPath, overwrite)));
+            Transfers.Add(new TransferItemViewModel(queue.Upload(path, target, overwrite)));
     }
 
-    /// <summary>Downloads server files or directories to the local directory.</summary>
-    public async Task DownloadAsync(IReadOnlyList<FileEntryViewModel> entries)
+    /// <summary>Downloads server files or directories to the local directory, or to <paramref name="localDirectory"/>.</summary>
+    public async Task DownloadAsync(IReadOnlyList<FileEntryViewModel> entries, string? localDirectory = null)
     {
+        entries = entries.Where(entry => entry is { IsParent: false, Remote: not null }).ToList();
         if (_queue is not { } queue || entries.Count == 0)
             return;
 
-        string target = Local.CurrentPath;
+        string target = localDirectory ?? Local.CurrentPath;
         int conflicts = entries.Count(entry => File.Exists(Path.Combine(target, entry.Name)) || Directory.Exists(Path.Combine(target, entry.Name)));
         bool overwrite = conflicts > 0 && await _dialogs.ConfirmAsync(UiText.Download, UiText.ConfirmOverwrite(conflicts, target));
-        foreach (FileEntryViewModel entry in entries.Where(entry => entry.Remote is not null))
+        foreach (FileEntryViewModel entry in entries)
             Transfers.Add(new TransferItemViewModel(queue.Download(entry.Remote!, target, overwrite)));
+    }
+
+    /// <summary>
+    /// Moves files or directories into <paramref name="directory"/> on the same side: dropped on a directory, or on
+    /// ".." to move them one directory up, as in FileZilla. A name that is there already is left where it was.
+    /// </summary>
+    public async Task MoveAsync(FilePaneViewModel pane, IReadOnlyList<FileEntryViewModel> entries, string directory)
+    {
+        List<FileEntryViewModel> moving = entries.Where(entry => pane.CanMoveInto(entry, directory)).ToList();
+        bool onServer = pane == Remote;
+        if (moving.Count == 0 || (onServer && !IsConnected))
+            return;
+
+        List<string> skipped = [];
+        try
+        {
+            if (onServer)
+                await Remote.RunAsync(remote => MoveOnServerAsync(remote, moving, directory, skipped));
+            else
+                await Task.Run(() => MoveLocally(moving, directory, skipped));
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            await ReportAsync(ex);
+        }
+
+        if (skipped.Count > 0)
+            await _dialogs.ShowErrorAsync(UiText.Move, UiText.NotMovedAlreadyThere(skipped, directory));
+        await pane.RefreshAsync();
     }
 
     protected override void EndSession() => Disconnect();
@@ -189,11 +235,11 @@ public sealed partial class FileTransferViewModel : SessionTabViewModel, IProtoc
 
     private bool IsConnected => State == FileTransferState.Connected;
 
-    private bool HasLocalSelection => IsConnected && Local.SelectedEntries.Count > 0;
+    private bool HasLocalSelection => IsConnected && Local.ChosenEntries.Count > 0;
 
-    private bool HasRemoteSelection => IsConnected && Remote.SelectedEntries.Count > 0;
+    private bool HasRemoteSelection => IsConnected && Remote.ChosenEntries.Count > 0;
 
-    private bool HasOneRemoteSelected => IsConnected && Remote.SelectedEntries.Count == 1;
+    private bool HasOneRemoteSelected => IsConnected && Remote.ChosenEntries.Count == 1;
 
     private bool CanReconnect => HasEnded;
 
@@ -201,10 +247,10 @@ public sealed partial class FileTransferViewModel : SessionTabViewModel, IProtoc
     private Task ReconnectAsync() => ConnectAsync();
 
     [RelayCommand(CanExecute = nameof(HasLocalSelection))]
-    private Task UploadAsync() => UploadAsync(Local.SelectedEntries.Select(entry => entry.FullPath).ToList());
+    private Task UploadAsync() => UploadAsync(Local.ChosenEntries.Select(entry => entry.FullPath).ToList());
 
     [RelayCommand(CanExecute = nameof(HasRemoteSelection))]
-    private Task DownloadAsync() => DownloadAsync(Remote.SelectedEntries.ToList());
+    private Task DownloadAsync() => DownloadAsync(Remote.ChosenEntries);
 
     [RelayCommand(CanExecute = nameof(IsConnected))]
     private async Task NewFolderAsync()
@@ -217,7 +263,7 @@ public sealed partial class FileTransferViewModel : SessionTabViewModel, IProtoc
     [RelayCommand(CanExecute = nameof(HasOneRemoteSelected))]
     private async Task RenameAsync()
     {
-        FileEntryViewModel entry = Remote.SelectedEntries[0];
+        FileEntryViewModel entry = Remote.ChosenEntries[0];
         if (await AskNameAsync(UiText.Rename, UiText.RenamePrompt(entry.Name), entry.Name) is not { } name || name == entry.Name)
             return;
         await OnServerAsync(remote => remote.RenameAsync(entry.FullPath, RemotePath.Combine(Remote.CurrentPath, name), CancellationToken.None));
@@ -226,7 +272,7 @@ public sealed partial class FileTransferViewModel : SessionTabViewModel, IProtoc
     [RelayCommand(CanExecute = nameof(HasRemoteSelection))]
     private async Task DeleteAsync()
     {
-        List<FileEntryViewModel> entries = Remote.SelectedEntries.ToList();
+        IReadOnlyList<FileEntryViewModel> entries = Remote.ChosenEntries;
         string what = entries.Count == 1 ? entries[0].Name : UiText.ItemCount(entries.Count);
         if (!await _dialogs.ConfirmAsync(UiText.Delete, UiText.ConfirmDeleteOnServer(what)))
             return;
@@ -269,11 +315,47 @@ public sealed partial class FileTransferViewModel : SessionTabViewModel, IProtoc
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            CoreRuntime.MessageCollector.AddMessage(MessageClass.ErrorMsg, $"{Title}: {ex.Message}");
-            await _dialogs.ShowErrorAsync(Title, ex.Message);
+            await ReportAsync(ex);
         }
 
         await Remote.RefreshAsync();
+    }
+
+    // A failed change: in the notifications and in a dialog; the tab stays connected.
+    private async Task ReportAsync(Exception ex)
+    {
+        CoreRuntime.MessageCollector.AddMessage(MessageClass.ErrorMsg, $"{Title}: {ex.Message}");
+        await _dialogs.ShowErrorAsync(Title, ex.Message);
+    }
+
+    // Servers differ in whether a rename replaces what is there (FTP servers often do): check first.
+    private static async Task<bool> MoveOnServerAsync(IRemoteFileSystem remote, IEnumerable<FileEntryViewModel> entries, string directory,
+                                                      List<string> skipped)
+    {
+        HashSet<string> existing = (await remote.ListAsync(directory, CancellationToken.None)).Select(entry => entry.Name).ToHashSet();
+        foreach (FileEntryViewModel entry in entries.Where(entry => RemotePath.IsSafeName(entry.Name)))
+        {
+            if (existing.Contains(entry.Name))
+                skipped.Add(entry.Name);
+            else
+                await remote.RenameAsync(entry.FullPath, RemotePath.Combine(directory, entry.Name), CancellationToken.None);
+        }
+
+        return true;
+    }
+
+    private static void MoveLocally(IEnumerable<FileEntryViewModel> entries, string directory, List<string> skipped)
+    {
+        foreach (FileEntryViewModel entry in entries)
+        {
+            string target = Path.Combine(directory, entry.Name);
+            if (File.Exists(target) || Directory.Exists(target))
+                skipped.Add(entry.Name);
+            else if (entry.IsDirectory)
+                Directory.Move(entry.FullPath, target);
+            else
+                File.Move(entry.FullPath, target);
+        }
     }
 
     private void NotifyRemoteSelectionCommands()

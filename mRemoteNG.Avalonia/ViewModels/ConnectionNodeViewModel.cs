@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
+using mRemoteNG.Avalonia.Views;
 using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Tree.Root;
@@ -38,8 +40,16 @@ public sealed class ConnectionNodeViewModel : ObservableObject, IDisposable
 
     public bool IsRoot => Connection is RootNodeInfo;
 
-    /// <summary>Whether the connection has an open session (shown in bold).</summary>
+    /// <summary>Whether the connection has an open session (shown with the connected overlay, as on Windows).</summary>
     public bool IsConnected => Connection.OpenConnections.Count > 0;
+
+    /// <summary>The tree icon, as on Windows: a globe for the root, a folder, or the connection's own icon.</summary>
+    public Bitmap? Icon => IsRoot || Connection is ContainerInfo { IsRootGroup: true } ? AppImages.RootNode
+        : IsFolder ? AppImages.Folder
+        : AppImages.ConnectionIcon(Connection.Icon);
+
+    /// <summary>The host and protocol of a connection, as a tooltip.</summary>
+    public string? ToolTip => IsFolder || string.IsNullOrEmpty(Connection.Hostname) ? null : $"{Connection.Hostname} ({Detail})";
 
     /// <summary>The protocol shown next to a connection's name; empty for folders.</summary>
     public string Detail => IsFolder ? string.Empty : Connection.Protocol.ToString();
@@ -140,6 +150,13 @@ public sealed class ConnectionNodeViewModel : ObservableObject, IDisposable
                 break;
             case nameof(ConnectionInfo.Protocol):
                 OnPropertyChanged(nameof(Detail));
+                OnPropertyChanged(nameof(ToolTip));
+                break;
+            case nameof(ConnectionInfo.Hostname):
+                OnPropertyChanged(nameof(ToolTip));
+                break;
+            case nameof(ConnectionInfo.Icon):
+                OnPropertyChanged(nameof(Icon));
                 break;
             case nameof(ConnectionInfo.OpenConnections):
                 OnPropertyChanged(nameof(IsConnected));
