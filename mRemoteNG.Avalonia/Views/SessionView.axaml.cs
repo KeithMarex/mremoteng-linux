@@ -35,8 +35,8 @@ public partial class SessionView : UserControl, ITerminalHost
     public Task StartAsync(SessionPlan plan, IReadOnlyDictionary<string, string> environment)
     {
         Terminal.EnvironmentVariables = new Dictionary<string, string>(environment);
-        string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        return Terminal.LaunchProcess(home, plan.Program, [.. plan.Arguments]);
+        string directory = plan.WorkingDirectory ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        return Terminal.LaunchProcess(directory, plan.Program, [.. plan.Arguments]);
     }
 
     public void Kill()

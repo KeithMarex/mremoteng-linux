@@ -24,13 +24,16 @@ public enum SessionState
 public sealed partial class SessionViewModel : SessionTabViewModel, IProtocolSession
 {
     private readonly SessionLauncher _launcher;
+    private readonly SessionPlan? _plan;
     private ITerminalHost? _host;
     private PreparedSession? _prepared;
     private bool _disconnecting;
 
-    public SessionViewModel(ConnectionInfo connection, SessionLauncher launcher) : base(connection)
+    /// <param name="plan">What to run instead of the connection's protocol, such as an external tool.</param>
+    public SessionViewModel(ConnectionInfo connection, SessionLauncher launcher, SessionPlan? plan = null) : base(connection)
     {
         _launcher = launcher;
+        _plan = plan;
     }
 
     [ObservableProperty]
@@ -88,7 +91,7 @@ public sealed partial class SessionViewModel : SessionTabViewModel, IProtocolSes
         PreparedSession prepared;
         try
         {
-            prepared = _launcher.Prepare(Connection);
+            prepared = _plan is null ? _launcher.Prepare(Connection) : _launcher.Prepare(_plan);
         }
         catch (SessionException ex)
         {
@@ -130,7 +133,8 @@ public sealed partial class SessionViewModel : SessionTabViewModel, IProtocolSes
         State = SessionState.Ended;
         StatusText = disconnected ? UiText.Disconnected : UiText.SessionEnded(exitCode);
         CoreRuntime.MessageCollector.AddMessage(MessageClass.InformationMsg, $"{Title}: {StatusText}");
-        if (exitCode == 0 && !disconnected)
+        // An external tool's tab stays, so its output can be read (Reconnect runs it again).
+        if (exitCode == 0 && !disconnected && _plan is null)
             RequestClose();
     }
 

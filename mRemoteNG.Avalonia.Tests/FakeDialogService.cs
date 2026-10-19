@@ -67,6 +67,10 @@ internal sealed class FakeDialogService : IDialogService
         return Task.FromResult(ConfirmAnswer);
     }
 
+    public Func<ViewModels.ExternalToolsViewModel, bool> EditExternalTools { get; set; } = _ => false;
+
+    public Task<bool> ShowExternalToolsAsync(ViewModels.ExternalToolsViewModel tools) => Task.FromResult(EditExternalTools(tools));
+
     public Func<ViewModels.OptionsViewModel, bool> EditOptions { get; set; } = _ => false;
 
     public Task<bool> ShowOptionsAsync(ViewModels.OptionsViewModel options) => Task.FromResult(EditOptions(options));

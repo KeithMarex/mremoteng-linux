@@ -130,6 +130,17 @@ These two protocols are new in this fork; Windows mRemoteNG does not have them.
 - **HTTP and HTTPS** open the address in your web browser (`xdg-open`).
 - **AnyDesk** starts the AnyDesk client with the connection's ID, and hands it the stored password.
 
+**External tools**
+
+- Tools > External Tools keeps a list of programs to run on a connection, in the Windows app's format
+  (`~/.config/mRemoteNG/extApps.xml`, so a Windows `extApps.xml` can be copied over).
+- The arguments can hold the connection's details: `%HOSTNAME%`, `%PORT%`, `%USERNAME%`, `%PASSWORD%` and the other
+  variables of the Windows app, and environment variables. They are split as a shell would, but no shell runs, so a
+  value never becomes an extra argument.
+- Run a tool from a connection's right-click menu (on a folder: for each connection in it), as an External Tool
+  connection, or before and after a connection (Pre- and Post-external tool). A tool set to run integrated runs in a
+  terminal tab.
+
 **Options**
 
 - The connection file format version: 2.7, 2.8 or 2.9.
@@ -139,7 +150,8 @@ These two protocols are new in this fork; Windows mRemoteNG does not have them.
 
 ## Not supported yet
 
-- **External tools.** These connections stay in the file and can be edited, but opening one shows an error.
+- **External tools** cannot run elevated, and integrated tools run in a terminal tab rather than with their own
+  window inside the tab. There is no external tools toolbar.
 - **VNC:** the VNC proxy settings, Tight encoding and VeNCrypt/TLS logins are not supported.
 - **RDP:** serial ports, drive letters, the idle timeout, Hyper-V enhanced session mode and external credential
   providers are not supported.

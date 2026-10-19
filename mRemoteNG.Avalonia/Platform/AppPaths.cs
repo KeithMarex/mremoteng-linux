@@ -23,6 +23,9 @@ public sealed class AppPaths(string configDirectory, string dataDirectory, strin
 
     public string SettingsFile => Path.Combine(ConfigDirectory, "settings.json");
 
+    /// <summary>The external tools, in the Windows app's format (extApps.xml).</summary>
+    public string ExternalToolsFile => Path.Combine(ConfigDirectory, mRemoteNG.ExternalTools.ExternalToolsFile.FileName);
+
     public string LogFile => Path.Combine(StateDirectory, "mRemoteNG.log");
 
     public string DefaultConnectionFile => Path.Combine(DataDirectory, "confCons.xml");

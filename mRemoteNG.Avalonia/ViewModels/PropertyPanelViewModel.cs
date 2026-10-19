@@ -82,6 +82,9 @@ public sealed partial class PropertyPanelViewModel : ObservableObject
     /// <summary>Raised after the user changed a value.</summary>
     public event EventHandler<PropertyItemViewModel>? PropertyEdited;
 
+    /// <summary>The external tools' names, offered for ExtApp, PreExtApp and PostExtApp; set by the main window.</summary>
+    public Func<IReadOnlyList<string>> ExternalToolNames { get; set; } = () => [];
+
     partial void OnConnectionChanged(ConnectionInfo? value)
     {
         if (Mode == PropertyPanelMode.Inheritance && !CanShowInheritance)
@@ -127,7 +130,8 @@ public sealed partial class PropertyPanelViewModel : ObservableObject
 
         object component = Mode == PropertyPanelMode.Inheritance ? connection.Inheritance : connection;
         List<PropertyItemViewModel> items = VisibleProperties(connection)
-            .Select(property => new PropertyItemViewModel(component, property, OnItemChanged, AppImages.ConnectionIconNames))
+            .Select(property => new PropertyItemViewModel(component, property, OnItemChanged, AppImages.ConnectionIconNames,
+                                                          ExternalToolNames()))
             .ToList();
         _shownProperties = items.Select(item => item.Name).ToHashSet();
 

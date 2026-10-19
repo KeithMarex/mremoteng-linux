@@ -1,0 +1,51 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="using:mRemoteNG.Avalonia"
+        xmlns:vm="using:mRemoteNG.Avalonia.ViewModels"
+        x:Class="mRemoteNG.Avalonia.Views.ExternalToolsWindow"
+        x:DataType="vm:ExternalToolsViewModel"
+        Title="{x:Static app:UiText.ExternalTools}"
+        Width="760" Height="480" MinWidth="560" MinHeight="380"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <DockPanel Margin="12">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,12,0,0">
+            <Button Content="{x:Static app:UiText.Ok}" IsDefault="True" Click="OnOkClick" MinWidth="80" />
+            <Button Content="{x:Static app:UiText.Cancel}" IsCancel="True" Click="OnCancelClick" MinWidth="80" />
+        </StackPanel>
+        <Grid ColumnDefinitions="220,12,*">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="6" Margin="0,6,0,0">
+                    <Button Content="{x:Static app:UiText.New}" Command="{Binding NewCommand}" />
+                    <Button Content="{x:Static app:UiText.Delete}" Command="{Binding DeleteCommand}" />
+                </StackPanel>
+                <ListBox ItemsSource="{Binding Tools}" SelectedItem="{Binding Selected}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ExternalToolItemViewModel">
+                            <TextBlock Text="{Binding DisplayName}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+            <ScrollViewer Grid.Column="2" IsVisible="{Binding HasSelection}">
+                <StackPanel Spacing="8" DataContext="{Binding Selected}" x:DataType="vm:ExternalToolItemViewModel">
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="10">
+                        <Label Content="{x:Static app:UiText.DisplayName}" Target="NameBox" VerticalAlignment="Center" />
+                        <TextBox x:Name="NameBox" Grid.Column="1" Text="{Binding DisplayName}" />
+                        <Label Grid.Row="1" Content="{x:Static app:UiText.Category}" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Category}" />
+                        <Label Grid.Row="2" Content="{x:Static app:UiText.Program}" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding FileName}" PlaceholderText="ping, /usr/bin/remmina, …" />
+                        <Label Grid.Row="3" Content="{x:Static app:UiText.Arguments}" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Arguments}" PlaceholderText="-c 4 %HOSTNAME%" />
+                        <Label Grid.Row="4" Content="{x:Static app:UiText.WorkingDirectory}" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding WorkingDir}" />
+                    </Grid>
+                    <CheckBox Content="{x:Static app:UiText.RunInTab}" IsChecked="{Binding TryIntegrate}" />
+                    <CheckBox Content="{x:Static app:UiText.WaitForExit}" IsChecked="{Binding WaitForExit}" />
+                    <CheckBox Content="{x:Static app:UiText.RunElevated}" IsChecked="{Binding RunElevated}" />
+                    <TextBlock Text="{x:Static app:UiText.ExternalToolsHelp}" TextWrapping="Wrap" Opacity="0.7" />
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </DockPanel>
+</Window>

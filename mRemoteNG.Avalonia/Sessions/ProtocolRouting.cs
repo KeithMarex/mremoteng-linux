@@ -20,6 +20,9 @@ public enum SessionKind
     /// <summary>A program that opens its own window, such as the web browser; there is no tab.</summary>
     Launch,
 
+    /// <summary>The external tool the connection names (IntApp): in a terminal tab, or in its own window.</summary>
+    ExternalTool,
+
     /// <summary>The connection cannot be opened on Linux; <see cref="ProtocolRouting.NotSupportedReason"/> says why.</summary>
     NotSupported
 }
@@ -36,6 +39,7 @@ public static class ProtocolRouting
         ProtocolType.RDP => SessionKind.Rdp,
         ProtocolType.VNC or ProtocolType.ARD => SessionKind.Vnc,
         ProtocolType.HTTP or ProtocolType.HTTPS or ProtocolType.AnyDesk => SessionKind.Launch,
+        ProtocolType.IntApp => SessionKind.ExternalTool,
         _ => SessionKind.NotSupported
     };
 

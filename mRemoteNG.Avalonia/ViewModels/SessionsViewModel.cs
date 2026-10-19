@@ -29,6 +29,9 @@ public sealed partial class SessionsViewModel(SessionLauncher launcher, Func<Con
     /// <summary>Opens a terminal tab for <paramref name="connection"/>; it connects as soon as its terminal is shown.</summary>
     public SessionViewModel Open(ConnectionInfo connection) => Add(new SessionViewModel(connection, launcher));
 
+    /// <summary>Opens a terminal tab that runs <paramref name="plan"/> (an external tool) for <paramref name="connection"/>.</summary>
+    public SessionViewModel OpenProgram(ConnectionInfo connection, SessionPlan plan) => Add(new SessionViewModel(connection, launcher, plan));
+
     /// <summary>Opens a file transfer tab (FTP, SFTP, or SFTP to an SSH connection's host) and connects it.</summary>
     public FileTransferViewModel OpenFileTransfer(ConnectionInfo connection)
     {

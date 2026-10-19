@@ -15,6 +15,9 @@ public sealed record SessionPlan(string Program, IReadOnlyList<string> Arguments
     /// <summary>What the session is, when the command line would not tell the user (the raw TCP relay).</summary>
     public string? Description { get; init; }
 
+    /// <summary>Where the program runs; null for the user's home folder.</summary>
+    public string? WorkingDirectory { get; init; }
+
     /// <summary>The command line (or description) as shown to the user; it never holds a password.</summary>
     public override string ToString() => Description ?? string.Join(' ', [Path.GetFileName(Program), .. Arguments]);
 }

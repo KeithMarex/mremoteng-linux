@@ -67,7 +67,7 @@ public sealed class ProgramLauncher(SessionPrograms programs)
         {
             UseShellExecute = false,
             RedirectStandardInput = plan.Password is not null,
-            WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+            WorkingDirectory = plan.WorkingDirectory ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
         };
         foreach (string argument in plan.Arguments)
             info.ArgumentList.Add(argument);
