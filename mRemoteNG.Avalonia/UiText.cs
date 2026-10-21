@@ -147,7 +147,7 @@ public static class UiText
     public const string FtpNoEncryption = "None (unencrypted)";
     public const string StartDirectoryName = "Start directory";
     public const string StartDirectoryDescription = "The server directory the tab opens in; empty for the user's home directory.";
-    public const string TerminalShortcuts = "Ctrl+Shift+C copies the selection, Ctrl+Shift+V pastes, Ctrl+Shift+W closes the tab.";
+    public const string TerminalShortcuts = "Ctrl+Shift+C copies the selection, Ctrl+Shift+V pastes, Ctrl+Shift+W closes the tab, Ctrl+scroll wheel zooms.";
     public const string Ssh1NotSupported = "SSH version 1 is not supported by OpenSSH. Change the connection's protocol to SSH version 2.";
     public const string UnsafeHostname = "The host name contains characters that are not allowed (spaces, control characters or a leading '-').";
     public const string UnsafeUsername = "The user name contains characters that are not allowed (spaces, control characters or a leading '-').";

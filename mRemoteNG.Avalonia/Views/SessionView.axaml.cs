@@ -25,10 +25,23 @@ public partial class SessionView : UserControl, ITerminalHost
         Terminal.Loaded += OnTerminalLoaded;
         // Tunnel, so these shortcuts win over the terminal, which would otherwise send them to the program.
         AddHandler(KeyDownEvent, OnPreviewKeyDown, RoutingStrategies.Tunnel);
-        // Everything else typed in the terminal belongs to the program: stop it before the window's shortcuts see it
-        // (Ctrl+Q and Ctrl+S are XON/XOFF to a terminal, not Exit and Save).
-        Terminal.AddHandler(KeyDownEvent, (_, e) => e.Handled = true, RoutingStrategies.Bubble, handledEventsToo: true);
+        AddHandler(PointerWheelChangedEvent, OnPreviewPointerWheelChanged, RoutingStrategies.Tunnel);
+        // Every other chord typed in the terminal belongs to the program: stop it before the window's shortcuts see it
+        // (Ctrl+Q and Ctrl+S are XON/XOFF to a terminal, not Exit and Save). A plain key stays unhandled, because only
+        // an unhandled key press becomes text input: a character composed from a dead key (' then space) comes as a
+        // key press with no key, which the terminal leaves to its text input.
+        Terminal.AddHandler(KeyDownEvent, (_, e) => e.Handled |= (e.KeyModifiers & ChordModifiers) != 0,
+                            RoutingStrategies.Bubble, handledEventsToo: true);
     }
+
+    private const KeyModifiers ChordModifiers = KeyModifiers.Control | KeyModifiers.Alt | KeyModifiers.Meta;
+
+    // Ctrl+wheel zooms the terminal by a point per notch, within these sizes.
+    internal const double MinFontSize = 6;
+    internal const double MaxFontSize = 48;
+
+    // A touchpad scrolls in fractions of a notch; they add up here until they make a whole one.
+    private double _zoomNotches;
 
     public event EventHandler<int?>? Exited;
 
@@ -80,6 +93,22 @@ public partial class SessionView : UserControl, ITerminalHost
     {
         int? exitCode = e.ExitCodeKnown ? e.ExitCode : null;
         Dispatcher.UIThread.Post(() => Exited?.Invoke(this, exitCode));
+    }
+
+    // Ahead of the terminal, which would scroll its scrollback or send the wheel to a program that follows the mouse.
+    // The terminal fits its rows and columns to the new size and tells the program.
+    private void OnPreviewPointerWheelChanged(object? sender, PointerWheelEventArgs e)
+    {
+        if (e.KeyModifiers != KeyModifiers.Control)
+            return;
+
+        e.Handled = true;
+        _zoomNotches += e.Delta.Y;
+        int notches = (int)_zoomNotches;
+        if (notches == 0)
+            return;
+        _zoomNotches -= notches;
+        Terminal.FontSize = Math.Clamp(Terminal.FontSize + notches, MinFontSize, MaxFontSize);
     }
 
     private async void OnPreviewKeyDown(object? sender, KeyEventArgs e)
