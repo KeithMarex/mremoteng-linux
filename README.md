@@ -92,8 +92,8 @@ the mRemoteNG project, not to this fork.
 - **PowerShell** runs `pwsh`: a local shell, or `Enter-PSSession` to the host. On Linux, PowerShell remoting runs
   over SSH, not WinRM, so the server needs PowerShell's SSH subsystem. A stored password is handed over the same way
   as for SSH.
-- Tabs show the connection's icon and tab colour. Copy with Ctrl+Shift+C, paste with Ctrl+Shift+V, and close with
-  Ctrl+Shift+W.
+- Tabs show the connection's icon and tab colour. Copy with Ctrl+Shift+C, paste with Ctrl+Shift+V, close with
+  Ctrl+Shift+W, and zoom with Ctrl and the scroll wheel.
 - A session that drops keeps its tab, with a Reconnect button.
 
 **SSH tunnels**

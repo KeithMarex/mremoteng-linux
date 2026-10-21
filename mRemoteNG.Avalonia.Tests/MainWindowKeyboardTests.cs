@@ -3,6 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Headless.NUnit;
 using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Iciclecreek.Terminal;
@@ -47,10 +49,85 @@ public class MainWindowKeyboardTests
     [AvaloniaTest]
     public void KeysTypedInATerminalGoToItsProgramWhileTheTreeKeepsTheMenuShortcuts()
     {
+        (MainWindow window, MainWindowViewModel viewModel, TerminalControl terminal) = OpenTerminal();
+        ContainerInfo root = (ContainerInfo)viewModel.RootNodes[0].Connection;
+
+        terminal.Focus();
+        Press(window, PhysicalKey.Q, RawInputModifiers.Control); // XON to the terminal, not File > Exit
+        Assert.That(window.OwnedWindows, Is.Empty, "Ctrl+Q in the terminal asked to close the app");
+        Press(window, PhysicalKey.D, RawInputModifiers.Control); // end of input to cat, not Edit > Duplicate
+        Assert.That(root.Children, Has.Count.EqualTo(1), "Ctrl+D in the terminal duplicated the connection");
+        WaitFor(() => viewModel.Sessions.Items.Count == 0); // cat got it, ended cleanly, and its tab closed
+
+        window.GetVisualDescendants().OfType<TreeViewItem>().Single(item => item.IsSelected).Focus();
+        Press(window, PhysicalKey.D, RawInputModifiers.Control);
+
+        Assert.That(root.Children, Has.Count.EqualTo(2), "Ctrl+D in the tree duplicates");
+        window.Close();
+    }
+
+    [AvaloniaTest]
+    public void AKeyPressTheTerminalLeavesStaysUnhandledSoItsTextIsTyped()
+    {
+        (MainWindow window, MainWindowViewModel viewModel, TerminalControl terminal) = OpenTerminal();
+        bool? handled = null;
+        window.AddHandler(InputElement.KeyDownEvent, (_, e) => handled = e.Handled, RoutingStrategies.Bubble, handledEventsToo: true);
+
+        terminal.Focus();
+        // How X11 hands over a character composed from a dead key (' then space): a key press without a key, which is
+        // typed only when nothing handled it.
+        window.KeyPress(Key.None, RawInputModifiers.None, PhysicalKey.None, null);
+        window.KeyRelease(Key.None, RawInputModifiers.None, PhysicalKey.None, null);
+        Dispatcher.UIThread.RunJobs();
+        Assert.That(handled, Is.False);
+
+        Press(window, PhysicalKey.Q, RawInputModifiers.Control);
+        Assert.That(handled, Is.True, "a chord in the terminal reached the window's shortcuts");
+        EndAndClose(window, viewModel, terminal);
+    }
+
+    [AvaloniaTest]
+    public void CtrlAndTheWheelZoomATerminal()
+    {
+        (MainWindow window, MainWindowViewModel viewModel, TerminalControl terminal) = OpenTerminal();
+        Point middle = terminal.TranslatePoint(new Point(terminal.Bounds.Width / 2, terminal.Bounds.Height / 2), window)!.Value;
+        double size = terminal.FontSize;
+
+        Wheel(window, middle, 1, RawInputModifiers.Control);
+        Assert.That(terminal.FontSize, Is.EqualTo(size + 1));
+        Wheel(window, middle, -1, RawInputModifiers.Control);
+        Wheel(window, middle, -1, RawInputModifiers.Control);
+        Assert.That(terminal.FontSize, Is.EqualTo(size - 1));
+        // A touchpad's half notches add up to a whole one.
+        Wheel(window, middle, 0.5, RawInputModifiers.Control);
+        Assert.That(terminal.FontSize, Is.EqualTo(size - 1));
+        Wheel(window, middle, 0.5, RawInputModifiers.Control);
+        Assert.That(terminal.FontSize, Is.EqualTo(size));
+
+        Wheel(window, middle, 1, RawInputModifiers.None);
+        Assert.That(terminal.FontSize, Is.EqualTo(size), "the wheel alone zoomed");
+
+        for (int notch = 0; notch < 100; notch++)
+            Wheel(window, middle, -1, RawInputModifiers.Control);
+        Assert.That(terminal.FontSize, Is.EqualTo(SessionView.MinFontSize));
+        for (int notch = 0; notch < 100; notch++)
+            Wheel(window, middle, 1, RawInputModifiers.Control);
+        Assert.That(terminal.FontSize, Is.EqualTo(SessionView.MaxFontSize));
+        EndAndClose(window, viewModel, terminal);
+    }
+
+    // The main window with a local terminal running cat, which ends at Ctrl+D (end of input) with exit code 0.
+    private (MainWindow Window, MainWindowViewModel ViewModel, TerminalControl Terminal) OpenTerminal()
+    {
+        // The terminal adds its look to the app once per process, and each test has an app of its own: without it the
+        // terminal has no template and its program cannot start.
+        Uri terminalLook = new("avares://Iciclecreek.Avalonia.Terminal/Themes/Generic.axaml");
+        if (!Application.Current!.Styles.OfType<StyleInclude>().Any(include => include.Source == terminalLook))
+            Application.Current.Styles.Add(new StyleInclude(terminalLook) { Source = terminalLook });
+
         AppPaths paths = new(_directory.File("config"), _directory.File("data"));
         AppSettings settings = new();
         CoreRuntime.Settings = settings.Core;
-        // A local terminal running cat: it ends at Ctrl+D (end of input) with exit code 0.
         SessionLauncher launcher = new(new SessionPrograms { Shell = "/bin/cat" }, _directory.File("run"));
         MainWindow window = new() { Width = 1000, Height = 700 };
         MainWindowViewModel viewModel = new(settings, new AppSettingsStore(paths.SettingsFile), paths,
@@ -65,19 +142,22 @@ public class MainWindowKeyboardTests
         viewModel.SelectedNode = viewModel.RootNodes[0].Children.Single();
         viewModel.ConnectCommand.Execute(null);
         TerminalControl terminal = WaitFor(() => window.GetVisualDescendants().OfType<TerminalControl>().FirstOrDefault(t => t.IsLive));
+        return (window, viewModel, terminal);
+    }
 
+    // Ends cat first: a window with a live session asks before it closes.
+    private static void EndAndClose(MainWindow window, MainWindowViewModel viewModel, TerminalControl terminal)
+    {
         terminal.Focus();
-        Press(window, PhysicalKey.Q, RawInputModifiers.Control); // XON to the terminal, not File > Exit
-        Assert.That(window.OwnedWindows, Is.Empty, "Ctrl+Q in the terminal asked to close the app");
-        Press(window, PhysicalKey.D, RawInputModifiers.Control); // end of input to cat, not Edit > Duplicate
-        Assert.That(root.Children, Has.Count.EqualTo(1), "Ctrl+D in the terminal duplicated the connection");
-        WaitFor(() => viewModel.Sessions.Items.Count == 0); // cat got it, ended cleanly, and its tab closed
-
-        window.GetVisualDescendants().OfType<TreeViewItem>().Single(item => item.IsSelected).Focus();
         Press(window, PhysicalKey.D, RawInputModifiers.Control);
-
-        Assert.That(root.Children, Has.Count.EqualTo(2), "Ctrl+D in the tree duplicates");
+        WaitFor(() => viewModel.Sessions.Items.Count == 0);
         window.Close();
+    }
+
+    private static void Wheel(Window window, Point point, double notches, RawInputModifiers modifiers)
+    {
+        window.MouseWheel(point, new Vector(0, notches), modifiers);
+        Dispatcher.UIThread.RunJobs();
     }
 
     private static void Press(Window window, PhysicalKey key, RawInputModifiers modifiers)
